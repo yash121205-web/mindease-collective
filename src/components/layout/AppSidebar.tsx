@@ -45,9 +45,8 @@ export default function AppSidebar({ open, onClose }: { open: boolean; onClose: 
         {/* Logo */}
         <div className="p-5 border-b border-border">
           <Link to="/" className="flex items-center gap-2" onClick={onClose}>
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center"
-              style={{ background: 'linear-gradient(135deg, hsl(237, 97%, 74%), hsl(155, 62%, 60%))' }}>
-              <Leaf className="w-5 h-5 text-white" />
+            <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center">
+              <Leaf className="w-5 h-5 text-primary-foreground" />
             </div>
             <div>
               <h1 className="font-display text-lg leading-tight text-foreground font-semibold">MindEase AI</h1>
@@ -58,7 +57,7 @@ export default function AppSidebar({ open, onClose }: { open: boolean; onClose: 
 
         {/* Streak */}
         {streak > 0 && (
-          <div className="mx-4 mt-3 px-3 py-2 rounded-xl bg-accent/10 flex items-center gap-2">
+          <div className="mx-4 mt-3 px-3 py-2 rounded-xl bg-primary/10 flex items-center gap-2">
             <Flame className="w-4 h-4 text-primary" />
             <span className="text-xs font-medium text-foreground font-body">{streak} day streak</span>
             {todayMood && <span className="ml-auto text-sm">{MOOD_MAP[todayMood.mood]?.emoji}</span>}
@@ -76,10 +75,9 @@ export default function AppSidebar({ open, onClose }: { open: boolean; onClose: 
                 onClick={onClose}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium font-body transition-all ${
                   active
-                    ? 'text-primary-foreground shadow-md'
+                    ? 'bg-primary text-primary-foreground shadow-md'
                     : 'text-muted-foreground hover:bg-sidebar-accent hover:text-foreground'
                 }`}
-                style={active ? { background: 'linear-gradient(135deg, hsl(237, 97%, 74%), hsl(155, 62%, 60%))' } : {}}
               >
                 <item.icon className="w-4 h-4" />
                 <span>{item.label}</span>

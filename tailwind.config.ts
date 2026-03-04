@@ -12,8 +12,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ['"Cormorant Garamond"', 'serif'],
-        body: ['"Outfit"', 'sans-serif'],
+        display: ['"Playfair Display"', 'serif'],
+        body: ['"Lato"', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'monospace'],
       },
       colors: {
@@ -42,6 +42,8 @@ export default {
         mint: "hsl(var(--mint))",
         "rose-soft": "hsl(var(--rose-soft))",
         indigo: "hsl(var(--indigo))",
+        "warm-peach": "hsl(var(--warm-peach))",
+        "warm-lavender": "hsl(var(--warm-lavender))",
       },
       borderRadius: {
         lg: "var(--radius)",

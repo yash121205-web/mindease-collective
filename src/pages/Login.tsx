@@ -32,25 +32,24 @@ function loginUser(name: string, email: string, opts?: { anonymous?: boolean; go
   if (opts?.google) localStorage.setItem('mindease_google_login', 'true');
 }
 
-/* ─── inline field errors ─── */
 interface FieldErrors { name?: string; email?: string; password?: string; confirmPassword?: string; }
 
 /* ─── Floating card components ─── */
 function MoodChartCard() {
   const bars = [
-    { h: 60, color: '#6C63FF' },
-    { h: 80, color: '#43D9A2' },
-    { h: 45, color: '#6C63FF' },
-    { h: 90, color: '#43D9A2' },
-    { h: 70, color: '#6C63FF' },
+    { h: 60, color: 'hsl(var(--primary))' },
+    { h: 80, color: 'hsl(var(--mint))' },
+    { h: 45, color: 'hsl(var(--warm-peach))' },
+    { h: 90, color: 'hsl(var(--mint))' },
+    { h: 70, color: 'hsl(var(--primary))' },
   ];
   return (
     <motion.div
-      className="bg-white/95 rounded-2xl p-5 w-56 shadow-xl backdrop-blur-sm"
+      className="bg-card/95 rounded-2xl p-5 w-56 shadow-lg border border-border backdrop-blur-sm"
       animate={{ y: [0, -12, 0] }}
       transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
     >
-      <p className="text-[11px] font-body font-semibold text-gray-500 uppercase tracking-widest mb-3">This Week's Mood</p>
+      <p className="text-[11px] font-body font-semibold text-muted-foreground uppercase tracking-widest mb-3">This Week's Mood</p>
       <div className="flex items-end gap-2 h-20">
         {bars.map((b, i) => (
           <motion.div
@@ -63,7 +62,7 @@ function MoodChartCard() {
           />
         ))}
       </div>
-      <div className="flex justify-between mt-2 text-[10px] text-gray-400 font-body">
+      <div className="flex justify-between mt-2 text-[10px] text-muted-foreground font-body">
         {['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].map(d => <span key={d}>{d}</span>)}
       </div>
     </motion.div>
@@ -73,19 +72,19 @@ function MoodChartCard() {
 function ChatBubbleCard() {
   return (
     <motion.div
-      className="bg-white/95 rounded-2xl p-5 w-64 shadow-xl backdrop-blur-sm"
+      className="bg-card/95 rounded-2xl p-5 w-64 shadow-lg border border-border backdrop-blur-sm"
       animate={{ y: [0, -10, 0] }}
       transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
     >
       <div className="space-y-3">
         <div className="flex justify-end">
-          <div className="bg-[#6C63FF] text-white text-xs rounded-2xl rounded-tr-sm px-3 py-2 max-w-[80%] font-body">
+          <div className="bg-primary text-primary-foreground text-xs rounded-2xl rounded-tr-sm px-3 py-2 max-w-[80%] font-body">
             I'm feeling anxious today
           </div>
         </div>
         <div className="flex justify-start">
-          <div className="bg-gray-100 text-gray-700 text-xs rounded-2xl rounded-tl-sm px-3 py-2 max-w-[85%] font-body">
-            I'm here with you. Let's take it one step at a time 💙
+          <div className="bg-muted text-foreground text-xs rounded-2xl rounded-tl-sm px-3 py-2 max-w-[85%] font-body">
+            I'm here with you. Let's take it one step at a time 🧡
           </div>
         </div>
       </div>
@@ -107,13 +106,11 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Clear stale session data (not accounts)
     ['mindease_moods', 'mindease_journal', 'mindease_habits', 'mindease_sessions', 'mindease_user', 'mindease_chat']
       .forEach(k => localStorage.removeItem(k));
     if (sessionStorage.getItem('mindease_logged_in') === 'true') navigate('/', { replace: true });
   }, [navigate]);
 
-  /* validation */
   const validate = useCallback((): FieldErrors => {
     const e: FieldErrors = {};
     if (isSignUp && !name.trim()) e.name = 'Please enter your name';
@@ -123,24 +120,19 @@ export default function Login() {
     return e;
   }, [name, email, password, confirmPassword, isSignUp]);
 
-  const isValid = useCallback(() => {
-    const e = validate();
-    return Object.keys(e).length === 0;
-  }, [validate]);
+  const isValid = useCallback(() => Object.keys(validate()).length === 0, [validate]);
 
   const fieldOk = (field: string) => {
     const v = validate();
     return touched[field] && !(v as any)[field];
   };
 
-  /* submit */
   const handleSubmit = () => {
     const e = validate();
     setErrors(e);
     setTouched({ name: true, email: true, password: true, confirmPassword: true });
     if (Object.keys(e).length > 0) return;
     setLoading(true);
-
     setTimeout(() => {
       if (isSignUp) {
         const accounts = getAccounts();
@@ -166,10 +158,7 @@ export default function Login() {
     }, 1000);
   };
 
-  /* google */
   const handleGoogle = () => {
-    // NOTE: Replace YOUR_CLIENT_ID with a real Google OAuth client ID from Google Cloud Console for production.
-    // For demo, we attempt Google One Tap. If unavailable, fall back to simulated login.
     if (typeof window !== 'undefined' && (window as any).google?.accounts?.id) {
       try {
         (window as any).google.accounts.id.initialize({
@@ -201,7 +190,6 @@ export default function Login() {
     navigate('/', { replace: true });
   };
 
-  /* anonymous */
   const handleAnonymous = () => {
     loginUser('Friend', '', { anonymous: true });
     toast.success('Welcome, Friend! 🕶️');
@@ -211,12 +199,12 @@ export default function Login() {
   const inputClass = (field: string) => {
     const hasError = errors[field as keyof FieldErrors];
     const ok = fieldOk(field);
-    return `w-full rounded-xl px-4 py-3 text-sm font-body transition-all border focus:outline-none focus:ring-2 ${
+    return `w-full rounded-2xl px-4 py-3 text-sm font-body transition-all border focus:outline-none focus:ring-2 ${
       hasError
-        ? 'border-red-400 bg-red-500/5 focus:ring-red-400/30 text-foreground'
+        ? 'border-destructive bg-destructive/5 focus:ring-destructive/30 text-foreground'
         : ok
-        ? 'border-green-400 bg-green-500/5 focus:ring-green-400/30 text-foreground'
-        : 'border-white/10 bg-white/5 focus:ring-[#6C63FF]/40 text-foreground placeholder:text-white/30'
+        ? 'border-mint bg-mint/5 focus:ring-mint/30 text-foreground'
+        : 'border-border bg-input focus:ring-primary/30 text-foreground placeholder:text-muted-foreground'
     }`;
   };
 
@@ -231,30 +219,27 @@ export default function Login() {
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.5 }}
         style={{
-          background: 'linear-gradient(135deg, #6C63FF 0%, #5A54E0 40%, #43D9A2 100%)',
+          background: 'linear-gradient(135deg, hsl(30, 80%, 85%) 0%, hsl(270, 30%, 82%) 100%)',
         }}
       >
-        {/* Animated glow overlay */}
+        {/* Animated glow */}
         <div className="absolute inset-0 pointer-events-none"
           style={{
-            background: 'radial-gradient(circle at 30% 40%, rgba(255,255,255,0.15) 0%, transparent 60%)',
+            background: 'radial-gradient(circle at 30% 40%, hsla(15, 87%, 66%, 0.15) 0%, transparent 60%)',
             animation: 'glowMove 8s ease-in-out infinite alternate',
           }}
         />
-
-        {/* Decorative circles */}
-        <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-white/5" />
-        <div className="absolute -bottom-40 -left-24 w-[420px] h-[420px] rounded-full bg-white/5" />
+        <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-white/10" />
+        <div className="absolute -bottom-40 -left-24 w-[420px] h-[420px] rounded-full bg-white/10" />
 
         <div className="relative z-10">
-          {/* Logo */}
           <motion.div
             className="flex items-center gap-4 mb-14"
             initial={{ opacity: 0, scale: 0.85 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <div className="w-16 h-16 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center shadow-lg">
+            <div className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center shadow-lg">
               <Leaf className="w-8 h-8 text-white" />
             </div>
             <div>
@@ -263,7 +248,6 @@ export default function Login() {
             </div>
           </motion.div>
 
-          {/* Tagline */}
           <motion.h1
             className="font-display text-5xl text-white font-bold leading-[1.15] mb-6 italic"
             initial={{ opacity: 0, y: 20 }}
@@ -273,7 +257,6 @@ export default function Login() {
             Your calm<br />in the chaos.
           </motion.h1>
 
-          {/* Feature pills */}
           <motion.div
             className="flex flex-wrap gap-3 mb-14"
             initial={{ opacity: 0 }}
@@ -281,13 +264,12 @@ export default function Login() {
             transition={{ delay: 0.5, duration: 0.5 }}
           >
             {['💬 AI Chat', '😊 Mood Tracking', '📓 Journaling', '🌿 Wellness Tools'].map(label => (
-              <span key={label} className="px-4 py-2 rounded-full bg-white/12 backdrop-blur text-white text-sm font-body font-medium border border-white/10">
+              <span key={label} className="px-4 py-2 rounded-full bg-white/15 backdrop-blur text-white text-sm font-body font-medium border border-white/10">
                 {label}
               </span>
             ))}
           </motion.div>
 
-          {/* Floating cards */}
           <motion.div
             className="flex gap-5"
             initial={{ opacity: 0 }}
@@ -299,7 +281,6 @@ export default function Login() {
           </motion.div>
         </div>
 
-        {/* Bottom quote */}
         <div className="relative z-10">
           <div className="w-16 h-px bg-white/20 mb-4" />
           <p className="text-white/50 text-sm font-body italic leading-relaxed max-w-md">
@@ -313,7 +294,7 @@ export default function Login() {
       <div
         className="flex-1 flex items-center justify-center p-6 lg:p-12 relative"
         style={{
-          background: 'radial-gradient(ellipse at 50% 40%, rgba(108,99,255,0.15) 0%, transparent 60%), #0D0C1D',
+          background: 'radial-gradient(ellipse at 50% 40%, hsl(15, 87%, 66%, 0.08) 0%, transparent 60%), hsl(var(--background))',
         }}
       >
         <motion.div
@@ -329,32 +310,31 @@ export default function Login() {
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.4, ease: 'easeOut' }}
           >
-            <div className="w-11 h-11 rounded-xl bg-[#6C63FF]/15 flex items-center justify-center">
-              <Leaf className="w-5 h-5 text-[#6C63FF]" />
+            <div className="w-11 h-11 rounded-xl bg-primary/15 flex items-center justify-center">
+              <Leaf className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <h2 className="font-display text-lg font-bold text-white">MindEase AI</h2>
-              <p className="text-white/40 text-[11px] font-body">Your calm in the chaos</p>
+              <h2 className="font-display text-lg font-bold text-foreground">MindEase AI</h2>
+              <p className="text-muted-foreground text-[11px] font-body">Your calm in the chaos</p>
             </div>
           </motion.div>
 
           {/* Heading */}
           <motion.div {...stagger(0)} className="text-center mb-8">
-            <h1 className="font-display text-3xl font-bold text-white mb-1">
+            <h1 className="font-display text-3xl font-bold text-foreground mb-1">
               {isSignUp ? 'Get Started 🌿' : 'Welcome back 👋'}
             </h1>
-            <p className="text-white/40 font-body text-sm">
+            <p className="text-muted-foreground font-body text-sm">
               {isSignUp ? 'Create your wellness space' : 'Continue your wellness journey'}
             </p>
           </motion.div>
 
           {/* Form */}
           <div className="space-y-4">
-            {/* Name — sign up only */}
             {isSignUp && (
               <motion.div {...stagger(1)}>
-                <label className="text-[11px] font-body text-white/50 mb-1.5 block font-semibold uppercase tracking-wider">
-                  Your Name <span className="text-red-400">*</span>
+                <label className="text-[11px] font-body text-muted-foreground mb-1.5 block font-semibold uppercase tracking-wider">
+                  Your Name <span className="text-destructive">*</span>
                 </label>
                 <div className="relative">
                   <input
@@ -363,16 +343,15 @@ export default function Login() {
                     placeholder="What should we call you?"
                     className={inputClass('name')}
                   />
-                  {fieldOk('name') && <Check className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-green-400" />}
+                  {fieldOk('name') && <Check className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-mint" />}
                 </div>
-                {errors.name && <p className="text-red-400 text-xs mt-1 font-body">{errors.name}</p>}
+                {errors.name && <p className="text-destructive text-xs mt-1 font-body">{errors.name}</p>}
               </motion.div>
             )}
 
-            {/* Email */}
             <motion.div {...stagger(2)}>
-              <label className="text-[11px] font-body text-white/50 mb-1.5 block font-semibold uppercase tracking-wider">
-                Email Address <span className="text-red-400">*</span>
+              <label className="text-[11px] font-body text-muted-foreground mb-1.5 block font-semibold uppercase tracking-wider">
+                Email Address <span className="text-destructive">*</span>
               </label>
               <div className="relative">
                 <input
@@ -382,15 +361,14 @@ export default function Login() {
                   placeholder="you@example.com"
                   className={inputClass('email')}
                 />
-                {fieldOk('email') && <Check className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-green-400" />}
+                {fieldOk('email') && <Check className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-mint" />}
               </div>
-              {errors.email && <p className="text-red-400 text-xs mt-1 font-body">{errors.email}</p>}
+              {errors.email && <p className="text-destructive text-xs mt-1 font-body">{errors.email}</p>}
             </motion.div>
 
-            {/* Password */}
             <motion.div {...stagger(3)}>
-              <label className="text-[11px] font-body text-white/50 mb-1.5 block font-semibold uppercase tracking-wider">
-                Password <span className="text-red-400">*</span>
+              <label className="text-[11px] font-body text-muted-foreground mb-1.5 block font-semibold uppercase tracking-wider">
+                Password <span className="text-destructive">*</span>
               </label>
               <div className="relative">
                 <input
@@ -401,19 +379,18 @@ export default function Login() {
                   placeholder={isSignUp ? 'Create a password' : '••••••••'}
                   className={inputClass('password')}
                 />
-                <button type="button" onClick={() => setShowPw(!showPw)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors">
+                <button type="button" onClick={() => setShowPw(!showPw)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors">
                   {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
-                {fieldOk('password') && !showPw && <Check className="absolute right-9 top-1/2 -translate-y-1/2 w-4 h-4 text-green-400" />}
+                {fieldOk('password') && !showPw && <Check className="absolute right-9 top-1/2 -translate-y-1/2 w-4 h-4 text-mint" />}
               </div>
-              {errors.password && <p className="text-red-400 text-xs mt-1 font-body">{errors.password}</p>}
+              {errors.password && <p className="text-destructive text-xs mt-1 font-body">{errors.password}</p>}
             </motion.div>
 
-            {/* Confirm Password — sign up only */}
             {isSignUp && (
               <motion.div {...stagger(4)}>
-                <label className="text-[11px] font-body text-white/50 mb-1.5 block font-semibold uppercase tracking-wider">
-                  Confirm Password <span className="text-red-400">*</span>
+                <label className="text-[11px] font-body text-muted-foreground mb-1.5 block font-semibold uppercase tracking-wider">
+                  Confirm Password <span className="text-destructive">*</span>
                 </label>
                 <div className="relative">
                   <input
@@ -424,9 +401,9 @@ export default function Login() {
                     placeholder="Re-enter your password"
                     className={inputClass('confirmPassword')}
                   />
-                  {fieldOk('confirmPassword') && <Check className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-green-400" />}
+                  {fieldOk('confirmPassword') && <Check className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-mint" />}
                 </div>
-                {errors.confirmPassword && <p className="text-red-400 text-xs mt-1 font-body">{errors.confirmPassword}</p>}
+                {errors.confirmPassword && <p className="text-destructive text-xs mt-1 font-body">{errors.confirmPassword}</p>}
               </motion.div>
             )}
 
@@ -436,15 +413,14 @@ export default function Login() {
                 type="button"
                 onClick={handleSubmit}
                 disabled={!isValid() || loading}
-                className={`w-full py-3.5 rounded-xl text-sm font-body font-semibold transition-all flex items-center justify-center gap-2 ${
+                className={`w-full py-3.5 rounded-2xl text-sm font-body font-semibold transition-all flex items-center justify-center gap-2 ${
                   isValid() && !loading
-                    ? 'text-white cursor-pointer shadow-[0_0_24px_rgba(108,99,255,0.35)]'
-                    : 'bg-white/10 text-white/30 cursor-not-allowed'
+                    ? 'bg-primary text-primary-foreground cursor-pointer shadow-[0_4px_20px_hsl(var(--primary)/0.3)] hover:shadow-[0_6px_28px_hsl(var(--primary)/0.4)] hover:scale-[1.02]'
+                    : 'bg-muted text-muted-foreground cursor-not-allowed'
                 }`}
-                style={isValid() && !loading ? { background: 'linear-gradient(135deg, #6C63FF, #43D9A2)' } : undefined}
               >
                 {loading ? (
-                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <div className="w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
                 ) : (
                   <>Enter MindEase ✨</>
                 )}
@@ -453,9 +429,9 @@ export default function Login() {
 
             {/* Divider */}
             <motion.div {...stagger(6)} className="flex items-center gap-4 my-2">
-              <div className="flex-1 h-px bg-white/10" />
-              <span className="text-white/25 text-xs font-body">or</span>
-              <div className="flex-1 h-px bg-white/10" />
+              <div className="flex-1 h-px bg-border" />
+              <span className="text-muted-foreground text-xs font-body">or</span>
+              <div className="flex-1 h-px bg-border" />
             </motion.div>
 
             {/* Google */}
@@ -463,7 +439,7 @@ export default function Login() {
               <button
                 type="button"
                 onClick={handleGoogle}
-                className="w-full py-3 rounded-xl bg-white text-[#1C1B2E] text-sm font-body font-medium flex items-center justify-center gap-3 hover:shadow-lg transition-all border border-gray-200"
+                className="w-full py-3 rounded-2xl bg-card text-foreground text-sm font-body font-medium flex items-center justify-center gap-3 hover:shadow-lg transition-all border border-border"
               >
                 <svg width="18" height="18" viewBox="0 0 18 18">
                   <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 01-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
@@ -477,18 +453,18 @@ export default function Login() {
 
             {/* Anonymous */}
             <motion.div {...stagger(8)}>
-              <button type="button" onClick={handleAnonymous} className="w-full text-center text-sm text-white/40 hover:text-[#43D9A2] transition-colors font-body py-1">
+              <button type="button" onClick={handleAnonymous} className="w-full text-center text-sm text-muted-foreground hover:text-primary transition-colors font-body py-1">
                 Continue Anonymously →
               </button>
             </motion.div>
           </div>
 
           {/* Toggle */}
-          <p className="text-center text-xs text-white/30 mt-7 font-body">
+          <p className="text-center text-xs text-muted-foreground mt-7 font-body">
             <button
               type="button"
               onClick={() => { setIsSignUp(!isSignUp); setErrors({}); setTouched({}); setConfirmPassword(''); }}
-              className="text-[#6C63FF] hover:underline font-medium"
+              className="text-primary hover:underline font-medium"
             >
               {isSignUp ? 'Already have an account? Sign in' : 'New here? Get started'}
             </button>
@@ -496,7 +472,6 @@ export default function Login() {
         </motion.div>
       </div>
 
-      {/* Glow animation keyframes */}
       <style>{`
         @keyframes glowMove {
           0% { background-position: 30% 40%; opacity: 0.6; }
