@@ -44,8 +44,7 @@ export default function FloatingActionButton() {
 
       <button
         onClick={() => setOpen(!open)}
-        className="w-14 h-14 rounded-full flex items-center justify-center text-primary-foreground shadow-lg transition-transform"
-        style={{ background: 'linear-gradient(135deg, hsl(237, 97%, 74%), hsl(155, 62%, 60%))' }}
+        className="w-14 h-14 rounded-full flex items-center justify-center text-primary-foreground shadow-lg transition-all bg-primary hover:scale-[1.02]"
       >
         {open ? <X className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
       </button>

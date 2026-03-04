@@ -18,7 +18,7 @@ function SeraAvatar({ emotion }: { emotion?: string }) {
   const glow = emotion === 'Happiness' || emotion === 'Gratitude';
   return (
     <div className={`w-9 h-9 rounded-full flex items-center justify-center animate-float ${tilt} transition-transform`}
-      style={{ background: 'linear-gradient(135deg, hsl(237 97% 74% / 0.2), hsl(155 62% 80% / 0.15))' }}>
+      style={{ background: 'linear-gradient(135deg, hsl(var(--primary) / 0.2), hsl(var(--mint) / 0.15))' }}>
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
         <circle cx="12" cy="12" r="10" fill="hsl(var(--primary))" opacity={glow ? "0.3" : "0.2"} />
         <circle cx="12" cy="12" r="8" fill="hsl(var(--primary))" opacity="0.15" />
@@ -161,7 +161,7 @@ export default function Chat() {
                   ? 'text-primary-foreground rounded-br-md'
                   : 'glass-static rounded-bl-md'
               }`}
-                style={msg.role === 'user' ? { background: 'linear-gradient(135deg, hsl(237, 97%, 74%), hsl(237, 80%, 65%))' } : {}}
+                style={msg.role === 'user' ? { background: 'hsl(var(--primary))' } : {}}
               >
                 {msg.content}
               </div>
@@ -210,8 +210,7 @@ export default function Chat() {
           <button
             onClick={() => sendMessage(input)}
             disabled={!input.trim() || loading}
-            className="w-11 h-11 rounded-2xl flex items-center justify-center disabled:opacity-40 transition-opacity shrink-0 text-primary-foreground"
-            style={{ background: 'linear-gradient(135deg, hsl(237, 97%, 74%), hsl(155, 62%, 60%))' }}
+            className="w-11 h-11 rounded-2xl flex items-center justify-center disabled:opacity-40 transition-all shrink-0 text-primary-foreground bg-primary hover:scale-[1.02]"
           >
             <Send className="w-4 h-4" />
           </button>
