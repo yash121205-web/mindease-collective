@@ -8,7 +8,7 @@ import {
   PieChart, Pie, Cell, BarChart, Bar,
 } from 'recharts';
 
-const COLORS = ['hsl(125 22% 58%)', 'hsl(200 60% 55%)', 'hsl(40 85% 60%)', 'hsl(15 87% 66%)', 'hsl(0 60% 65%)'];
+const COLORS = ['hsl(330 100% 85%)', 'hsl(197 88% 66%)', 'hsl(45 90% 70%)', 'hsl(270 40% 80%)', 'hsl(0 70% 80%)'];
 
 export default function Insights() {
   const moods = getMoods();

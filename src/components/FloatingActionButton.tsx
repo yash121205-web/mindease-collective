@@ -18,34 +18,20 @@ export default function FloatingActionButton() {
     <div className="fixed bottom-6 right-6 z-50">
       <AnimatePresence>
         {open && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 10 }}
-            className="absolute bottom-16 right-0 flex flex-col gap-2 items-end mb-2"
-          >
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} className="absolute bottom-16 right-0 flex flex-col gap-2 items-end mb-2">
             {actions.map((a, i) => (
-              <motion.button
-                key={a.path}
-                initial={{ opacity: 0, x: 10 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 10 }}
-                transition={{ delay: i * 0.05 }}
+              <motion.button key={a.path} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} transition={{ delay: i * 0.05 }}
                 onClick={() => { navigate(a.path); setOpen(false); }}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-xl glass-static text-sm font-body font-medium text-foreground whitespace-nowrap"
-              >
-                <a.icon className="w-4 h-4 text-primary" />
-                {a.label}
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl glass-static text-sm font-body font-medium text-foreground whitespace-nowrap">
+                <a.icon className="w-4 h-4 text-primary" />{a.label}
               </motion.button>
             ))}
           </motion.div>
         )}
       </AnimatePresence>
-
-      <button
-        onClick={() => setOpen(!open)}
-        className="w-14 h-14 rounded-full flex items-center justify-center text-primary-foreground shadow-lg transition-all bg-primary hover:scale-[1.02]"
-      >
+      <button onClick={() => setOpen(!open)}
+        className="w-14 h-14 rounded-full flex items-center justify-center text-white shadow-lg transition-all hover:scale-[1.02]"
+        style={{ background: 'linear-gradient(135deg, hsl(330,100%,85%), hsl(197,88%,66%))' }}>
         {open ? <X className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
       </button>
     </div>
