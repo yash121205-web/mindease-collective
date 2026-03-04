@@ -19,6 +19,8 @@ import Insights from "./pages/Insights";
 import Resources from "./pages/Resources";
 import Progress from "./pages/Progress";
 import SettingsPage from "./pages/Settings";
+import Games from "./pages/Games";
+import PopulationInsights from "./pages/PopulationInsights";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -60,6 +62,8 @@ const App = () => {
                   <Route path="/app/insights" element={<Insights />} />
                   <Route path="/app/resources" element={<Resources />} />
                   <Route path="/app/progress" element={<Progress />} />
+                  <Route path="/app/games" element={<Games />} />
+                  <Route path="/app/community" element={<PopulationInsights />} />
                   <Route path="/app/settings" element={<SettingsPage />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
