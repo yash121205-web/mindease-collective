@@ -1,24 +1,16 @@
 // AI integration helper — Claude API + resilient contextual local fallback
 
-const SYSTEM_PROMPT = `You are SERA, a warm and emotionally intelligent AI wellness companion for students
-and young adults. Your role is to provide empathetic, relevant, and personalized
-emotional support.
-STRICT RULES:
+const SYSTEM_PROMPT = `You are SERA, a warm and emotionally intelligent AI wellness companion for students and young adults.
 
-ALWAYS directly address what the user just said. Read their message carefully.
-Never give generic responses. Tailor every reply to the specific emotion or
-situation they mentioned.
-Keep responses to 3-5 sentences max. Be warm but concise.
-If they mention stress → acknowledge it specifically and offer one coping tip.
-If they mention loneliness → validate the feeling, ask a gentle follow-up question.
-If they mention academic pressure → empathize and suggest one practical strategy.
-If they mention sadness → be present, don't rush to fix, just acknowledge first.
-If they mention crisis keywords (hopeless, end it, can't go on, suicidal) →
-respond with care and provide: iCall: 9152987821, Vandrevala: 1860-2662-345
-Always end with either a gentle question OR a specific suggestion — never just
-a statement.
-Never start responses with "I understand" or "I'm sorry to hear" every single
-time — vary your openings.`;
+STRICT RULES:
+1. ALWAYS start by repeating back what the user said in your own words to show you're listening. Example: "I hear that you failed your exam."
+2. Then address their SPECIFIC situation — not generic advice.
+3. Give exactly ONE practical, actionable tip that matches their problem.
+4. Keep responses to 3-5 sentences max.
+5. If they mention crisis keywords (hopeless, end it, can't go on, suicidal, kill myself, self-harm, want to die) → respond with care and provide: iCall: 9152987821, Vandrevala: 1860-2662-345
+6. Never start with "I understand" or "I'm sorry to hear that."
+7. Always end with either a gentle question OR a specific next step.
+8. Remember previous messages and reference them when relevant.`;
 
 type ChatTurn = { role: string; content: string };
 
@@ -55,7 +47,7 @@ export async function callAI(prompt: string, systemPrompt?: string): Promise<str
 export async function callAIChat(messages: ChatTurn[]): Promise<string> {
   const history = messages
     .filter((m) => m?.content?.trim())
-    .slice(-10)
+    .slice(-5)
     .map((m) => ({ role: m.role === 'assistant' ? 'assistant' : 'user', content: m.content.trim() }));
 
   try {
@@ -82,26 +74,10 @@ export async function callAIChat(messages: ChatTurn[]): Promise<string> {
     if (!response.ok) throw new Error('API error');
     const data = await response.json();
     const raw = data?.content?.[0]?.text || '';
-
-    return ensureNotRepeated(raw || generateMockChatResponse(history), history);
+    return raw || generateMockChatResponse(history);
   } catch {
-    return ensureNotRepeated(generateMockChatResponse(history), history);
+    return generateMockChatResponse(history);
   }
-}
-
-function ensureNotRepeated(next: string, history: ChatTurn[]): string {
-  const lastAssistant = [...history].reverse().find((m) => m.role === 'assistant')?.content || '';
-  const a = normalize(lastAssistant);
-  const b = normalize(next);
-
-  if (!b) return 'Thank you for sharing that with me. I want to support you in a way that actually fits what you’re feeling right now — could you tell me a little more about what’s been hardest today?';
-  if (!a || a !== b) return next;
-
-  return `${next} To make this more helpful for your exact situation, what feels most urgent right now?`;
-}
-
-function normalize(text: string) {
-  return text.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, ' ').trim();
 }
 
 function generateMockSingleResponse(input: string): string {
@@ -111,111 +87,105 @@ function generateMockSingleResponse(input: string): string {
 function generateMockChatResponse(messages: ChatTurn[]): string {
   const lastUser = [...messages].reverse().find((m) => m.role !== 'assistant')?.content?.trim() || '';
   const lower = lastUser.toLowerCase();
-  const seed = hash(lastUser + String(messages.length));
+  const seed = hash(lastUser + String(messages.length) + String(Date.now()));
+
+  // Always start by echoing back what the user said
+  const userSummary = summarizeUserMessage(lastUser);
 
   if (detectCrisis(lastUser)) {
-    return 'Thank you for telling me this — I’m really glad you reached out right now. You deserve immediate human support: iCall: 9152987821 and Vandrevala: 1860-2662-345. If you can, please contact one of them now and stay with someone you trust while you do that. Are you in a safe place right now?';
+    return `${userSummary} I'm really glad you told me this — it takes courage. You deserve immediate human support right now. Please reach out: iCall: 9152987821, Vandrevala: 1860-2662-345. Are you in a safe place right now?`;
+  }
+
+  if (matches(lower, /(fail|failed|flunk|didn't pass|bad grade|low marks|poor score)/)) {
+    const tips = [
+      'Here\'s what helps most students: take a break today, then look at what went wrong tomorrow when emotions are calmer.',
+      'One thing that works: write down exactly which topics tripped you up, then tackle just the first one tomorrow with fresh eyes.',
+      'Try this: give yourself 24 hours before analyzing what happened. Your brain processes setbacks better after rest.'
+    ];
+    return `${userSummary} That's really tough, and it's okay to feel disappointed. ${pick(tips, seed)} What subject was it?`;
   }
 
   if (matches(lower, /(stress|overwhelm|pressure|too much|burnout)/)) {
-    const openers = [
-      'That sounds like a lot to carry at once.',
-      'You’re holding a heavy load right now, and that can drain you fast.',
-      'This level of stress can make everything feel urgent.'
-    ];
     const tips = [
-      'Try one reset cycle now: inhale 4, hold 4, exhale 6, repeat for 2 minutes.',
-      'Use a 25-minute focus block on just one task, then take a 5-minute break.',
-      'Pick the smallest next step and do only that for the next 10 minutes.'
+      'Try this right now: write down every task weighing on you, then circle just the top 2 that actually matter today.',
+      'One reset that works: inhale for 4 counts, hold for 4, exhale for 6. Do 3 rounds right now.',
+      'Here\'s a quick win: pick the smallest task on your list and finish just that one. Momentum builds from there.'
     ];
-    const q = [
-      'What part feels heaviest at this moment?',
-      'Would you like me to help you break today into 3 manageable steps?',
-      'Which task is creating the most pressure right now?'
-    ];
-    return `${pick(openers, seed)} ${pick(tips, seed + 1)} ${pick(q, seed + 2)}`;
+    return `${userSummary} That level of pressure is genuinely exhausting. ${pick(tips, seed)} What part feels heaviest right now?`;
   }
 
-  if (matches(lower, /(lonely|alone|no one understands|isolated)/)) {
-    const openers = [
-      'Feeling lonely like that can really hurt, even when people are around.',
-      'That kind of loneliness can feel deeply personal and exhausting.',
-      'You’re not wrong for feeling this way — loneliness is a real emotional weight.'
+  if (matches(lower, /(lonely|alone|no one understands|isolated|no friends)/)) {
+    const tips = [
+      'One step that helps: message one person today — even just "hey, how are you?" Connection starts with small moves.',
+      'Try this: join one online or campus community around something you enjoy. Shared interests make connecting easier.',
+      'Here\'s what I\'d suggest: write down 3 people you feel even slightly comfortable with and reach out to one this week.'
     ];
-    const follow = [
-      'You matter, and your need for connection is completely valid.',
-      'It makes sense that this is affecting your energy and mood.',
-      'Thank you for saying it out loud — that takes courage.'
-    ];
-    const q = [
-      'Who feels safest to message first, even with a simple “hey”?',
-      'Would it help to plan one low-pressure social step for today?',
-      'When do you feel this loneliness most strongly — daytime or nights?'
-    ];
-    return `${pick(openers, seed)} ${pick(follow, seed + 1)} ${pick(q, seed + 2)}`;
+    return `${userSummary} That kind of loneliness can feel really heavy, even when people are physically nearby. ${pick(tips, seed)} When do you feel this most — during the day or at night?`;
   }
 
-  if (matches(lower, /(exam|academic|assignment|deadline|college|class|grades)/)) {
-    const openers = [
-      'Academic pressure can make your brain feel constantly “on.”',
-      'Being under study pressure for too long is genuinely exhausting.',
-      'When deadlines stack up, even simple tasks can feel huge.'
+  if (matches(lower, /(exam|test|study|academic|assignment|deadline|college|class|grades)/)) {
+    const tips = [
+      'Start with this: make a 3-item priority list — must-do, should-do, could-do. Focus only on must-do first.',
+      'Try the Pomodoro method: 25 minutes of focused study, then a 5-minute break. It tricks your brain into starting.',
+      'Here\'s what works: study the hardest topic for just 20 minutes first when your energy is highest, then switch to easier material.'
     ];
-    const strategy = [
-      'Start with a 3-item priority list: must-do, should-do, could-do.',
-      'Use active recall for one chapter instead of rereading everything.',
-      'Do one timed sprint on the hardest subject first, then switch to an easier task.'
-    ];
-    const q = [
-      'Which subject is the biggest source of pressure today?',
-      'Want me to help build a 1-hour study plan right now?',
-      'What exam or deadline is causing the most anxiety right now?'
-    ];
-    return `${pick(openers, seed)} ${pick(strategy, seed + 1)} ${pick(q, seed + 2)}`;
+    return `${userSummary} Academic pressure can make your brain feel like it's always "on" with no off switch. ${pick(tips, seed)} Which subject or deadline is weighing on you most?`;
   }
 
-  if (matches(lower, /(sad|down|empty|depressed|cry)/)) {
-    const openers = [
-      'That sounds really heavy emotionally.',
-      'I hear the sadness in what you shared.',
-      'It makes sense you feel low with all of this on you.'
+  if (matches(lower, /(sad|down|empty|depressed|cry|crying)/)) {
+    const tips = [
+      'One gentle step: put on a song that matches how you feel (not to cheer up, just to feel heard), then journal for 5 minutes.',
+      'Try this: wrap yourself in something comfortable, make a warm drink, and just allow yourself to feel without judging it.',
+      'Here\'s what might help: write down what you\'re feeling in 3 words. Naming emotions literally reduces their intensity — neuroscience backs this up.'
     ];
-    const presence = [
-      'You don’t need to fix this feeling immediately — we can just sit with it for a moment.',
-      'There’s no pressure to force positivity right now.',
-      'You’re allowed to feel this without judging yourself for it.'
-    ];
-    const q = [
-      'Do you want to share what triggered this feeling today?',
-      'Would a short grounding exercise help right now, or do you want to talk it through first?',
-      'What would feel most supportive for you in this moment?'
-    ];
-    return `${pick(openers, seed)} ${pick(presence, seed + 1)} ${pick(q, seed + 2)}`;
+    return `${userSummary} I can feel the weight in your words, and it's okay to sit with this for a moment. ${pick(tips, seed)} Do you want to tell me more about what triggered this?`;
   }
 
   if (matches(lower, /(anxious|anxiety|panic|nervous|worried|overthink)/)) {
-    return 'Anxiety can make everything feel immediate, even when you’re doing your best. Try the 5-4-3-2-1 grounding method right now to pull your mind back into the present moment. Would you like me to guide you through it step by step?';
+    const tips = [
+      'Try the 5-4-3-2-1 grounding right now: name 5 things you see, 4 you can touch, 3 you hear, 2 you smell, 1 you taste.',
+      'Here\'s a quick reset: press your feet firmly into the floor, squeeze your hands tight for 5 seconds, then release. Feel the difference.',
+      'One technique that works fast: write your worried thought on paper, then ask "Is this definitely true, or is my brain catastrophizing?"'
+    ];
+    return `${userSummary} Anxiety can make everything feel urgent even when it's not. ${pick(tips, seed)} Would you like me to walk you through a calming exercise right now?`;
   }
 
-  if (matches(lower, /(sleep|insomnia|cant sleep|can't sleep|tired|fatigue)/)) {
-    return 'Sleep disruption can make emotions feel twice as intense the next day. Try a 20-minute wind-down with no screens, slow breathing, and a quick brain-dump note before bed. What part of the night is hardest for you — falling asleep or waking up?';
+  if (matches(lower, /(sleep|insomnia|cant sleep|can't sleep|tired|exhausted|fatigue)/)) {
+    return `${userSummary} Poor sleep makes everything feel twice as hard — your emotions, focus, and energy all suffer. Try this tonight: no screens 30 minutes before bed, do 3 rounds of slow breathing (4-7-8 pattern), and write a quick brain dump of tomorrow's tasks so your mind can let go. What part of sleeping is hardest — falling asleep or staying asleep?`;
   }
 
-  if (matches(lower, /(motivation|procrastinat|lazy|cant focus|can't focus)/)) {
-    return 'Low motivation usually means your mind is overloaded, not that you’re failing. Start with a 2-minute action on the smallest task to create momentum, then continue for one short focus block. What’s one tiny step you can take in the next 5 minutes?';
+  if (matches(lower, /(motivation|procrastinat|lazy|cant focus|can't focus|unmotivated)/)) {
+    return `${userSummary} Low motivation usually isn't laziness — it's your brain feeling overwhelmed by the gap between where you are and where you need to be. Here's what works: set a timer for just 2 minutes and start the smallest possible version of your task. Most people keep going once they start. What's the one thing you're putting off the most right now?`;
   }
 
-  if (matches(lower, /(hello|hi|hey)/)) {
-    return 'Hey — I’m really glad you checked in. I’m SERA, and I’m here to support you with whatever is feeling heavy today. How are you feeling right now, honestly?';
+  if (matches(lower, /(happy|great|amazing|wonderful|good|better|positive|excited)/)) {
+    return `${userSummary} I love hearing that! Positive moments matter — they're not "less important" than hard ones. Try this: write down specifically what made you feel this way so you can intentionally recreate it. What do you think contributed most to this feeling?`;
   }
 
-  const contextualLead = lastUser ? `You mentioned: “${truncate(lastUser, 90)}”. ` : '';
-  return `${contextualLead}Thanks for sharing this with me. Let’s make this manageable together by choosing one small next step you can do now. Would you like a quick plan for the next 20 minutes?`;
+  if (matches(lower, /(thank|thanks|helpful|appreciate)/)) {
+    return `${userSummary} I'm genuinely glad I could help. Remember, showing up for yourself like this IS the work — you're doing it. Is there anything else on your mind, or would you like to try a quick wellness exercise?`;
+  }
+
+  if (matches(lower, /(hello|hi|hey|sup|what's up)/)) {
+    return `Hey — I'm really glad you're here. I'm SERA, and I'm here to support you with whatever's on your mind today. No judgment, no pressure. How are you actually feeling right now — honestly?`;
+  }
+
+  if (matches(lower, /(relationship|breakup|broke up|boyfriend|girlfriend|partner|crush|love)/)) {
+    return `${userSummary} Relationship situations can take over your whole emotional bandwidth, and that's completely natural. One helpful step: write down what you're feeling right now without editing — getting it out of your head reduces the spinning. What part of this is hitting you hardest?`;
+  }
+
+  if (matches(lower, /(family|parents|mom|dad|home|sibling)/)) {
+    return `${userSummary} Family dynamics can be really complicated, especially when you're also dealing with your own growth and pressures. Here's one thing that helps: identify what's in your control vs. what isn't, and focus your energy only on what you can actually change. What specific situation is bothering you most?`;
+  }
+
+  // Generic but still echoes back
+  return `${userSummary} Thank you for sharing this with me. Let's work through this together — sometimes just talking it out makes things clearer. Here's my suggestion: take 2 minutes right now to write down exactly what's bothering you most, then we can tackle it step by step. What feels most urgent to you right now?`;
 }
 
-function truncate(text: string, max = 90) {
-  if (text.length <= max) return text;
-  return `${text.slice(0, max - 1)}…`;
+function summarizeUserMessage(msg: string): string {
+  if (!msg || msg.length < 5) return 'I hear you.';
+  const trimmed = msg.length > 80 ? msg.slice(0, 77) + '...' : msg;
+  return `I hear you — you said "${trimmed}."`;
 }
 
 function pick<T>(arr: T[], seed: number): T {
@@ -250,6 +220,8 @@ export function detectEmotion(text: string): { emoji: string; label: string } | 
   if (lower.match(/calm|peace|relax/)) return { emoji: '😌', label: 'Calm' };
   if (lower.match(/motivat|lazy|procrastinat/)) return { emoji: '😮‍💨', label: 'Low Motivation' };
   if (lower.match(/overthink|spiral|ruminat/)) return { emoji: '🌀', label: 'Overthinking' };
+  if (lower.match(/fail|failed|flunk/)) return { emoji: '😞', label: 'Disappointment' };
+  if (lower.match(/exam|test|study|deadline/)) return { emoji: '📚', label: 'Academic Stress' };
   return null;
 }
 
