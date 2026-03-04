@@ -1,7 +1,7 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, BookmarkPlus, AlertTriangle } from 'lucide-react';
-import { callAIChat, detectEmotion, detectCrisis } from '@/lib/ai';
+import { Send, BookmarkPlus, AlertTriangle, Mic, MicOff, Globe, Shield } from 'lucide-react';
+import { callAIChat, detectEmotion, detectCrisis, analyzeVoiceTone } from '@/lib/ai';
 import { getChatHistory, saveChatHistory, genId, type ChatMessage } from '@/lib/storage';
 
 const SUGGESTED = [
@@ -11,6 +11,15 @@ const SUGGESTED = [
   "I can't stop overthinking",
   "I need motivation today",
   "I'm feeling really lonely lately",
+];
+
+const LANGUAGES = [
+  { code: 'en', label: 'English', flag: '🇬🇧' },
+  { code: 'hi', label: 'हिंदी', flag: '🇮🇳' },
+  { code: 'ta', label: 'தமிழ்', flag: '🇮🇳' },
+  { code: 'mr', label: 'मराठी', flag: '🇮🇳' },
+  { code: 'te', label: 'తెలుగు', flag: '🇮🇳' },
+  { code: 'bn', label: 'বাংলা', flag: '🇮🇳' },
 ];
 
 function SeraAvatar({ emotion }: { emotion?: string }) {
@@ -37,11 +46,65 @@ export default function Chat() {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [showCrisis, setShowCrisis] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const [voiceFeedback, setVoiceFeedback] = useState('');
+  const [showLangPicker, setShowLangPicker] = useState(false);
+  const [selectedLang, setSelectedLang] = useState('en');
   const scrollRef = useRef<HTMLDivElement>(null);
+  const recognitionRef = useRef<any>(null);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
   }, [messages, loading]);
+
+  // Speech recognition setup
+  const startListening = useCallback(() => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      setVoiceFeedback("Voice input isn't supported in your browser. Try Chrome or Edge.");
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = true;
+    recognition.lang = selectedLang === 'en' ? 'en-US' : 
+                       selectedLang === 'hi' ? 'hi-IN' :
+                       selectedLang === 'ta' ? 'ta-IN' :
+                       selectedLang === 'mr' ? 'mr-IN' :
+                       selectedLang === 'te' ? 'te-IN' :
+                       selectedLang === 'bn' ? 'bn-IN' : 'en-US';
+
+    recognition.onstart = () => setIsListening(true);
+    recognition.onresult = (event: any) => {
+      const transcript = Array.from(event.results)
+        .map((result: any) => result[0].transcript)
+        .join('');
+      setInput(transcript);
+    };
+    recognition.onend = () => {
+      setIsListening(false);
+      // Analyze voice tone from the text
+      if (input.trim()) {
+        const toneFeedback = analyzeVoiceTone(input);
+        setVoiceFeedback(toneFeedback);
+        setTimeout(() => setVoiceFeedback(''), 8000);
+      }
+    };
+    recognition.onerror = () => {
+      setIsListening(false);
+      setVoiceFeedback("Couldn't hear you clearly. Please try again.");
+      setTimeout(() => setVoiceFeedback(''), 4000);
+    };
+
+    recognitionRef.current = recognition;
+    recognition.start();
+  }, [selectedLang, input]);
+
+  const stopListening = useCallback(() => {
+    recognitionRef.current?.stop();
+    setIsListening(false);
+  }, []);
 
   const sendMessage = async (text: string) => {
     if (!text.trim()) return;
@@ -61,10 +124,10 @@ export default function Chat() {
     const newMsgs = [...messages, userMsg];
     setMessages(newMsgs);
     setInput('');
+    setVoiceFeedback('');
     setLoading(true);
 
-    // Simulate typing delay for better UX
-    await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 500));
+    await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 700));
 
     try {
       const apiMsgs = newMsgs.slice(-10).map(m => ({ role: m.role, content: m.content }));
@@ -82,7 +145,7 @@ export default function Chat() {
       const errMsg: ChatMessage = {
         id: genId(),
         role: 'assistant',
-        content: "SERA is taking a moment to think... Please try again. 💙",
+        content: "SERA is taking a moment to gather her thoughts... Please try again. 💙",
         timestamp: Date.now(),
       };
       const updated = [...newMsgs, errMsg];
@@ -104,6 +167,14 @@ export default function Chat() {
 
   return (
     <div className="flex flex-col h-[calc(100vh-3.5rem)] lg:h-screen">
+      {/* Safe space banner */}
+      <div className="bg-primary/5 border-b border-border px-4 py-2 flex items-center gap-2">
+        <Shield className="w-3.5 h-3.5 text-primary" />
+        <p className="text-[11px] text-muted-foreground font-body">
+          🔒 This is a <strong>safe, anonymous, judgment-free</strong> space. Your conversations are private and confidential.
+        </p>
+      </div>
+
       {/* Crisis banner */}
       <AnimatePresence>
         {showCrisis && (
@@ -122,6 +193,22 @@ export default function Chat() {
         )}
       </AnimatePresence>
 
+      {/* Voice feedback */}
+      <AnimatePresence>
+        {voiceFeedback && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="bg-primary/5 border-b border-primary/10 px-4 py-2.5 flex items-center gap-2"
+          >
+            <Mic className="w-3.5 h-3.5 text-primary" />
+            <p className="text-xs text-foreground font-body">{voiceFeedback}</p>
+            <button onClick={() => setVoiceFeedback('')} className="ml-auto text-xs text-muted-foreground hover:text-foreground">✕</button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Chat area */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 lg:p-6 space-y-4">
         {messages.length === 0 && (
@@ -130,7 +217,10 @@ export default function Chat() {
             <div className="mx-auto mt-4 mb-2">
               <h2 className="font-display text-2xl text-foreground font-semibold">Hi, I'm SERA 💙</h2>
               <p className="text-muted-foreground text-sm mt-1 max-w-sm mx-auto font-body">
-                Your Supportive Emotional Response Assistant. I'm here to listen, support, and help you navigate your feelings.
+                Your Supportive Emotional Response Assistant. I'm here to listen without judgment, support your feelings, and help you navigate whatever you're going through.
+              </p>
+              <p className="text-muted-foreground text-xs mt-2 max-w-xs mx-auto font-body opacity-70">
+                🔒 Everything you share here is anonymous and confidential.
               </p>
             </div>
             <div className="flex flex-wrap justify-center gap-2 mt-6 max-w-lg mx-auto">
@@ -159,7 +249,7 @@ export default function Chat() {
               <div className={`px-4 py-3 rounded-2xl text-sm leading-relaxed font-body ${
                 msg.role === 'user'
                   ? 'text-primary-foreground rounded-br-md'
-                  : 'glass-static rounded-bl-md'
+                  : 'glass-static rounded-bl-md border-l-2 border-primary/30'
               }`}
                 style={msg.role === 'user' ? { background: 'linear-gradient(135deg, hsl(330,100%,85%), hsl(197,88%,66%))' } : {}}
               >
@@ -185,7 +275,7 @@ export default function Chat() {
         {loading && (
           <div className="flex gap-2.5">
             <SeraAvatar />
-            <div className="glass-static px-4 py-3 rounded-2xl rounded-bl-md">
+            <div className="glass-static px-4 py-3 rounded-2xl rounded-bl-md border-l-2 border-primary/30">
               <div className="flex gap-1">
                 <span className="w-2 h-2 rounded-full bg-primary/40 animate-pulse-soft" style={{ animationDelay: '0s' }} />
                 <span className="w-2 h-2 rounded-full bg-primary/40 animate-pulse-soft" style={{ animationDelay: '0.2s' }} />
@@ -198,23 +288,71 @@ export default function Chat() {
 
       {/* Input */}
       <div className="border-t border-border p-4 bg-background/80 backdrop-blur-lg">
-        <div className="max-w-3xl mx-auto flex gap-2">
-          <textarea
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Share what's on your mind..."
-            rows={1}
-            className="flex-1 resize-none bg-muted rounded-2xl px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all font-body"
-          />
-          <button
-            onClick={() => sendMessage(input)}
-            disabled={!input.trim() || loading}
-            className="w-11 h-11 rounded-2xl flex items-center justify-center disabled:opacity-40 transition-all shrink-0 text-white hover:scale-[1.02]"
-            style={{ background: 'linear-gradient(135deg, hsl(330,100%,85%), hsl(197,88%,66%))' }}
-          >
-            <Send className="w-4 h-4" />
-          </button>
+        <div className="max-w-3xl mx-auto">
+          <div className="flex gap-2">
+            {/* Language picker */}
+            <div className="relative">
+              <button
+                onClick={() => setShowLangPicker(!showLangPicker)}
+                className="w-11 h-11 rounded-2xl flex items-center justify-center bg-muted text-muted-foreground hover:text-foreground transition-colors shrink-0"
+                title="Change language"
+              >
+                <Globe className="w-4 h-4" />
+              </button>
+              <AnimatePresence>
+                {showLangPicker && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    className="absolute bottom-14 left-0 bg-card border border-border rounded-xl shadow-lg p-2 min-w-[140px] z-10"
+                  >
+                    {LANGUAGES.map(lang => (
+                      <button
+                        key={lang.code}
+                        onClick={() => { setSelectedLang(lang.code); setShowLangPicker(false); }}
+                        className={`w-full px-3 py-1.5 rounded-lg text-xs font-body text-left flex items-center gap-2 ${
+                          selectedLang === lang.code ? 'bg-primary/10 text-primary font-medium' : 'text-foreground hover:bg-muted'
+                        }`}
+                      >
+                        <span>{lang.flag}</span> {lang.label}
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Voice input */}
+            <button
+              onClick={isListening ? stopListening : startListening}
+              className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 transition-all ${
+                isListening
+                  ? 'bg-rose-soft/20 text-rose-soft animate-pulse'
+                  : 'bg-muted text-muted-foreground hover:text-foreground'
+              }`}
+              title={isListening ? 'Stop listening' : 'Speak to SERA'}
+            >
+              {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+            </button>
+
+            <textarea
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder={isListening ? "Listening... 🎙️" : "Share what's on your mind..."}
+              rows={1}
+              className="flex-1 resize-none bg-muted rounded-2xl px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all font-body"
+            />
+            <button
+              onClick={() => sendMessage(input)}
+              disabled={!input.trim() || loading}
+              className="w-11 h-11 rounded-2xl flex items-center justify-center disabled:opacity-40 transition-all shrink-0 text-white hover:scale-[1.02]"
+              style={{ background: 'linear-gradient(135deg, hsl(330,100%,85%), hsl(197,88%,66%))' }}
+            >
+              <Send className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </div>
     </div>

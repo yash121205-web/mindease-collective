@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { 
-  MessageCircle, Smile, BookOpen, Leaf, BarChart3, Library, Trophy, Settings, Flame, Moon, Sun, Shield
+  MessageCircle, Smile, BookOpen, Leaf, BarChart3, Library, Trophy, Settings, Flame, Moon, Sun, Shield, Gamepad2, Users
 } from 'lucide-react';
 import { calculateStreak, getTodayMood, MOOD_MAP } from '@/lib/storage';
 import { useTheme } from '@/hooks/useTheme';
@@ -15,6 +15,8 @@ const navItems = [
   { path: '/app/insights', label: 'Insights', icon: BarChart3 },
   { path: '/app/resources', label: 'Resources', icon: Library },
   { path: '/app/progress', label: 'Progress', icon: Trophy },
+  { path: '/app/games', label: 'Stress Games', icon: Gamepad2 },
+  { path: '/app/community', label: 'Community', icon: Users },
   { path: '/app/settings', label: 'Settings', icon: Settings },
 ];
 

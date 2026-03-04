@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, MessageCircle, Smile, BookOpen, Wind, X } from 'lucide-react';
+import { Plus, MessageCircle, Smile, BookOpen, Wind, X, Gamepad2 } from 'lucide-react';
 
 const actions = [
   { icon: MessageCircle, label: 'Chat with SERA', path: '/app/chat' },
   { icon: Smile, label: 'Log Mood', path: '/app/mood' },
   { icon: BookOpen, label: 'New Journal Entry', path: '/app/journal' },
   { icon: Wind, label: 'Start Breathing', path: '/app/wellness' },
+  { icon: Gamepad2, label: 'Stress Games', path: '/app/games' },
 ];
 
 export default function FloatingActionButton() {
