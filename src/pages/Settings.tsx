@@ -2,18 +2,60 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { getUser, saveUser, clearAllData, exportData } from '@/lib/storage';
 import { useTheme } from '@/hooks/useTheme';
-import { User, Shield, Palette, Database, Info, Download, Trash2, Key } from 'lucide-react';
+import { User, Shield, Palette, Database, Info, Download, Trash2, Key, Bell, Mic, Moon as MoonIcon, Sun } from 'lucide-react';
 import { toast } from 'sonner';
 
+function Toggle({ enabled, onToggle, label }: { enabled: boolean; onToggle: () => void; label: string }) {
+  return (
+    <button onClick={onToggle} className="flex items-center justify-between w-full">
+      <span className="text-sm text-foreground font-body">{label}</span>
+      <span className={`w-10 h-5 rounded-full transition-colors flex items-center ${enabled ? 'bg-primary justify-end' : 'bg-border justify-start'}`}>
+        <span className="w-4 h-4 rounded-full bg-primary-foreground mx-0.5 shadow-sm transition-transform" />
+      </span>
+    </button>
+  );
+}
+
 export default function SettingsPage() {
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, isDark } = useTheme();
   const [user, setUser] = useState(getUser);
   const [apiKey, setApiKey] = useState(() => localStorage.getItem('mindease_api_key') || '');
+  const [notifications, setNotifications] = useState(() => localStorage.getItem('mindease_notifications') === 'true');
+  const [voiceEnabled, setVoiceEnabled] = useState(() => localStorage.getItem('mindease_voice') !== 'false');
+  const [moodReminder, setMoodReminder] = useState(() => localStorage.getItem('mindease_mood_reminder') !== 'false');
 
   const updateUser = (partial: Partial<typeof user>) => {
     const next = { ...user, ...partial };
     setUser(next);
     saveUser(next);
+  };
+
+  const toggleNotifications = () => {
+    const next = !notifications;
+    setNotifications(next);
+    localStorage.setItem('mindease_notifications', String(next));
+    if (next && 'Notification' in window) {
+      Notification.requestPermission().then(p => {
+        if (p === 'granted') toast.success('Notifications enabled! 🔔');
+        else { setNotifications(false); localStorage.setItem('mindease_notifications', 'false'); toast.error('Notification permission denied'); }
+      });
+    } else {
+      toast.success('Notifications disabled');
+    }
+  };
+
+  const toggleVoice = () => {
+    const next = !voiceEnabled;
+    setVoiceEnabled(next);
+    localStorage.setItem('mindease_voice', String(next));
+    toast.success(next ? 'Voice input enabled 🎙️' : 'Voice input disabled');
+  };
+
+  const toggleMoodReminder = () => {
+    const next = !moodReminder;
+    setMoodReminder(next);
+    localStorage.setItem('mindease_mood_reminder', String(next));
+    toast.success(next ? 'Daily mood reminder enabled ✨' : 'Mood reminder disabled');
   };
 
   const handleExport = () => {
@@ -67,18 +109,23 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          {/* Anonymous */}
+          {/* Toggles */}
+          <div className="glass-static rounded-2xl p-5 space-y-4">
+            <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-2 font-body"><Bell className="w-3.5 h-3.5" /> Preferences</h2>
+            
+            <Toggle enabled={isDark} onToggle={() => setTheme(isDark ? 'light' : 'dark')} label={isDark ? '🌙 Dark Mode (On)' : '☀️ Dark Mode (Off)'} />
+            <div className="h-px bg-border" />
+            <Toggle enabled={voiceEnabled} onToggle={toggleVoice} label="🎙️ Voice Input" />
+            <div className="h-px bg-border" />
+            <Toggle enabled={moodReminder} onToggle={toggleMoodReminder} label="😊 Daily Mood Reminder" />
+            <div className="h-px bg-border" />
+            <Toggle enabled={notifications} onToggle={toggleNotifications} label="🔔 Notifications" />
+          </div>
+
+          {/* Privacy */}
           <div className="glass-static rounded-2xl p-5">
             <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2 font-body"><Shield className="w-3.5 h-3.5" /> Privacy</h2>
-            <button
-              onClick={() => updateUser({ anonymous: !user.anonymous, name: user.anonymous ? user.name : '' })}
-              className="flex items-center justify-between w-full"
-            >
-              <span className="text-sm text-foreground font-body">Anonymous Mode</span>
-              <span className={`w-10 h-5 rounded-full transition-colors flex items-center ${user.anonymous ? 'bg-primary justify-end' : 'bg-border justify-start'}`}>
-                <span className="w-4 h-4 rounded-full bg-primary-foreground mx-0.5 shadow-sm" />
-              </span>
-            </button>
+            <Toggle enabled={user.anonymous} onToggle={() => updateUser({ anonymous: !user.anonymous, name: user.anonymous ? user.name : '' })} label="🕶️ Anonymous Mode" />
           </div>
 
           {/* Theme */}
@@ -86,14 +133,11 @@ export default function SettingsPage() {
             <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2 font-body"><Palette className="w-3.5 h-3.5" /> Theme</h2>
             <div className="flex gap-2">
               {(['light', 'dark', 'auto'] as const).map(t => (
-                <button
-                  key={t}
-                  onClick={() => setTheme(t)}
+                <button key={t} onClick={() => setTheme(t)}
                   className={`px-4 py-2 rounded-xl text-sm font-medium capitalize transition-all font-body ${
                     theme === t ? 'btn-primary' : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                  }`}
-                >
-                  {t}
+                  }`}>
+                  {t === 'light' ? '☀️ ' : t === 'dark' ? '🌙 ' : '🔄 '}{t}
                 </button>
               ))}
             </div>
@@ -104,13 +148,8 @@ export default function SettingsPage() {
             <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2 font-body"><Key className="w-3.5 h-3.5" /> AI Integration</h2>
             <p className="text-xs text-muted-foreground mb-2 font-body">Add your Anthropic API key for live SERA responses. Without it, smart mock responses are used.</p>
             <div className="flex gap-2">
-              <input
-                type="password"
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
-                placeholder="sk-ant-..."
-                className="flex-1 bg-muted rounded-xl px-3 py-2 text-sm text-foreground font-mono focus:outline-none focus:ring-1 focus:ring-primary/30"
-              />
+              <input type="password" value={apiKey} onChange={(e) => setApiKey(e.target.value)} placeholder="sk-ant-..."
+                className="flex-1 bg-muted rounded-xl px-3 py-2 text-sm text-foreground font-mono focus:outline-none focus:ring-1 focus:ring-primary/30" />
               <button onClick={handleSaveApiKey} className="btn-primary">Save</button>
             </div>
           </div>
@@ -132,17 +171,14 @@ export default function SettingsPage() {
           <div className="glass-static rounded-2xl p-5">
             <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2 font-body"><Info className="w-3.5 h-3.5" /> About</h2>
             <p className="text-sm text-foreground font-body font-medium">MindEase AI</p>
-            <p className="text-xs text-muted-foreground font-body">Version 1.0.0 — Your calm in the chaos</p>
+            <p className="text-xs text-muted-foreground font-body">Version 2.0.0 — Your calm in the chaos</p>
             <p className="text-xs text-muted-foreground mt-1 font-body">AI companion: SERA (Supportive Emotional Response Assistant)</p>
             <p className="text-xs text-muted-foreground mt-1 font-body">Built with care for student mental wellness 💙</p>
           </div>
 
           {/* Logout */}
           <button
-            onClick={() => {
-              sessionStorage.removeItem('mindease_logged_in');
-              window.location.href = '/login';
-            }}
+            onClick={() => { sessionStorage.removeItem('mindease_logged_in'); window.location.href = '/login'; }}
             className="w-full py-3 rounded-xl border border-border text-sm font-body font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
           >
             Sign Out

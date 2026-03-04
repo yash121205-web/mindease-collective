@@ -1,8 +1,28 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, BookmarkPlus, AlertTriangle, Mic, MicOff, Globe, Shield } from 'lucide-react';
+import { Send, BookmarkPlus, AlertTriangle, Mic, MicOff, Globe, Shield, Smile, BookOpen, Wind, Gamepad2 } from 'lucide-react';
 import { callAIChat, detectEmotion, detectCrisis, analyzeVoiceTone } from '@/lib/ai';
 import { getChatHistory, saveChatHistory, genId, type ChatMessage } from '@/lib/storage';
+
+function QuickActions({ navigate, onSend }: { navigate: (path: string) => void; onSend: (text: string) => void }) {
+  const actions = [
+    { icon: Smile, label: 'Log mood', action: () => navigate('/app/mood') },
+    { icon: BookOpen, label: 'Journal', action: () => navigate('/app/journal') },
+    { icon: Wind, label: 'Breathe', action: () => navigate('/app/wellness') },
+    { icon: Gamepad2, label: 'Games', action: () => navigate('/app/games') },
+  ];
+  return (
+    <div className="px-4 py-2 flex gap-2 overflow-x-auto border-t border-border/50">
+      {actions.map(a => (
+        <button key={a.label} onClick={a.action}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted/50 hover:bg-muted text-xs font-body text-muted-foreground hover:text-foreground transition-all whitespace-nowrap shrink-0">
+          <a.icon className="w-3.5 h-3.5" /> {a.label}
+        </button>
+      ))}
+    </div>
+  );
+}
 
 const SUGGESTED = [
   "I'm anxious about my exams 😰",
@@ -42,6 +62,7 @@ function SeraAvatar({ emotion }: { emotion?: string }) {
 }
 
 export default function Chat() {
+  const navigate = useNavigate();
   const [messages, setMessages] = useState<ChatMessage[]>(() => getChatHistory());
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -285,6 +306,11 @@ export default function Chat() {
           </div>
         )}
       </div>
+
+      {/* Quick actions */}
+      {messages.length > 0 && !loading && (
+        <QuickActions navigate={navigate} onSend={sendMessage} />
+      )}
 
       {/* Input */}
       <div className="border-t border-border p-4 bg-background/80 backdrop-blur-lg">
