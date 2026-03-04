@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -8,6 +8,7 @@ import { ThemeProvider } from "@/hooks/useTheme";
 import { AnimatePresence } from 'framer-motion';
 import AppLayout from "@/components/layout/AppLayout";
 import SplashScreen from "@/components/SplashScreen";
+import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Landing from "./pages/Landing";
 import Chat from "./pages/Chat";
@@ -49,6 +50,7 @@ const App = () => {
             <BrowserRouter>
               <Routes>
                 <Route path="/login" element={<Login />} />
+                <Route path="/home" element={<Home />} />
                 <Route path="/" element={<AuthGuard><AppLayout><Landing /></AppLayout></AuthGuard>} />
                 <Route element={<AuthGuard><AppLayout /></AuthGuard>}>
                   <Route path="/app/chat" element={<Chat />} />
