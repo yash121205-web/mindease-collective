@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import {
   Leaf, ArrowRight, MessageCircle, Smile, BookOpen, Wind,
@@ -112,11 +112,36 @@ const progressStats = [
 ];
 
 export default function Home() {
+  const location = useLocation();
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
   const { scrollYProgress } = useScroll();
   const heroParallax = useTransform(scrollYProgress, [0, 0.3], [0, -40]);
+
+  const navLinks = [
+    { label: 'Home', id: 'home' },
+    { label: 'Features', id: 'features' },
+    { label: 'Insights', id: 'insights' },
+    { label: 'Resources', id: 'resources' },
+    { label: 'About', id: 'about' },
+  ];
+
+  const scrollToSection = (sectionId: string) => {
+    const el = document.getElementById(sectionId);
+    if (!el) return;
+
+    const offset = 96;
+    const targetTop = el.getBoundingClientRect().top + window.scrollY - offset;
+
+    window.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' });
+    window.history.replaceState({}, '', `#${sectionId}`);
+  };
+
+  const handleNavClick = (sectionId: string) => {
+    setMobileMenu(false);
+    scrollToSection(sectionId);
+  };
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -124,7 +149,12 @@ export default function Home() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navLinks = ['Home', 'Features', 'Insights', 'Resources', 'About'];
+  useEffect(() => {
+    if (!location.hash) return;
+    const hashSection = location.hash.replace('#', '');
+    const frame = requestAnimationFrame(() => scrollToSection(hashSection));
+    return () => cancelAnimationFrame(frame);
+  }, [location.hash]);
 
   return (
     <div className="min-h-screen gradient-mesh font-body text-foreground overflow-x-hidden grain">
@@ -139,7 +169,7 @@ export default function Home() {
         }`}
       >
         <div className="max-w-7xl mx-auto flex items-center justify-between px-5 md:px-10 py-4">
-          <div className="flex items-center gap-3">
+          <button type="button" onClick={() => handleNavClick('home')} className="flex items-center gap-3 text-left">
             <motion.div
               whileHover={{ rotate: 10 }}
               className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-mint flex items-center justify-center shadow-md"
@@ -147,33 +177,34 @@ export default function Home() {
               <Leaf className="w-5 h-5 text-primary-foreground" />
             </motion.div>
             <span className="font-display text-xl font-bold text-foreground tracking-tight">MindEase AI</span>
-          </div>
+          </button>
 
           {/* Desktop nav */}
           <div className="hidden lg:flex items-center gap-8">
             {navLinks.map((link) => (
-              <a
-                key={link}
-                href={`#${link.toLowerCase()}`}
+              <button
+                type="button"
+                key={link.label}
+                onClick={() => handleNavClick(link.id)}
                 className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors relative group"
               >
-                {link}
+                {link.label}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary rounded-full group-hover:w-full transition-all duration-300" />
-              </a>
+              </button>
             ))}
           </div>
 
           <div className="hidden lg:flex items-center gap-3">
-            <button onClick={() => navigate('/login')} className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-4 py-2">
+            <button type="button" onClick={() => navigate('/login')} className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-4 py-2">
               Login
             </button>
-            <button onClick={() => navigate('/login')} className="btn-primary text-sm px-5 py-2.5">
+            <button type="button" onClick={() => navigate('/login')} className="btn-primary text-sm px-5 py-2.5">
               Start Free
             </button>
           </div>
 
           {/* Mobile toggle */}
-          <button onClick={() => setMobileMenu(!mobileMenu)} className="lg:hidden p-2">
+          <button type="button" onClick={() => setMobileMenu(!mobileMenu)} className="lg:hidden p-2" aria-label="Toggle navigation menu">
             {mobileMenu ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
@@ -186,10 +217,16 @@ export default function Home() {
             className="lg:hidden glass-strong border-t border-border px-5 pb-5 pt-3 space-y-3"
           >
             {navLinks.map((link) => (
-              <a key={link} href={`#${link.toLowerCase()}`} onClick={() => setMobileMenu(false)}
-                className="block text-sm font-medium text-foreground py-2">{link}</a>
+              <button
+                type="button"
+                key={link.label}
+                onClick={() => handleNavClick(link.id)}
+                className="block w-full text-left text-sm font-medium text-foreground py-2"
+              >
+                {link.label}
+              </button>
             ))}
-            <button onClick={() => navigate('/login')} className="btn-primary w-full text-sm py-2.5 mt-2">Start Free</button>
+            <button type="button" onClick={() => navigate('/login')} className="btn-primary w-full text-sm py-2.5 mt-2">Start Free</button>
           </motion.div>
         )}
       </motion.nav>
@@ -799,10 +836,10 @@ export default function Home() {
               </div>
             </div>
             <div className="flex items-center gap-8 text-sm text-muted-foreground">
-              {['About', 'Privacy', 'Contact'].map((link) => (
-                <a key={link} href="#" className="hover:text-foreground transition-colors">{link}</a>
-              ))}
-              <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">
+              <button type="button" onClick={() => scrollToSection('about')} className="hover:text-foreground transition-colors">About</button>
+              <button type="button" onClick={() => navigate('/login')} className="hover:text-foreground transition-colors">Privacy</button>
+              <a href="mailto:hello@mindease.ai" className="hover:text-foreground transition-colors">Contact</a>
+              <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors" aria-label="GitHub">
                 <Github className="w-4 h-4" />
               </a>
             </div>
