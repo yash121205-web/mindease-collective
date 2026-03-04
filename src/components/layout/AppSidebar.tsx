@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const navItems = [
-  { path: '/app/chat', label: 'Chat', icon: MessageCircle },
+  { path: '/app/chat', label: 'Chat with SERA', icon: MessageCircle },
   { path: '/app/mood', label: 'Mood Check-In', icon: Smile },
   { path: '/app/journal', label: 'Journal', icon: BookOpen },
   { path: '/app/wellness', label: 'Wellness', icon: Leaf },
@@ -27,7 +27,6 @@ export default function AppSidebar({ open, onClose }: { open: boolean; onClose: 
 
   return (
     <>
-      {/* Mobile overlay */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -46,12 +45,13 @@ export default function AppSidebar({ open, onClose }: { open: boolean; onClose: 
         {/* Logo */}
         <div className="p-5 border-b border-border">
           <Link to="/" className="flex items-center gap-2" onClick={onClose}>
-            <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center">
-              <Leaf className="w-5 h-5 text-primary-foreground" />
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center"
+              style={{ background: 'linear-gradient(135deg, hsl(237, 97%, 74%), hsl(155, 62%, 60%))' }}>
+              <Leaf className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h1 className="font-display text-lg leading-tight text-foreground">MindEase AI</h1>
-              <p className="text-[10px] text-muted-foreground leading-tight">Your calm in the chaos</p>
+              <h1 className="font-display text-lg leading-tight text-foreground font-semibold">MindEase AI</h1>
+              <p className="text-[10px] text-muted-foreground leading-tight font-body">Your calm in the chaos</p>
             </div>
           </Link>
         </div>
@@ -60,7 +60,7 @@ export default function AppSidebar({ open, onClose }: { open: boolean; onClose: 
         {streak > 0 && (
           <div className="mx-4 mt-3 px-3 py-2 rounded-xl bg-accent/10 flex items-center gap-2">
             <Flame className="w-4 h-4 text-primary" />
-            <span className="text-xs font-medium text-foreground">{streak} day streak</span>
+            <span className="text-xs font-medium text-foreground font-body">{streak} day streak</span>
             {todayMood && <span className="ml-auto text-sm">{MOOD_MAP[todayMood.mood]?.emoji}</span>}
           </div>
         )}
@@ -74,11 +74,12 @@ export default function AppSidebar({ open, onClose }: { open: boolean; onClose: 
                 key={item.path}
                 to={item.path}
                 onClick={onClose}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium font-body transition-all ${
                   active
-                    ? 'bg-primary text-primary-foreground shadow-md'
+                    ? 'text-primary-foreground shadow-md'
                     : 'text-muted-foreground hover:bg-sidebar-accent hover:text-foreground'
                 }`}
+                style={active ? { background: 'linear-gradient(135deg, hsl(237, 97%, 74%), hsl(155, 62%, 60%))' } : {}}
               >
                 <item.icon className="w-4 h-4" />
                 <span>{item.label}</span>
@@ -91,7 +92,7 @@ export default function AppSidebar({ open, onClose }: { open: boolean; onClose: 
         <div className="p-4 border-t border-border space-y-2">
           <button
             onClick={() => setAnon(!anon)}
-            className="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-muted-foreground hover:bg-sidebar-accent transition-colors"
+            className="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-muted-foreground hover:bg-sidebar-accent transition-colors font-body"
           >
             <Shield className="w-3.5 h-3.5" />
             <span>Anonymous Mode</span>
@@ -101,7 +102,7 @@ export default function AppSidebar({ open, onClose }: { open: boolean; onClose: 
           </button>
           <button
             onClick={() => setTheme(isDark ? 'light' : 'dark')}
-            className="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-muted-foreground hover:bg-sidebar-accent transition-colors"
+            className="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-muted-foreground hover:bg-sidebar-accent transition-colors font-body"
           >
             {isDark ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
             <span>{isDark ? 'Light Mode' : 'Dark Mode'}</span>

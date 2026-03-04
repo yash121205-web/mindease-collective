@@ -1,16 +1,29 @@
 // AI integration helper — calls Claude API via proxy or direct
 // For the prototype, we provide mock responses when no API key is available
 
-const SYSTEM_PROMPT = `You are Ease, a warm, empathetic AI mental wellness companion for students. Respond with compassion, never judgment. Keep responses concise (2–4 sentences). Detect emotional distress and respond with care. If user mentions self-harm or crisis, gently recommend professional resources like iCall (9152987821) or Vandrevala Foundation (1860-2662-345). Never give medical advice.`;
+const SYSTEM_PROMPT = `You are SERA (Supportive Emotional Response Assistant), a warm and emotionally intelligent AI wellness companion for students and young adults. Your role is to provide empathetic, relevant, and personalized emotional support.
+
+STRICT RULES:
+- ALWAYS directly address what the user just said. Read their message carefully.
+- Never give generic responses. Tailor every reply to the specific emotion or situation they mentioned.
+- Keep responses to 3-5 sentences max. Be warm but concise.
+- If they mention stress → acknowledge it specifically and offer one coping tip.
+- If they mention loneliness → validate the feeling, ask a gentle follow-up question.
+- If they mention academic pressure → empathize and suggest one practical strategy.
+- If they mention sadness → be present, don't rush to fix, just acknowledge first.
+- If they mention crisis keywords (hopeless, end it, can't go on, suicidal) → respond with care and provide: iCall: 9152987821, Vandrevala: 1860-2662-345
+- Always end with either a gentle question OR a specific suggestion — never just a statement.
+- Never start responses with "I understand" or "I'm sorry to hear" every single time — vary your openings.`;
 
 export async function callAI(prompt: string, systemPrompt?: string): Promise<string> {
-  // Try calling Claude API — if no key or error, return smart mock
   try {
+    const apiKey = localStorage.getItem('mindease_api_key') || '';
+    if (!apiKey) throw new Error('No API key');
     const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": localStorage.getItem('mindease_api_key') || '',
+        "x-api-key": apiKey,
         "anthropic-version": "2023-06-01",
         "anthropic-dangerous-direct-browser-access": "true",
       },
@@ -31,11 +44,13 @@ export async function callAI(prompt: string, systemPrompt?: string): Promise<str
 
 export async function callAIChat(messages: { role: string; content: string }[]): Promise<string> {
   try {
+    const apiKey = localStorage.getItem('mindease_api_key') || '';
+    if (!apiKey) throw new Error('No API key');
     const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": localStorage.getItem('mindease_api_key') || '',
+        "x-api-key": apiKey,
         "anthropic-version": "2023-06-01",
         "anthropic-dangerous-direct-browser-access": "true",
       },
@@ -43,7 +58,7 @@ export async function callAIChat(messages: { role: string; content: string }[]):
         model: "claude-sonnet-4-20250514",
         max_tokens: 1000,
         system: SYSTEM_PROMPT,
-        messages,
+        messages: messages.slice(-10),
       }),
     });
     if (!response.ok) throw new Error('API error');
@@ -57,32 +72,41 @@ export async function callAIChat(messages: { role: string; content: string }[]):
 function generateMockResponse(input: string): string {
   const lower = input.toLowerCase();
   
-  if (lower.includes('stress') || lower.includes('exam') || lower.includes('academic')) {
-    return "I hear you — academic pressure can feel really heavy. Remember, your worth isn't defined by a grade. Try breaking your study sessions into 25-minute blocks with short breaks. You've got this. 💙";
+  if (lower.includes('study') || lower.includes('midsem') || lower.includes('exam') && lower.includes('how')) {
+    return "Pre-exam anxiety is so common — you're definitely not alone in feeling this way. Here's what works: break your remaining material into small chunks, focus on understanding key concepts rather than memorizing everything, and take 5-minute breaks every 25 minutes. What subject is weighing on you the most right now? 📚";
   }
-  if (lower.includes('lonely') || lower.includes('alone') || lower.includes('friend')) {
-    return "Feeling lonely is more common than you might think, especially among students. You're brave for acknowledging it. Consider reaching out to one person today — even a small connection can make a big difference. 🤗";
+  if (lower.includes('stress') || lower.includes('overwhelm') || lower.includes('pressure') || lower.includes('too much')) {
+    return "That sounds really heavy — carrying stress like that takes a toll. One thing that can help right now is the 4-7-8 breathing technique: inhale for 4 counts, hold for 7, exhale for 8. It signals your nervous system to calm down. What's the biggest source of this stress for you? 💙";
   }
-  if (lower.includes('sleep') || lower.includes('insomnia') || lower.includes('tired')) {
-    return "Sleep struggles are tough. Try putting your phone away 30 minutes before bed, and keep your room cool and dark. A short breathing exercise before sleep can work wonders. You deserve rest. 🌙";
+  if (lower.includes('lonely') || lower.includes('alone') || lower.includes('friend') || lower.includes('no one understands')) {
+    return "Loneliness can feel like being in a crowded room and still feeling invisible — that's genuinely painful. You're not broken for feeling this way; connection is a human need. Would you be open to reaching out to one person today, even with just a simple \"hey, how are you?\" Sometimes the smallest step opens the biggest doors. 🤗";
   }
-  if (lower.includes('anxious') || lower.includes('anxiety') || lower.includes('worried') || lower.includes('panic')) {
-    return "Anxiety can feel overwhelming, but you're not alone in this. Try the 5-4-3-2-1 grounding technique: notice 5 things you see, 4 you can touch, 3 you hear, 2 you smell, and 1 you taste. It helps bring you back to the present. 🌿";
+  if (lower.includes('sleep') || lower.includes('insomnia') || lower.includes('tired') || lower.includes('can\'t sleep')) {
+    return "Sleep struggles are exhausting in every sense of the word. Tonight, try this: put your phone in another room 30 minutes before bed, keep your room cool, and do a 2-minute body scan — just noticing each body part from toes to head. What time do you usually try to fall asleep? 🌙";
   }
-  if (lower.includes('sad') || lower.includes('depressed') || lower.includes('cry')) {
-    return "It's okay to feel sad — your emotions are valid. Sometimes just letting yourself feel without judgment is the bravest thing you can do. If this feeling persists, talking to someone you trust can really help. I'm here for you. 💙";
+  if (lower.includes('anxious') || lower.includes('anxiety') || lower.includes('worried') || lower.includes('panic') || lower.includes('nervous')) {
+    return "Anxiety has a way of making everything feel urgent and overwhelming. Right now, try grounding yourself: name 5 things you can see around you. This pulls your brain out of the anxiety spiral and into the present moment. What specific situation is making you feel most anxious? 🌿";
   }
-  if (lower.includes('calm') || lower.includes('relax') || lower.includes('breathe')) {
-    return "Let's take a moment together. Close your eyes if you can. Breathe in for 4 counts... hold for 4... and slowly exhale for 6 counts. Feel your body relaxing with each breath. You're doing beautifully. 🧘";
+  if (lower.includes('sad') || lower.includes('depressed') || lower.includes('cry') || lower.includes('down')) {
+    return "Thank you for being honest about how you're feeling — that takes courage. Sadness doesn't need to be fixed immediately; sometimes it just needs space to exist. It's okay to sit with it without judging yourself. When did you start feeling this way? 💙";
+  }
+  if (lower.includes('motivation') || lower.includes('lazy') || lower.includes('can\'t focus') || lower.includes('procrastinat')) {
+    return "Feeling unmotivated doesn't mean you're lazy — it often means you're mentally exhausted or overwhelmed by how much there is to do. Try the \"2-minute rule\": pick the smallest possible task and just do that one thing. Momentum builds from action, not from waiting to feel ready. What's one tiny thing you could start with? ⚡";
+  }
+  if (lower.includes('overthink') || lower.includes('spiral') || lower.includes('can\'t stop thinking')) {
+    return "Overthinking is your brain trying to protect you, but it ends up keeping you stuck instead. Here's something that helps: write down every thought that's looping — get it out of your head and onto paper. Once it's external, your mind can release it more easily. What's the main thought that keeps coming back? 🧠";
   }
   if (lower.includes('happy') || lower.includes('great') || lower.includes('good') || lower.includes('amazing')) {
-    return "That's wonderful to hear! 🌟 Savor this feeling — you've earned it. What's one thing that contributed to this positive mood? Recognizing what lifts us up helps us return to it.";
+    return "That's genuinely wonderful to hear! 🌟 Positive moments deserve to be savored — really let yourself feel this. What contributed to this feeling? Recognizing what lifts you up helps you return to it when you need it most.";
   }
-  if (lower.includes('overwhelm')) {
-    return "When everything feels like too much, remember: you only need to take the next small step. Not everything needs to be solved today. What's one thing you can let go of right now? 💙";
+  if (lower.includes('calm') || lower.includes('relax') || lower.includes('breathe')) {
+    return "Let's create a moment of peace together. Close your eyes if you can. Breathe in slowly for 4 counts... hold gently for 4... and exhale slowly for 6 counts. Feel your shoulders dropping, your jaw unclenching. You're doing beautifully. Would you like to try the guided breathing exercise in the Wellness section? 🧘";
+  }
+  if (lower.includes('hi') || lower.includes('hello') || lower.includes('hey')) {
+    return "Hey there! 👋 Welcome — I'm SERA, your wellness companion. I'm here to listen without judgment and support you however I can. How are you really feeling right now? No need to sugarcoat it.";
   }
   
-  return "Thank you for sharing that with me. Your feelings matter, and I'm glad you're taking the time to check in with yourself. Remember, small steps lead to big changes. What would feel most supportive for you right now? 💙";
+  return "I'm here with you. What you're going through matters, and I want to make sure I respond to what you actually need right now. Could you tell me a bit more about what's on your mind? Whether it's stress, emotions, sleep, or anything else — I'm listening. 💙";
 }
 
 // Emotion detection
@@ -98,6 +122,8 @@ export function detectEmotion(text: string): { emoji: string; label: string } | 
   if (lower.match(/confused|lost|unsure/)) return { emoji: '😵‍💫', label: 'Confusion' };
   if (lower.match(/grateful|thankful|blessed/)) return { emoji: '🙏', label: 'Gratitude' };
   if (lower.match(/calm|peace|relax/)) return { emoji: '😌', label: 'Calm' };
+  if (lower.match(/motivat|lazy|procrastinat/)) return { emoji: '😮‍💨', label: 'Low Motivation' };
+  if (lower.match(/overthink|spiral|rumnat/)) return { emoji: '🌀', label: 'Overthinking' };
   return null;
 }
 
