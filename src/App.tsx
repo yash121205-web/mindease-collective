@@ -21,6 +21,8 @@ import Progress from "./pages/Progress";
 import SettingsPage from "./pages/Settings";
 import Games from "./pages/Games";
 import PopulationInsights from "./pages/PopulationInsights";
+import Sleep from "./pages/Sleep";
+import Diet from "./pages/Diet";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -64,6 +66,8 @@ const App = () => {
                   <Route path="/app/progress" element={<Progress />} />
                   <Route path="/app/games" element={<Games />} />
                   <Route path="/app/community" element={<PopulationInsights />} />
+                  <Route path="/app/sleep" element={<Sleep />} />
+                  <Route path="/app/diet" element={<Diet />} />
                   <Route path="/app/settings" element={<SettingsPage />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
