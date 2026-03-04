@@ -12,8 +12,9 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ['"DM Serif Display"', 'serif'],
-        body: ['"Plus Jakarta Sans"', 'sans-serif'],
+        display: ['"Cormorant Garamond"', 'serif'],
+        body: ['"Outfit"', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'monospace'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -59,6 +60,7 @@ export default {
         "float": { "0%, 100%": { transform: "translateY(0)" }, "50%": { transform: "translateY(-6px)" } },
         "pulse-soft": { "0%, 100%": { opacity: "1" }, "50%": { opacity: "0.7" } },
         "blink": { "0%, 90%, 100%": { transform: "scaleY(1)" }, "95%": { transform: "scaleY(0.1)" } },
+        "glow-pulse": { "0%, 100%": { filter: "drop-shadow(0 0 8px hsl(var(--primary) / 0.4))" }, "50%": { filter: "drop-shadow(0 0 20px hsl(var(--primary) / 0.7))" } },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -68,6 +70,7 @@ export default {
         "float": "float 3s ease-in-out infinite",
         "pulse-soft": "pulse-soft 2s ease-in-out infinite",
         "blink": "blink 3s ease-in-out infinite",
+        "glow-pulse": "glow-pulse 2s ease-in-out infinite",
       },
     },
   },

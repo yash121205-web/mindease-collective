@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --background: 224 60% 97%;
+    --background: 250 40% 97%;
     --foreground: 240 40% 13%;
 
     --card: 0 0% 100%;
@@ -38,7 +38,7 @@
     --sidebar-foreground: 240 40% 13%;
     --sidebar-primary: 237 97% 74%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 224 60% 97%;
+    --sidebar-accent: 250 40% 97%;
     --sidebar-accent-foreground: 240 40% 13%;
     --sidebar-border: 220 20% 92%;
     --sidebar-ring: 237 97% 74%;
@@ -49,13 +49,13 @@
   }
 
   .dark {
-    --background: 230 30% 7%;
+    --background: 260 40% 5%;
     --foreground: 220 20% 92%;
 
-    --card: 232 25% 14%;
+    --card: 260 30% 10%;
     --card-foreground: 220 20% 92%;
 
-    --popover: 232 25% 14%;
+    --popover: 260 30% 10%;
     --popover-foreground: 220 20% 92%;
 
     --primary: 237 97% 74%;
@@ -64,7 +64,7 @@
     --secondary: 155 40% 40%;
     --secondary-foreground: 220 20% 92%;
 
-    --muted: 232 20% 20%;
+    --muted: 260 20% 16%;
     --muted-foreground: 220 10% 60%;
 
     --accent: 237 80% 65%;
@@ -73,17 +73,17 @@
     --destructive: 0 50% 45%;
     --destructive-foreground: 220 20% 92%;
 
-    --border: 232 20% 20%;
-    --input: 232 20% 20%;
+    --border: 260 20% 16%;
+    --input: 260 20% 16%;
     --ring: 237 97% 74%;
 
-    --sidebar-background: 232 25% 10%;
+    --sidebar-background: 260 30% 7%;
     --sidebar-foreground: 220 20% 85%;
     --sidebar-primary: 237 97% 74%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 232 25% 16%;
+    --sidebar-accent: 260 25% 12%;
     --sidebar-accent-foreground: 220 20% 85%;
-    --sidebar-border: 232 20% 18%;
+    --sidebar-border: 260 20% 14%;
     --sidebar-ring: 237 97% 74%;
 
     --mint: 155 40% 40%;
@@ -100,16 +100,36 @@
     @apply bg-background text-foreground font-body antialiased;
   }
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'DM Serif Display', serif;
+    font-family: 'Cormorant Garamond', serif;
   }
 }
 
 @layer utilities {
   .glass {
-    @apply bg-card/80 backdrop-blur-xl border border-border/50 shadow-lg;
+    background: hsl(var(--card) / 0.82);
+    backdrop-filter: blur(16px);
+    border: 1px solid hsl(var(--primary) / 0.1);
+    box-shadow: 0 8px 32px hsl(var(--primary) / 0.10);
+    border-radius: 20px;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .glass:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px hsl(var(--primary) / 0.15);
   }
   .glass-strong {
-    @apply bg-card/90 backdrop-blur-2xl border border-border/60 shadow-xl;
+    background: hsl(var(--card) / 0.92);
+    backdrop-filter: blur(24px);
+    border: 1px solid hsl(var(--primary) / 0.15);
+    box-shadow: 0 12px 40px hsl(var(--primary) / 0.12);
+    border-radius: 20px;
+  }
+  .glass-static {
+    background: hsl(var(--card) / 0.82);
+    backdrop-filter: blur(16px);
+    border: 1px solid hsl(var(--primary) / 0.1);
+    box-shadow: 0 8px 32px hsl(var(--primary) / 0.10);
+    border-radius: 20px;
   }
   .grain {
     position: relative;
@@ -124,10 +144,35 @@
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
   }
   .gradient-mesh {
-    background: 
-      radial-gradient(ellipse at 20% 50%, hsl(var(--primary) / 0.08) 0%, transparent 50%),
-      radial-gradient(ellipse at 80% 20%, hsl(var(--mint) / 0.1) 0%, transparent 50%),
-      radial-gradient(ellipse at 50% 80%, hsl(var(--rose-soft) / 0.05) 0%, transparent 50%),
+    background:
+      radial-gradient(ellipse at 20% 20%, hsl(var(--primary) / 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, hsl(var(--mint) / 0.07) 0%, transparent 50%),
+      radial-gradient(ellipse at 60% 10%, hsl(210 80% 60% / 0.06) 0%, transparent 40%),
       hsl(var(--background));
+  }
+  .btn-primary {
+    @apply px-5 py-2.5 rounded-xl text-sm font-medium text-primary-foreground transition-all;
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--mint)));
+    box-shadow: 0 4px 16px hsl(var(--primary) / 0.25);
+  }
+  .btn-primary:hover {
+    box-shadow: 0 6px 24px hsl(var(--primary) / 0.35);
+    transform: translateY(-1px);
+  }
+  .btn-primary:disabled {
+    opacity: 0.4;
+    transform: none;
+    box-shadow: none;
+  }
+  .btn-secondary {
+    @apply px-5 py-2.5 rounded-xl text-sm font-medium border transition-all;
+    border-color: hsl(var(--primary) / 0.3);
+    color: hsl(var(--primary));
+  }
+  .btn-secondary:hover {
+    background: hsl(var(--primary) / 0.05);
+  }
+  .font-number {
+    font-family: 'JetBrains Mono', monospace;
   }
 }

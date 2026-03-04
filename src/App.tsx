@@ -1,10 +1,14 @@
+import { useState, useEffect } from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "@/hooks/useTheme";
+import { AnimatePresence } from 'framer-motion';
 import AppLayout from "@/components/layout/AppLayout";
+import SplashScreen from "@/components/SplashScreen";
+import Login from "./pages/Login";
 import Landing from "./pages/Landing";
 import Chat from "./pages/Chat";
 import Mood from "./pages/Mood";
@@ -18,31 +22,52 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <ThemeProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Landing />} />
-            <Route element={<AppLayout />}>
-              <Route path="/app/chat" element={<Chat />} />
-              <Route path="/app/mood" element={<Mood />} />
-              <Route path="/app/journal" element={<Journal />} />
-              <Route path="/app/wellness" element={<Wellness />} />
-              <Route path="/app/insights" element={<Insights />} />
-              <Route path="/app/resources" element={<Resources />} />
-              <Route path="/app/progress" element={<Progress />} />
-              <Route path="/app/settings" element={<SettingsPage />} />
-            </Route>
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </ThemeProvider>
-  </QueryClientProvider>
-);
+function AuthGuard({ children }: { children: React.ReactNode }) {
+  const loggedIn = sessionStorage.getItem('mindease_logged_in') === 'true';
+  if (!loggedIn) return <Navigate to="/login" replace />;
+  return <>{children}</>;
+}
+
+const App = () => {
+  const [showSplash, setShowSplash] = useState(() => !sessionStorage.getItem('mindease_splash_shown'));
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <AnimatePresence>
+            {showSplash && (
+              <SplashScreen onDone={() => {
+                sessionStorage.setItem('mindease_splash_shown', 'true');
+                setShowSplash(false);
+              }} />
+            )}
+          </AnimatePresence>
+          {!showSplash && (
+            <BrowserRouter>
+              <Routes>
+                <Route path="/login" element={<Login />} />
+                <Route path="/" element={<AuthGuard><AppLayout><Landing /></AppLayout></AuthGuard>} />
+                <Route element={<AuthGuard><AppLayout /></AuthGuard>}>
+                  <Route path="/app/chat" element={<Chat />} />
+                  <Route path="/app/mood" element={<Mood />} />
+                  <Route path="/app/journal" element={<Journal />} />
+                  <Route path="/app/wellness" element={<Wellness />} />
+                  <Route path="/app/insights" element={<Insights />} />
+                  <Route path="/app/resources" element={<Resources />} />
+                  <Route path="/app/progress" element={<Progress />} />
+                  <Route path="/app/settings" element={<SettingsPage />} />
+                </Route>
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          )}
+        </TooltipProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
