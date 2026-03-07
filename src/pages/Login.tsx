@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Leaf, Eye, EyeOff, Check } from 'lucide-react';
 import { toast } from 'sonner';
-
+import { lovable } from '@/integrations/lovable/index';
+import { supabase } from '@/integrations/supabase/client';
 /* ─── helpers ─── */
 interface StoredAccount { name: string; email: string; password: string; googleLogin?: boolean; }
 
