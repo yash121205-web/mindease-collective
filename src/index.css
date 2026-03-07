@@ -54,54 +54,7 @@
     --sky-soft: 197 80% 88%;
   }
 
-  .dark {
-    --background: 340 100% 97%;
-    --foreground: 0 0% 18%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 18%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 18%;
-
-    --primary: 197 88% 66%;
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 330 100% 85%;
-    --secondary-foreground: 0 0% 18%;
-
-    --muted: 340 40% 95%;
-    --muted-foreground: 0 0% 45%;
-
-    --accent: 197 88% 66%;
-    --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 60% 55%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 330 60% 91%;
-    --input: 340 60% 97%;
-    --ring: 197 88% 66%;
-
-    --sidebar-background: 340 60% 98%;
-    --sidebar-foreground: 0 0% 18%;
-    --sidebar-primary: 197 88% 66%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 340 50% 96%;
-    --sidebar-accent-foreground: 0 0% 18%;
-    --sidebar-border: 330 60% 93%;
-    --sidebar-ring: 197 88% 66%;
-
-    --mint: 197 88% 66%;
-    --rose-soft: 330 100% 85%;
-    --indigo: 197 88% 66%;
-
-    --warm-peach: 330 100% 85%;
-    --warm-lavender: 197 60% 85%;
-
-    --pink-glow: 330 100% 92%;
-    --sky-soft: 197 80% 88%;
-  }
+  /* Dark mode removed — light-only wellness theme */
 }
 
 @layer base {
