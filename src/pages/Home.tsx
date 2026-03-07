@@ -48,6 +48,74 @@ function SectionHeading({ children, sub }: { children: React.ReactNode; sub?: st
   );
 }
 
+/* ─── FAQ Item ─── */
+function FAQItem({ question, answer, index }: { question: string; answer: string; index: number }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <motion.div {...fadeUp(index * 0.05)} className="neu overflow-hidden">
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between p-5 text-left"
+      >
+        <span className="font-display font-medium text-foreground text-sm md:text-base pr-4">{question}</span>
+        <ChevronRight className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform duration-200 ${open ? 'rotate-90' : ''}`} />
+      </button>
+      {open && (
+        <div className="px-5 pb-5 -mt-1">
+          <p className="text-sm text-muted-foreground font-body leading-relaxed">{answer}</p>
+        </div>
+      )}
+    </motion.div>
+  );
+}
+
+/* ─── Contact Form ─── */
+function ContactForm() {
+  const [form, setForm] = useState({ name: '', email: '', message: '' });
+  const [sent, setSent] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.name || !form.email || !form.message) return;
+    setSent(true);
+    setForm({ name: '', email: '', message: '' });
+    setTimeout(() => setSent(false), 4000);
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <label className="text-xs font-body text-muted-foreground mb-1 block">Your Name</label>
+        <input
+          type="text" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
+          className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary/30"
+          placeholder="Enter your name" required
+        />
+      </div>
+      <div>
+        <label className="text-xs font-body text-muted-foreground mb-1 block">Email Address</label>
+        <input
+          type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })}
+          className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary/30"
+          placeholder="you@example.com" required
+        />
+      </div>
+      <div>
+        <label className="text-xs font-body text-muted-foreground mb-1 block">Message</label>
+        <textarea
+          value={form.message} onChange={e => setForm({ ...form, message: e.target.value })}
+          className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary/30 min-h-[100px] resize-none"
+          placeholder="How can we help you?" required
+        />
+      </div>
+      <button type="submit" className="w-full py-2.5 rounded-xl bg-primary text-primary-foreground font-body font-medium text-sm hover:opacity-90 transition-opacity">
+        Send Message
+      </button>
+      {sent && <p className="text-xs text-center text-primary font-body">✓ Message sent! We'll get back to you soon.</p>}
+    </form>
+  );
+}
+
 /* ─── Data ─── */
 const moodEmojis = ['😄', '🙂', '😐', '😔', '😰'];
 const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
