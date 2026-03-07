@@ -16,9 +16,28 @@ function saveAccount(acc: StoredAccount) {
   if (idx >= 0) accounts[idx] = acc; else accounts.push(acc);
   localStorage.setItem('mindease_accounts', JSON.stringify(accounts));
 }
+
+function generateUserId(email: string): string {
+  // Deterministic ID from email so the same email always maps to the same user data
+  let hash = 0;
+  for (let i = 0; i < email.length; i++) {
+    const char = email.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash |= 0;
+  }
+  return 'u_' + Math.abs(hash).toString(36);
+}
+
 function loginUser(name: string, email: string, opts?: { anonymous?: boolean; google?: boolean }) {
-  localStorage.setItem('mindease_user', JSON.stringify({ name, theme: 'light', anonymous: !!opts?.anonymous, streakDays: 0, lastCheckIn: '' }));
+  const userId = opts?.anonymous ? 'anon_' + Date.now().toString(36) : generateUserId(email);
+  sessionStorage.setItem('mindease_user_id', userId);
   sessionStorage.setItem('mindease_logged_in', 'true');
+  // Save user prefs scoped to this userId
+  const userKey = `mindease_${userId}_user`;
+  const existing = localStorage.getItem(userKey);
+  if (!existing) {
+    localStorage.setItem(userKey, JSON.stringify({ name, theme: 'light', anonymous: !!opts?.anonymous, streakDays: 0, lastCheckIn: '' }));
+  }
   if (opts?.google) localStorage.setItem('mindease_google_login', 'true');
 }
 
@@ -81,9 +100,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    ['mindease_moods', 'mindease_journal', 'mindease_habits', 'mindease_sessions', 'mindease_user', 'mindease_chat']
-      .forEach(k => localStorage.removeItem(k));
-    if (sessionStorage.getItem('mindease_logged_in') === 'true') navigate('/', { replace: true });
+    if (sessionStorage.getItem('mindease_logged_in') === 'true') navigate('/dashboard', { replace: true });
   }, [navigate]);
 
   const validate = useCallback((): FieldErrors => {
@@ -116,7 +133,7 @@ export default function Login() {
         loginUser(acc.name, acc.email);
         toast.success(`Welcome back, ${acc.name}! 💕`);
       }
-      navigate('/', { replace: true });
+      navigate('/dashboard', { replace: true });
     }, 1000);
   };
 
@@ -131,7 +148,7 @@ export default function Login() {
               saveAccount({ name: payload.name, email: payload.email, password: 'google_oauth', googleLogin: true });
               loginUser(payload.name, payload.email, { google: true });
               toast.success(`Signed in as ${payload.name} via Google 🎉`);
-              navigate('/', { replace: true });
+              navigate('/dashboard', { replace: true });
             } catch { simulateGoogle(); }
           },
         });
@@ -149,13 +166,13 @@ export default function Login() {
     saveAccount({ name: n, email: e, password: 'google_oauth', googleLogin: true });
     loginUser(n, e, { google: true });
     toast.success(`Signed in as ${n} via Google 🎉`);
-    navigate('/', { replace: true });
+    navigate('/dashboard', { replace: true });
   };
 
   const handleAnonymous = () => {
     loginUser('Friend', '', { anonymous: true });
-    toast.success('Welcome, Friend! 🕶️');
-    navigate('/', { replace: true });
+    toast.success('Welcome, Friend! 🕶️ Your session is completely private.');
+    navigate('/dashboard', { replace: true });
   };
 
   const inputClass = (field: string) => {

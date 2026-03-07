@@ -4,7 +4,6 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { ThemeProvider } from "@/hooks/useTheme";
 import { AnimatePresence } from 'framer-motion';
 import AppLayout from "@/components/layout/AppLayout";
 import SplashScreen from "@/components/SplashScreen";
@@ -38,44 +37,45 @@ const App = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <AnimatePresence>
-            {showSplash && (
-              <SplashScreen onDone={() => {
-                sessionStorage.setItem('mindease_splash_shown', 'true');
-                setShowSplash(false);
-              }} />
-            )}
-          </AnimatePresence>
-          {!showSplash && (
-            <BrowserRouter>
-              <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route path="/home" element={<Home />} />
-                <Route path="/" element={<AuthGuard><AppLayout><Landing /></AppLayout></AuthGuard>} />
-                <Route element={<AuthGuard><AppLayout /></AuthGuard>}>
-                  <Route path="/app/chat" element={<Chat />} />
-                  <Route path="/app/mood" element={<Mood />} />
-                  <Route path="/app/journal" element={<Journal />} />
-                  <Route path="/app/wellness" element={<Wellness />} />
-                  <Route path="/app/insights" element={<Insights />} />
-                  <Route path="/app/resources" element={<Resources />} />
-                  <Route path="/app/progress" element={<Progress />} />
-                  <Route path="/app/games" element={<Games />} />
-                  <Route path="/app/community" element={<PopulationInsights />} />
-                  <Route path="/app/sleep" element={<Sleep />} />
-                  <Route path="/app/diet" element={<Diet />} />
-                  <Route path="/app/settings" element={<SettingsPage />} />
-                </Route>
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <AnimatePresence>
+          {showSplash && (
+            <SplashScreen onDone={() => {
+              sessionStorage.setItem('mindease_splash_shown', 'true');
+              setShowSplash(false);
+            }} />
           )}
-        </TooltipProvider>
-      </ThemeProvider>
+        </AnimatePresence>
+        {!showSplash && (
+          <BrowserRouter>
+            <Routes>
+              {/* Public routes */}
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              
+              {/* Protected dashboard */}
+              <Route path="/dashboard" element={<AuthGuard><AppLayout><Landing /></AppLayout></AuthGuard>} />
+              <Route element={<AuthGuard><AppLayout /></AuthGuard>}>
+                <Route path="/app/chat" element={<Chat />} />
+                <Route path="/app/mood" element={<Mood />} />
+                <Route path="/app/journal" element={<Journal />} />
+                <Route path="/app/wellness" element={<Wellness />} />
+                <Route path="/app/insights" element={<Insights />} />
+                <Route path="/app/resources" element={<Resources />} />
+                <Route path="/app/progress" element={<Progress />} />
+                <Route path="/app/games" element={<Games />} />
+                <Route path="/app/community" element={<PopulationInsights />} />
+                <Route path="/app/sleep" element={<Sleep />} />
+                <Route path="/app/diet" element={<Diet />} />
+                <Route path="/app/settings" element={<SettingsPage />} />
+              </Route>
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        )}
+      </TooltipProvider>
     </QueryClientProvider>
   );
 };
