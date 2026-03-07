@@ -786,6 +786,79 @@ export default function Home() {
         </div>
       </Section>
 
+      {/* ━━━━━━━━━━ FAQ ━━━━━━━━━━ */}
+      <Section id="faq">
+        <SectionHeading sub="Got questions? We've got answers.">
+          Frequently Asked Questions
+        </SectionHeading>
+
+        <div className="max-w-3xl mx-auto space-y-3">
+          {[
+            { q: 'What is this mental wellness app?', a: 'MindEase AI is an AI-powered mental wellness platform designed specifically for students and young adults. It combines an empathetic AI companion (SERA), mood tracking, journaling, breathing exercises, and wellness tools — all in one safe, private space.' },
+            { q: 'Is my data private?', a: 'Absolutely. All your data stays on your device in local storage. We don\'t collect, store, or share any personal information on external servers. Your conversations with SERA, mood logs, and journal entries are 100% private.' },
+            { q: 'Can I use the platform anonymously?', a: 'Yes! You can use MindEase AI completely anonymously. Click "Continue Anonymously" on the login page — no email, no name, no data shared. Your anonymous session is isolated and private.' },
+            { q: 'What features does the platform offer?', a: 'MindEase AI includes: AI companion chat (SERA), mood tracking with trends, private journaling with AI reflections, guided breathing & meditation, stress-relief games, sleep tracking, diet & nutrition guidance, wellness exercises, and personalized insights.' },
+            { q: 'How does mood tracking help mental health?', a: 'Tracking your mood daily helps you recognize emotional patterns, identify triggers, and detect early signs of burnout. Research shows that the simple act of labeling emotions ("affect labeling") reduces their intensity and builds self-awareness over time.' },
+            { q: 'Is this a replacement for professional therapy?', a: 'No. MindEase AI is a wellness support tool, not a substitute for professional mental health care. If you\'re experiencing a crisis or need clinical support, we encourage you to reach out to a licensed therapist or use the helpline resources provided in the app.' },
+          ].map((faq, i) => (
+            <FAQItem key={i} question={faq.q} answer={faq.a} index={i} />
+          ))}
+        </div>
+      </Section>
+
+      {/* ━━━━━━━━━━ CONTACT & SUPPORT ━━━━━━━━━━ */}
+      <Section id="contact">
+        <SectionHeading sub="We're here to help. Reach out anytime.">
+          Contact & Support
+        </SectionHeading>
+
+        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          {/* Contact Info */}
+          <motion.div {...fadeUp()} className="neu p-8">
+            <h3 className="font-display text-xl font-semibold text-foreground mb-6">Get in Touch</h3>
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                  <span className="text-lg">📧</span>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground font-body">Email</p>
+                  <a href="mailto:support@mindease.ai" className="text-sm text-foreground font-body font-medium hover:text-primary transition-colors">support@mindease.ai</a>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                  <span className="text-lg">📞</span>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground font-body">Phone</p>
+                  <a href="tel:+919152987821" className="text-sm text-foreground font-body font-medium hover:text-primary transition-colors">+91 91529 87821</a>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                  <span className="text-lg">🕐</span>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground font-body">Hours</p>
+                  <p className="text-sm text-foreground font-body font-medium">Mon–Sat, 9am–8pm IST</p>
+                </div>
+              </div>
+            </div>
+            <div className="mt-6 p-4 rounded-xl bg-rose-soft/10 border border-rose-soft/20">
+              <p className="text-xs text-foreground font-body font-medium">🆘 Crisis Support (24/7)</p>
+              <p className="text-xs text-muted-foreground font-body mt-1">iCall: 9152987821 · Vandrevala: 1860-2662-345</p>
+            </div>
+          </motion.div>
+
+          {/* Support Form */}
+          <motion.div {...fadeUp(0.1)} className="neu p-8">
+            <h3 className="font-display text-xl font-semibold text-foreground mb-6">Send Us a Message</h3>
+            <ContactForm />
+          </motion.div>
+        </div>
+      </Section>
+
       {/* ━━━━━━━━━━ FINAL CTA ━━━━━━━━━━ */}
       <Section id="about">
         <motion.div

@@ -41,10 +41,18 @@ const moodAfterEating = [
 ];
 
 const healthySuggestions = [
-  { category: 'Brain Food', emoji: '🧠', items: ['Walnuts', 'Blueberries', 'Dark chocolate', 'Salmon', 'Avocado'] },
-  { category: 'Mood Boosters', emoji: '😊', items: ['Bananas', 'Yogurt', 'Oats', 'Green tea', 'Leafy greens'] },
-  { category: 'Stress Fighters', emoji: '💪', items: ['Oranges', 'Sweet potatoes', 'Almonds', 'Chamomile tea', 'Dark berries'] },
-  { category: 'Sleep Helpers', emoji: '😴', items: ['Warm milk', 'Cherries', 'Kiwi', 'Turkey', 'Brown rice'] },
+  { category: 'Mood Boosting Foods', emoji: '😊', items: ['Bananas (serotonin)', 'Dark Chocolate (endorphins)', 'Yogurt (probiotics)', 'Oats (steady energy)', 'Leafy Greens (folate)'],
+    detail: 'These foods contain nutrients that directly support serotonin and dopamine production — your brain\'s happiness chemicals.' },
+  { category: 'Brain Health Nutrition', emoji: '🧠', items: ['Walnuts (omega-3)', 'Blueberries (antioxidants)', 'Salmon (DHA)', 'Avocado (healthy fats)', 'Eggs (choline)'],
+    detail: 'Omega-3 fatty acids and antioxidants protect brain cells and improve cognitive function, memory, and focus.' },
+  { category: 'Foods that Reduce Stress', emoji: '💪', items: ['Oranges (vitamin C)', 'Sweet Potatoes (magnesium)', 'Almonds (vitamin E)', 'Chamomile Tea (apigenin)', 'Dark Berries (anthocyanins)'],
+    detail: 'Vitamin C lowers cortisol. Magnesium relaxes muscles. These foods actively combat the physical effects of stress.' },
+  { category: 'Hydration Tips', emoji: '💧', items: ['8 glasses/day minimum', 'Cucumber & mint water', 'Herbal teas count', 'Coconut water for electrolytes', 'Limit caffeine after 2pm'],
+    detail: 'Even mild dehydration (1-2%) impairs mood, concentration, and increases anxiety. Water is the easiest wellness hack.' },
+  { category: 'Balanced Diet Ideas', emoji: '🥗', items: ['Colorful plate rule', 'Protein with every meal', 'Whole grains over refined', 'Healthy snack prep', 'Eat mindfully, not rushed'],
+    detail: 'A balanced diet stabilizes blood sugar, preventing mood crashes. Aim for variety — different colors mean different nutrients.' },
+  { category: 'Sleep-Supporting Foods', emoji: '😴', items: ['Warm milk (tryptophan)', 'Tart Cherries (melatonin)', 'Kiwi (serotonin)', 'Turkey (L-tryptophan)', 'Brown Rice (GABA)'],
+    detail: 'Eating these 1-2 hours before bed can naturally boost melatonin production and improve sleep quality.' },
 ];
 
 export default function Diet() {
@@ -241,16 +249,17 @@ export default function Diet() {
           </div>
         )}
 
-        {/* Healthy suggestions */}
+        {/* Wellness Food Guide */}
         <div className="glass-static rounded-3xl p-5 mb-6">
           <div className="flex items-center gap-2 mb-4">
             <Leaf className="w-4 h-4 text-secondary" />
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider font-body">Wellness Food Guide</p>
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid gap-3 md:grid-cols-2">
             {healthySuggestions.map(cat => (
-              <div key={cat.category} className="p-3 rounded-xl bg-muted/30">
-                <p className="text-sm font-body font-medium text-foreground mb-1">{cat.emoji} {cat.category}</p>
+              <div key={cat.category} className="p-4 rounded-xl bg-muted/30">
+                <p className="text-sm font-body font-semibold text-foreground mb-1">{cat.emoji} {cat.category}</p>
+                <p className="text-[11px] text-muted-foreground font-body leading-relaxed mb-2">{cat.detail}</p>
                 <div className="flex flex-wrap gap-1">
                   {cat.items.map(item => (
                     <span key={item} className="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-body">{item}</span>
