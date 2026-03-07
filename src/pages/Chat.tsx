@@ -42,6 +42,10 @@ const LANGUAGES = [
   { code: 'bn', label: 'বাংলা', flag: '🇮🇳' },
 ];
 
+const LANG_NAMES: Record<string, string> = {
+  en: 'English', hi: 'Hindi', ta: 'Tamil', mr: 'Marathi', te: 'Telugu', bn: 'Bengali',
+};
+
 function SeraAvatar({ emotion }: { emotion?: string }) {
   const tilt = emotion === 'Sadness' || emotion === 'Loneliness' ? 'rotate-[-8deg]' : '';
   const glow = emotion === 'Happiness' || emotion === 'Gratitude';
@@ -78,7 +82,6 @@ export default function Chat() {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
   }, [messages, loading]);
 
-  // Speech recognition setup
   const startListening = useCallback(() => {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {
@@ -89,12 +92,8 @@ export default function Chat() {
     const recognition = new SpeechRecognition();
     recognition.continuous = false;
     recognition.interimResults = true;
-    recognition.lang = selectedLang === 'en' ? 'en-US' : 
-                       selectedLang === 'hi' ? 'hi-IN' :
-                       selectedLang === 'ta' ? 'ta-IN' :
-                       selectedLang === 'mr' ? 'mr-IN' :
-                       selectedLang === 'te' ? 'te-IN' :
-                       selectedLang === 'bn' ? 'bn-IN' : 'en-US';
+    const langMap: Record<string, string> = { en: 'en-US', hi: 'hi-IN', ta: 'ta-IN', mr: 'mr-IN', te: 'te-IN', bn: 'bn-IN' };
+    recognition.lang = langMap[selectedLang] || 'en-US';
 
     recognition.onstart = () => setIsListening(true);
     recognition.onresult = (event: any) => {
@@ -105,7 +104,6 @@ export default function Chat() {
     };
     recognition.onend = () => {
       setIsListening(false);
-      // Analyze voice tone from the text
       if (input.trim()) {
         const toneFeedback = analyzeVoiceTone(input);
         setVoiceFeedback(toneFeedback);
@@ -129,7 +127,7 @@ export default function Chat() {
 
   const sendMessage = async (text: string) => {
     if (!text.trim()) return;
-    
+
     const emotion = detectEmotion(text);
     const crisis = detectCrisis(text);
     if (crisis) setShowCrisis(true);
@@ -148,30 +146,56 @@ export default function Chat() {
     setVoiceFeedback('');
     setLoading(true);
 
-    await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 700));
+    // Create placeholder assistant message for streaming
+    const assistantId = genId();
+    let assistantContent = '';
 
     try {
       const apiMsgs = newMsgs.slice(-10).map(m => ({ role: m.role, content: m.content }));
-      const reply = await callAIChat(apiMsgs);
-      const aiMsg: ChatMessage = {
-        id: genId(),
-        role: 'assistant',
-        content: reply,
-        timestamp: Date.now(),
-      };
-      const updated = [...newMsgs, aiMsg];
-      setMessages(updated);
-      saveChatHistory(updated);
+
+      const reply = await callAIChat(apiMsgs, selectedLang, (chunk) => {
+        assistantContent += chunk;
+        setMessages(prev => {
+          const last = prev[prev.length - 1];
+          if (last?.id === assistantId) {
+            return prev.map((m, i) => i === prev.length - 1 ? { ...m, content: assistantContent } : m);
+          }
+          return [...prev, { id: assistantId, role: 'assistant' as const, content: assistantContent, timestamp: Date.now() }];
+        });
+      });
+
+      // Ensure final message is set
+      const finalContent = assistantContent || reply;
+      setMessages(prev => {
+        const hasAssistant = prev.some(m => m.id === assistantId);
+        if (hasAssistant) {
+          return prev.map(m => m.id === assistantId ? { ...m, content: finalContent } : m);
+        }
+        return [...prev, { id: assistantId, role: 'assistant' as const, content: finalContent, timestamp: Date.now() }];
+      });
+
+      // Save after settling
+      setTimeout(() => {
+        setMessages(prev => {
+          saveChatHistory(prev);
+          return prev;
+        });
+      }, 100);
     } catch {
       const errMsg: ChatMessage = {
-        id: genId(),
+        id: assistantId,
         role: 'assistant',
         content: "SERA is taking a moment to gather her thoughts... Please try again. 💙",
         timestamp: Date.now(),
       };
-      const updated = [...newMsgs, errMsg];
-      setMessages(updated);
-      saveChatHistory(updated);
+      setMessages(prev => {
+        const hasAssistant = prev.some(m => m.id === assistantId);
+        if (hasAssistant) return prev.map(m => m.id === assistantId ? errMsg : m);
+        return [...prev, errMsg];
+      });
+      setTimeout(() => {
+        setMessages(prev => { saveChatHistory(prev); return prev; });
+      }, 100);
     } finally {
       setLoading(false);
     }
@@ -199,12 +223,8 @@ export default function Chat() {
       {/* Crisis banner */}
       <AnimatePresence>
         {showCrisis && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="bg-rose-soft/20 border-b border-rose-soft/30 px-4 py-3 flex items-center gap-3"
-          >
+          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
+            className="bg-rose-soft/20 border-b border-rose-soft/30 px-4 py-3 flex items-center gap-3">
             <AlertTriangle className="w-4 h-4 text-rose-soft shrink-0" />
             <p className="text-xs text-foreground font-body">
               If you're in crisis, please reach out: <strong>iCall: 9152987821</strong> · <strong>Vandrevala: 1860-2662-345</strong> · <strong>AASRA: 9820466627</strong>
@@ -217,18 +237,23 @@ export default function Chat() {
       {/* Voice feedback */}
       <AnimatePresence>
         {voiceFeedback && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="bg-primary/5 border-b border-primary/10 px-4 py-2.5 flex items-center gap-2"
-          >
+          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
+            className="bg-primary/5 border-b border-primary/10 px-4 py-2.5 flex items-center gap-2">
             <Mic className="w-3.5 h-3.5 text-primary" />
             <p className="text-xs text-foreground font-body">{voiceFeedback}</p>
             <button onClick={() => setVoiceFeedback('')} className="ml-auto text-xs text-muted-foreground hover:text-foreground">✕</button>
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Language indicator */}
+      {selectedLang !== 'en' && (
+        <div className="bg-primary/5 border-b border-border px-4 py-1.5 text-center">
+          <p className="text-[10px] text-primary font-body font-medium">
+            🌐 SERA is responding in {LANG_NAMES[selectedLang] || selectedLang}
+          </p>
+        </div>
+      )}
 
       {/* Chat area */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 lg:p-6 space-y-4">
@@ -246,11 +271,8 @@ export default function Chat() {
             </div>
             <div className="flex flex-wrap justify-center gap-2 mt-6 max-w-lg mx-auto">
               {SUGGESTED.map(s => (
-                <button
-                  key={s}
-                  onClick={() => sendMessage(s)}
-                  className="px-4 py-2 rounded-2xl glass-static text-sm text-foreground font-body transition-all hover:scale-[1.02]"
-                >
+                <button key={s} onClick={() => sendMessage(s)}
+                  className="px-4 py-2 rounded-2xl glass-static text-sm text-foreground font-body transition-all hover:scale-[1.02]">
                   {s}
                 </button>
               ))}
@@ -259,29 +281,22 @@ export default function Chat() {
         )}
 
         {messages.map((msg) => (
-          <motion.div
-            key={msg.id}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            className={`flex gap-2.5 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-          >
+          <motion.div key={msg.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+            className={`flex gap-2.5 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             {msg.role === 'assistant' && <SeraAvatar emotion={msg.emotion} />}
-            <div className={`max-w-[75%] lg:max-w-[60%]`}>
+            <div className="max-w-[75%] lg:max-w-[60%]">
               <div className={`px-4 py-3 rounded-2xl text-sm leading-relaxed font-body ${
                 msg.role === 'user'
                   ? 'text-primary-foreground rounded-br-md'
                   : 'glass-static rounded-bl-md border-l-2 border-primary/30'
               }`}
-                style={msg.role === 'user' ? { background: 'linear-gradient(135deg, hsl(330,100%,85%), hsl(197,88%,66%))' } : {}}
-              >
+                style={msg.role === 'user' ? { background: 'linear-gradient(135deg, hsl(330,100%,85%), hsl(197,88%,66%))' } : {}}>
                 {msg.content}
               </div>
               <div className="flex items-center gap-2 mt-1 px-1">
                 <span className="text-[10px] text-muted-foreground font-number">{formatTime(msg.timestamp)}</span>
                 {msg.emotion && (
-                  <span className="text-[10px] text-muted-foreground bg-muted px-1.5 py-0.5 rounded-full font-body">
-                    {msg.emotion}
-                  </span>
+                  <span className="text-[10px] text-muted-foreground bg-muted px-1.5 py-0.5 rounded-full font-body">{msg.emotion}</span>
                 )}
                 {msg.role === 'assistant' && (
                   <button className="text-[10px] text-muted-foreground hover:text-primary flex items-center gap-0.5 ml-1 font-body">
@@ -293,7 +308,7 @@ export default function Chat() {
           </motion.div>
         ))}
 
-        {loading && (
+        {loading && !messages.some(m => m.role === 'assistant' && m.content === '') && messages[messages.length - 1]?.role === 'user' && (
           <div className="flex gap-2.5">
             <SeraAvatar />
             <div className="glass-static px-4 py-3 rounded-2xl rounded-bl-md border-l-2 border-primary/30">
@@ -318,29 +333,21 @@ export default function Chat() {
           <div className="flex gap-2">
             {/* Language picker */}
             <div className="relative">
-              <button
-                onClick={() => setShowLangPicker(!showLangPicker)}
+              <button onClick={() => setShowLangPicker(!showLangPicker)}
                 className="w-11 h-11 rounded-2xl flex items-center justify-center bg-muted text-muted-foreground hover:text-foreground transition-colors shrink-0"
-                title="Change language"
-              >
+                title="Change language">
                 <Globe className="w-4 h-4" />
               </button>
               <AnimatePresence>
                 {showLangPicker && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    className="absolute bottom-14 left-0 bg-card border border-border rounded-xl shadow-lg p-2 min-w-[140px] z-10"
-                  >
+                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }}
+                    className="absolute bottom-14 left-0 bg-card border border-border rounded-xl shadow-lg p-2 min-w-[140px] z-10">
                     {LANGUAGES.map(lang => (
-                      <button
-                        key={lang.code}
+                      <button key={lang.code}
                         onClick={() => { setSelectedLang(lang.code); setShowLangPicker(false); }}
                         className={`w-full px-3 py-1.5 rounded-lg text-xs font-body text-left flex items-center gap-2 ${
                           selectedLang === lang.code ? 'bg-primary/10 text-primary font-medium' : 'text-foreground hover:bg-muted'
-                        }`}
-                      >
+                        }`}>
                         <span>{lang.flag}</span> {lang.label}
                       </button>
                     ))}
@@ -350,32 +357,21 @@ export default function Chat() {
             </div>
 
             {/* Voice input */}
-            <button
-              onClick={isListening ? stopListening : startListening}
+            <button onClick={isListening ? stopListening : startListening}
               className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 transition-all ${
-                isListening
-                  ? 'bg-rose-soft/20 text-rose-soft animate-pulse'
-                  : 'bg-muted text-muted-foreground hover:text-foreground'
+                isListening ? 'bg-rose-soft/20 text-rose-soft animate-pulse' : 'bg-muted text-muted-foreground hover:text-foreground'
               }`}
-              title={isListening ? 'Stop listening' : 'Speak to SERA'}
-            >
+              title={isListening ? 'Stop listening' : 'Speak to SERA'}>
               {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
             </button>
 
-            <textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
+            <textarea value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={handleKeyDown}
               placeholder={isListening ? "Listening... 🎙️" : "Share what's on your mind..."}
               rows={1}
-              className="flex-1 resize-none bg-muted rounded-2xl px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all font-body"
-            />
-            <button
-              onClick={() => sendMessage(input)}
-              disabled={!input.trim() || loading}
+              className="flex-1 resize-none bg-muted rounded-2xl px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all font-body" />
+            <button onClick={() => sendMessage(input)} disabled={!input.trim() || loading}
               className="w-11 h-11 rounded-2xl flex items-center justify-center disabled:opacity-40 transition-all shrink-0 text-white hover:scale-[1.02]"
-              style={{ background: 'linear-gradient(135deg, hsl(330,100%,85%), hsl(197,88%,66%))' }}
-            >
+              style={{ background: 'linear-gradient(135deg, hsl(330,100%,85%), hsl(197,88%,66%))' }}>
               <Send className="w-4 h-4" />
             </button>
           </div>
