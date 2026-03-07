@@ -138,37 +138,35 @@ export default function Login() {
     }, 1000);
   };
 
-  const handleGoogle = () => {
-    if (typeof window !== 'undefined' && (window as any).google?.accounts?.id) {
-      try {
-        (window as any).google.accounts.id.initialize({
-          client_id: 'YOUR_CLIENT_ID',
-          callback: (response: any) => {
-            try {
-              const payload = JSON.parse(atob(response.credential.split('.')[1]));
-              saveAccount({ name: payload.name, email: payload.email, password: 'google_oauth', googleLogin: true });
-              loginUser(payload.name, payload.email, { google: true });
-              toast.success(`Signed in as ${payload.name} via Google 🎉`);
-              navigate('/dashboard', { replace: true });
-            } catch { simulateGoogle(); }
-          },
-        });
-        (window as any).google.accounts.id.prompt();
-        return;
-      } catch { /* fall through */ }
+  const handleGoogle = async () => {
+    try {
+      const result = await lovable.auth.signInWithOAuth("google", {
+        redirect_uri: window.location.origin,
+      });
+      if (result.error) {
+        toast.error('Google sign-in failed. Please try again.');
+        console.error('Google OAuth error:', result.error);
+      }
+      // If redirected, page will reload and onAuthStateChange will handle session
+    } catch (err) {
+      console.error('Google login error:', err);
+      toast.error('Google sign-in failed.');
     }
-    simulateGoogle();
   };
 
-  const simulateGoogle = () => {
-    const names = ['Aarav Sharma', 'Priya Patel', 'Rohan Gupta', 'Ananya Singh', 'Vikram Mehta'];
-    const n = names[Math.floor(Math.random() * names.length)];
-    const e = `${n.toLowerCase().replace(' ', '.')}@gmail.com`;
-    saveAccount({ name: n, email: e, password: 'google_oauth', googleLogin: true });
-    loginUser(n, e, { google: true });
-    toast.success(`Signed in as ${n} via Google 🎉`);
-    navigate('/dashboard', { replace: true });
-  };
+  // Listen for OAuth callback session
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session?.user) {
+        const user = session.user;
+        const displayName = user.user_metadata?.full_name || user.email?.split('@')[0] || 'User';
+        loginUser(displayName, user.email || '', { google: true });
+        toast.success(`Signed in as ${displayName} via Google 🎉`);
+        navigate('/dashboard', { replace: true });
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [navigate]);
 
   const handleAnonymous = () => {
     loginUser('Friend', '', { anonymous: true });
