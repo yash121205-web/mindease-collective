@@ -1,8 +1,8 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { getUser, saveUser, clearAllData, exportData } from '@/lib/storage';
-import { useTheme } from '@/hooks/useTheme';
-import { User, Shield, Palette, Database, Info, Download, Trash2, Key, Bell, Mic, Moon as MoonIcon, Sun } from 'lucide-react';
+import { getUser, saveUser, clearAllData, exportData, logoutUser } from '@/lib/storage';
+import { User, Shield, Database, Info, Download, Trash2, Key, Bell, Mic } from 'lucide-react';
 import { toast } from 'sonner';
 
 function Toggle({ enabled, onToggle, label }: { enabled: boolean; onToggle: () => void; label: string }) {
@@ -17,7 +17,7 @@ function Toggle({ enabled, onToggle, label }: { enabled: boolean; onToggle: () =
 }
 
 export default function SettingsPage() {
-  const { theme, setTheme, isDark } = useTheme();
+  const navigate = useNavigate();
   const [user, setUser] = useState(getUser);
   const [apiKey, setApiKey] = useState(() => localStorage.getItem('mindease_api_key') || '');
   const [notifications, setNotifications] = useState(() => localStorage.getItem('mindease_notifications') === 'true');
@@ -88,6 +88,11 @@ export default function SettingsPage() {
     }
   };
 
+  const handleLogout = () => {
+    logoutUser();
+    navigate('/login', { replace: true });
+  };
+
   return (
     <div className="p-4 lg:p-8 max-w-2xl mx-auto">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
@@ -113,8 +118,6 @@ export default function SettingsPage() {
           <div className="glass-static rounded-2xl p-5 space-y-4">
             <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-2 font-body"><Bell className="w-3.5 h-3.5" /> Preferences</h2>
             
-            <Toggle enabled={isDark} onToggle={() => setTheme(isDark ? 'light' : 'dark')} label={isDark ? '🌙 Dark Mode (On)' : '☀️ Dark Mode (Off)'} />
-            <div className="h-px bg-border" />
             <Toggle enabled={voiceEnabled} onToggle={toggleVoice} label="🎙️ Voice Input" />
             <div className="h-px bg-border" />
             <Toggle enabled={moodReminder} onToggle={toggleMoodReminder} label="😊 Daily Mood Reminder" />
@@ -126,21 +129,6 @@ export default function SettingsPage() {
           <div className="glass-static rounded-2xl p-5">
             <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2 font-body"><Shield className="w-3.5 h-3.5" /> Privacy</h2>
             <Toggle enabled={user.anonymous} onToggle={() => updateUser({ anonymous: !user.anonymous, name: user.anonymous ? user.name : '' })} label="🕶️ Anonymous Mode" />
-          </div>
-
-          {/* Theme */}
-          <div className="glass-static rounded-2xl p-5">
-            <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2 font-body"><Palette className="w-3.5 h-3.5" /> Theme</h2>
-            <div className="flex gap-2">
-              {(['light', 'dark', 'auto'] as const).map(t => (
-                <button key={t} onClick={() => setTheme(t)}
-                  className={`px-4 py-2 rounded-xl text-sm font-medium capitalize transition-all font-body ${
-                    theme === t ? 'btn-primary' : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                  }`}>
-                  {t === 'light' ? '☀️ ' : t === 'dark' ? '🌙 ' : '🔄 '}{t}
-                </button>
-              ))}
-            </div>
           </div>
 
           {/* API Key */}
@@ -178,7 +166,7 @@ export default function SettingsPage() {
 
           {/* Logout */}
           <button
-            onClick={() => { sessionStorage.removeItem('mindease_logged_in'); window.location.href = '/login'; }}
+            onClick={handleLogout}
             className="w-full py-3 rounded-xl border border-border text-sm font-body font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
           >
             Sign Out

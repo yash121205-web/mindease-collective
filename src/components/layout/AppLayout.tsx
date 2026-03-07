@@ -10,7 +10,7 @@ export default function AppLayout({ children }: { children?: React.ReactNode }) 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const isLanding = location.pathname === '/';
+  const isDashboard = location.pathname === '/dashboard';
 
   return (
     <div className="flex min-h-screen w-full grain gradient-mesh">
@@ -25,13 +25,13 @@ export default function AppLayout({ children }: { children?: React.ReactNode }) 
             <Menu className="w-5 h-5 text-foreground" />
           </button>
           
-          {!isLanding && (
+          {!isDashboard && (
             <button onClick={() => navigate(-1)} className="p-2 rounded-xl hover:bg-muted transition-colors" title="Go back">
               <ArrowLeft className="w-4 h-4 text-foreground" />
             </button>
           )}
 
-          <button onClick={() => navigate('/')} className="p-1.5 rounded-lg hover:bg-muted transition-colors" title="Home">
+          <button onClick={() => navigate('/dashboard')} className="p-1.5 rounded-lg hover:bg-muted transition-colors" title="Home">
             <Home className="w-4 h-4 text-muted-foreground" />
           </button>
 
@@ -39,13 +39,13 @@ export default function AppLayout({ children }: { children?: React.ReactNode }) 
         </header>
 
         {/* Desktop back button */}
-        {!isLanding && (
+        {!isDashboard && (
           <div className="hidden lg:flex items-center gap-2 px-8 pt-4">
             <button onClick={() => navigate(-1)} className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors font-body">
               <ArrowLeft className="w-3.5 h-3.5" /> Back
             </button>
             <span className="text-xs text-border">·</span>
-            <button onClick={() => navigate('/')} className="text-xs text-muted-foreground hover:text-foreground transition-colors font-body">
+            <button onClick={() => navigate('/dashboard')} className="text-xs text-muted-foreground hover:text-foreground transition-colors font-body">
               Home
             </button>
           </div>

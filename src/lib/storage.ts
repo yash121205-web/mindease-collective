@@ -1,4 +1,5 @@
 // localStorage utility functions for MindEase AI
+// All data is scoped per-user via a userId prefix
 
 export interface MoodEntry {
   id: string;
@@ -45,13 +46,22 @@ export interface UserPrefs {
   lastCheckIn: string;
 }
 
-const KEYS = {
-  moods: 'mindease_moods',
-  journal: 'mindease_journal',
-  habits: 'mindease_habits',
-  sessions: 'mindease_sessions',
-  user: 'mindease_user',
-  chatHistory: 'mindease_chat',
+// ─── User-scoped key helpers ───
+function getCurrentUserId(): string {
+  return sessionStorage.getItem('mindease_user_id') || 'anonymous';
+}
+
+function userKey(base: string): string {
+  return `mindease_${getCurrentUserId()}_${base}`;
+}
+
+const BASE_KEYS = {
+  moods: 'moods',
+  journal: 'journal',
+  habits: 'habits',
+  sessions: 'sessions',
+  user: 'user',
+  chatHistory: 'chat',
 };
 
 function get<T>(key: string, fallback: T): T {
@@ -66,11 +76,11 @@ function set(key: string, value: unknown) {
 }
 
 // Moods
-export function getMoods(): MoodEntry[] { return get(KEYS.moods, []); }
+export function getMoods(): MoodEntry[] { return get(userKey(BASE_KEYS.moods), []); }
 export function saveMood(entry: MoodEntry) {
   const moods = getMoods();
   moods.push(entry);
-  set(KEYS.moods, moods);
+  set(userKey(BASE_KEYS.moods), moods);
 }
 export function getTodayMood(): MoodEntry | null {
   const today = new Date().toISOString().split('T')[0];
@@ -78,17 +88,17 @@ export function getTodayMood(): MoodEntry | null {
 }
 
 // Journal
-export function getJournalEntries(): JournalEntry[] { return get(KEYS.journal, []); }
+export function getJournalEntries(): JournalEntry[] { return get(userKey(BASE_KEYS.journal), []); }
 export function saveJournalEntry(entry: JournalEntry) {
   const entries = getJournalEntries();
   const idx = entries.findIndex(e => e.id === entry.id);
   if (idx >= 0) entries[idx] = entry; else entries.push(entry);
-  set(KEYS.journal, entries);
+  set(userKey(BASE_KEYS.journal), entries);
 }
 
 // Habits
-export function getHabits(): Record<string, HabitDay> { return get(KEYS.habits, {}); }
-export function saveHabits(habits: Record<string, HabitDay>) { set(KEYS.habits, habits); }
+export function getHabits(): Record<string, HabitDay> { return get(userKey(BASE_KEYS.habits), {}); }
+export function saveHabits(habits: Record<string, HabitDay>) { set(userKey(BASE_KEYS.habits), habits); }
 export function getTodayHabits(): HabitDay {
   const today = new Date().toISOString().split('T')[0];
   const all = getHabits();
@@ -98,18 +108,18 @@ export function saveTodayHabits(habits: HabitDay) {
   const today = new Date().toISOString().split('T')[0];
   const all = getHabits();
   all[today] = habits;
-  set(KEYS.habits, all);
+  set(userKey(BASE_KEYS.habits), all);
 }
 
 // Sessions
-export function getSessions(): SessionData { return get(KEYS.sessions, { breathing: 0, pomodoro: 0, lastActive: Date.now() }); }
-export function saveSessions(data: SessionData) { set(KEYS.sessions, data); }
+export function getSessions(): SessionData { return get(userKey(BASE_KEYS.sessions), { breathing: 0, pomodoro: 0, lastActive: Date.now() }); }
+export function saveSessions(data: SessionData) { set(userKey(BASE_KEYS.sessions), data); }
 
 // User
 export function getUser(): UserPrefs {
-  return get(KEYS.user, { name: '', theme: 'light' as const, anonymous: false, streakDays: 0, lastCheckIn: '' });
+  return get(userKey(BASE_KEYS.user), { name: '', theme: 'light' as const, anonymous: false, streakDays: 0, lastCheckIn: '' });
 }
-export function saveUser(prefs: UserPrefs) { set(KEYS.user, prefs); }
+export function saveUser(prefs: UserPrefs) { set(userKey(BASE_KEYS.user), prefs); }
 
 // Chat
 export interface ChatMessage {
@@ -119,8 +129,8 @@ export interface ChatMessage {
   emotion?: string;
   timestamp: number;
 }
-export function getChatHistory(): ChatMessage[] { return get(KEYS.chatHistory, []); }
-export function saveChatHistory(messages: ChatMessage[]) { set(KEYS.chatHistory, messages); }
+export function getChatHistory(): ChatMessage[] { return get(userKey(BASE_KEYS.chatHistory), []); }
+export function saveChatHistory(messages: ChatMessage[]) { set(userKey(BASE_KEYS.chatHistory), messages); }
 
 // Streak calculation
 export function calculateStreak(): number {
@@ -159,28 +169,30 @@ export function calculateEHS(): number {
   const journal = getJournalEntries().slice(-7);
   const sessions = getSessions();
 
-  // Mood average (60%)
   const moodAvg = moods.length > 0
     ? moods.reduce((sum, m) => sum + m.moodScore, 0) / moods.length
     : 50;
   
-  // Habit completion (20%)
   const todayH = getTodayHabits();
   const habitKeys = Object.values(todayH);
   const habitPct = habitKeys.length > 0 ? (habitKeys.filter(Boolean).length / habitKeys.length) * 100 : 0;
 
-  // Journal frequency (10%)
   const journalPct = Math.min(journal.length / 3 * 100, 100);
-
-  // Breathing sessions (10%)
   const breathPct = Math.min(sessions.breathing / 3 * 100, 100);
 
   return Math.round(moodAvg * 0.6 + habitPct * 0.2 + journalPct * 0.1 + breathPct * 0.1);
 }
 
-// Clear all data
+// Clear current user's data
 export function clearAllData() {
-  Object.values(KEYS).forEach(k => localStorage.removeItem(k));
+  const userId = getCurrentUserId();
+  const prefix = `mindease_${userId}_`;
+  const keysToRemove: string[] = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && key.startsWith(prefix)) keysToRemove.push(key);
+  }
+  keysToRemove.forEach(k => localStorage.removeItem(k));
 }
 
 // Export data
@@ -197,4 +209,11 @@ export function exportData() {
 // ID generator
 export function genId(): string {
   return Date.now().toString(36) + Math.random().toString(36).substr(2);
+}
+
+// Logout: clear session state
+export function logoutUser() {
+  sessionStorage.removeItem('mindease_logged_in');
+  sessionStorage.removeItem('mindease_user_id');
+  sessionStorage.removeItem('mindease_splash_shown');
 }

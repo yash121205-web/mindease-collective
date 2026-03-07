@@ -1,9 +1,8 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
-  MessageCircle, Smile, BookOpen, Leaf, BarChart3, Library, Trophy, Settings, Flame, Moon, Sun, Shield, Gamepad2, Users, BedDouble, Apple
+  MessageCircle, Smile, BookOpen, Leaf, BarChart3, Library, Trophy, Settings, Flame, Shield, Gamepad2, Users, BedDouble, Apple
 } from 'lucide-react';
-import { calculateStreak, getTodayMood, MOOD_MAP } from '@/lib/storage';
-import { useTheme } from '@/hooks/useTheme';
+import { calculateStreak, getTodayMood, MOOD_MAP, logoutUser } from '@/lib/storage';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -24,10 +23,16 @@ const navItems = [
 
 export default function AppSidebar({ open, onClose }: { open: boolean; onClose: () => void }) {
   const location = useLocation();
-  const { theme, setTheme, isDark } = useTheme();
+  const navigate = useNavigate();
   const [anon, setAnon] = useState(false);
   const streak = calculateStreak();
   const todayMood = getTodayMood();
+
+  const handleLogout = () => {
+    onClose();
+    logoutUser();
+    navigate('/login', { replace: true });
+  };
 
   return (
     <>
@@ -39,7 +44,7 @@ export default function AppSidebar({ open, onClose }: { open: boolean; onClose: 
 
       <motion.aside className={`fixed lg:sticky top-0 left-0 h-screen z-50 w-64 flex flex-col border-r border-border bg-sidebar transition-transform lg:translate-x-0 ${open ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="p-5 border-b border-border">
-          <Link to="/" className="flex items-center gap-2" onClick={onClose}>
+          <Link to="/dashboard" className="flex items-center gap-2" onClick={onClose}>
             <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, hsl(330,100%,85%), hsl(197,88%,66%))' }}>
               <Leaf className="w-5 h-5 text-white" />
             </div>
@@ -82,9 +87,8 @@ export default function AppSidebar({ open, onClose }: { open: boolean; onClose: 
               <span className="w-3 h-3 rounded-full bg-white mx-0.5 shadow-sm" />
             </span>
           </button>
-          <button onClick={() => setTheme(isDark ? 'light' : 'dark')} className="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-muted-foreground hover:bg-sidebar-accent transition-colors font-body">
-            {isDark ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
-            <span>{isDark ? 'Light Mode' : 'Dark Mode'}</span>
+          <button onClick={handleLogout} className="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-muted-foreground hover:bg-sidebar-accent transition-colors font-body">
+            Sign Out
           </button>
         </div>
       </motion.aside>
