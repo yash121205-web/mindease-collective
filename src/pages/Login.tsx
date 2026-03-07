@@ -328,6 +328,11 @@ export default function Login() {
               {isSignUp ? 'Already have an account? Sign in' : 'New here? Get started'}
             </button>
           </p>
+          <p className="text-center text-xs text-muted-foreground mt-3 font-body">
+            <button type="button" onClick={() => navigate('/')} className="text-muted-foreground hover:text-primary transition-colors">
+              ← Back to Landing Page
+            </button>
+          </p>
         </motion.div>
       </div>
 

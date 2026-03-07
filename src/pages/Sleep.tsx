@@ -253,6 +253,31 @@ export default function Sleep() {
             </p>
           </div>
         )}
+
+        {/* Why Sleep Matters for Mental Health */}
+        <div className="glass-static rounded-3xl p-6 mt-6">
+          <h3 className="font-display text-lg text-foreground font-semibold mb-4">🧠 Why Sleep Matters for Mental Health</h3>
+          <div className="space-y-3">
+            {[
+              { icon: '😊', title: 'Sleep Improves Mood', desc: 'Quality sleep helps regulate serotonin and dopamine — the chemicals that keep you feeling positive and emotionally balanced throughout the day.' },
+              { icon: '🧘', title: 'Sleep Helps Emotional Regulation', desc: 'During deep sleep, your brain processes emotional experiences, making it easier to handle stress and respond calmly to challenges the next day.' },
+              { icon: '🧠', title: 'Sleep Improves Memory & Focus', desc: 'REM sleep consolidates memories and clears brain toxins. Students who sleep 7-8 hours perform up to 40% better on memory tasks than those who pull all-nighters.' },
+              { icon: '😰', title: 'Poor Sleep Increases Stress & Anxiety', desc: 'Sleep deprivation amplifies the amygdala\'s reaction to negative stimuli by up to 60%, making everything feel more threatening and stressful.' },
+              { icon: '💪', title: 'Sleep Builds Resilience', desc: 'Consistent restful sleep strengthens your prefrontal cortex — the part of your brain responsible for decision-making, impulse control, and emotional resilience.' },
+            ].map(item => (
+              <div key={item.title} className="flex gap-3 p-3 rounded-xl bg-muted/30">
+                <span className="text-xl shrink-0">{item.icon}</span>
+                <div>
+                  <p className="text-sm font-body font-medium text-foreground">{item.title}</p>
+                  <p className="text-xs text-muted-foreground font-body leading-relaxed mt-0.5">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="text-xs text-primary font-body italic mt-4 text-center">
+            "Sleep is the single most effective thing you can do to reset your brain and body health each day." — Dr. Matthew Walker
+          </p>
+        </div>
       </motion.div>
     </div>
   );
