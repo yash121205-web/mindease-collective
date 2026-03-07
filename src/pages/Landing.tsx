@@ -97,7 +97,6 @@ export default function Landing() {
     setEhs(calculateEHS());
     setTimeout(() => {
       setShowCheckIn(false);
-      navigate('/app/chat');
     }, 2500);
   };
 
