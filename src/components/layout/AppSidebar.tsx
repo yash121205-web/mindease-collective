@@ -131,8 +131,8 @@ export default function AppSidebar({ open, onClose }: { open: boolean; onClose: 
         {/* Footer */}
         <div className="p-4 border-t border-border/30 space-y-1.5">
           <button onClick={toggleDark} className="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-muted-foreground hover:bg-muted/40 transition-colors">
-            {dark ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
-            <span>{dark ? 'Light Mode' : 'Dark Mode'}</span>
+            {isDark ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
+            <span>{isDark ? 'Light Mode' : 'Dark Mode'}</span>
           </button>
           <button onClick={() => setAnon(!anon)} className="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-muted-foreground hover:bg-muted/40 transition-colors">
             <Shield className="w-3.5 h-3.5" /><span>Anonymous Mode</span>

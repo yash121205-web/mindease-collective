@@ -83,7 +83,11 @@ export default function AppLayout({ children }: { children?: React.ReactNode }) 
           )}
         </main>
 
+        {/* Bottom padding for mobile nav */}
+        <div className="lg:hidden h-16" />
+
         <FloatingActionButton />
+        <MobileBottomNav />
       </div>
     </div>
   );
