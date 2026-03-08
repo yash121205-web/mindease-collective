@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, Plus, Sparkles, X, Send } from 'lucide-react';
+import PageHeader from '@/components/PageHeader';
 import { genId } from '@/lib/storage';
 
 interface GratitudeNote {
@@ -78,15 +79,7 @@ export default function GratitudeWall() {
 
   return (
     <div className="p-4 lg:p-8 max-w-5xl mx-auto">
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-10 h-10 rounded-2xl bg-secondary/20 flex items-center justify-center">
-            <Heart className="w-5 h-5 text-secondary" />
-          </div>
-          <h1 className="font-display text-3xl text-foreground font-semibold">Gratitude Wall</h1>
-        </div>
-        <p className="text-muted-foreground font-body mb-6 ml-[52px]">Plant seeds of thankfulness. Watch them bloom.</p>
-      </motion.div>
+      <PageHeader title="Gratitude Wall" subtitle="Plant seeds of thankfulness. Watch them bloom." emoji="🌸" gradient="from-secondary/10 to-rose-soft/8" />
 
       {/* Stats bar */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="glass-static rounded-2xl px-5 py-3 mb-6 flex items-center justify-between">

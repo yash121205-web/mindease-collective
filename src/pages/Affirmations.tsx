@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, RefreshCw, Copy, Heart, Share2, ChevronLeft, ChevronRight } from 'lucide-react';
+import PageHeader from '@/components/PageHeader';
 import { callAI } from '@/lib/ai';
 import { getTodayMood, MOOD_MAP } from '@/lib/storage';
 import { toast } from 'sonner';
@@ -114,15 +115,7 @@ export default function Affirmations() {
 
   return (
     <div className="p-4 lg:p-8 max-w-4xl mx-auto">
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-10 h-10 rounded-2xl bg-secondary/20 flex items-center justify-center">
-            <Sparkles className="w-5 h-5 text-secondary" />
-          </div>
-          <h1 className="font-display text-3xl text-foreground font-semibold">Daily Affirmations</h1>
-        </div>
-        <p className="text-muted-foreground font-body mb-8 ml-[52px]">Beautiful words to nurture your inner world.</p>
-      </motion.div>
+      <PageHeader title="Daily Affirmations" subtitle="Beautiful words to nurture your inner world." emoji="✨" gradient="from-warm-lavender/12 to-secondary/8" />
 
       {/* Category Pills */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex gap-2 flex-wrap mb-8">

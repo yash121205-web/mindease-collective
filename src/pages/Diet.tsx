@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Apple, Plus, TrendingUp, Sparkles, Droplets, Flame as FireIcon, Leaf } from 'lucide-react';
+import PageHeader from '@/components/PageHeader';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { callAI } from '@/lib/ai';
 import { genId } from '@/lib/storage';
@@ -116,9 +117,7 @@ export default function Diet() {
 
   return (
     <div className="p-4 lg:p-8 max-w-2xl mx-auto">
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="font-display text-3xl text-foreground mb-1 font-semibold">Diet & Nutrition</h1>
-        <p className="text-muted-foreground mb-6 font-body">Fuel your body, fuel your mind</p>
+      <PageHeader title="Diet & Nutrition" subtitle="Fuel your body, fuel your mind" emoji="🍎" gradient="from-mint/10 to-warm-peach/8" />
 
         {/* Today's stats */}
         <div className="grid grid-cols-3 gap-3 mb-6">
@@ -292,7 +291,6 @@ export default function Diet() {
             </div>
           </div>
         )}
-      </motion.div>
     </div>
   );
 }

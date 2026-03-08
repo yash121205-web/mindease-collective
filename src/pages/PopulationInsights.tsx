@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { getMoods, getJournalEntries, getSessions } from '@/lib/storage';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, PieChart, Pie, Cell, LineChart, Line } from 'recharts';
 import { Users, TrendingUp, Heart, Brain, Shield } from 'lucide-react';
+import PageHeader from '@/components/PageHeader';
 
 export default function PopulationInsights() {
   const moods = getMoods();
@@ -54,9 +55,7 @@ export default function PopulationInsights() {
 
   return (
     <div className="p-4 lg:p-8 max-w-5xl mx-auto overflow-y-auto">
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="font-display text-3xl text-foreground mb-1 font-semibold">Community Wellness Insights</h1>
-        <p className="text-muted-foreground mb-2 font-body">Anonymized, aggregated mental wellness patterns</p>
+      <PageHeader title="Community Wellness" subtitle="Anonymized, aggregated mental wellness patterns" emoji="🌍" gradient="from-primary/10 to-secondary/8" />
         
         <div className="flex items-center gap-2 mb-8 p-3 rounded-xl bg-primary/5 border border-primary/10">
           <Shield className="w-4 h-4 text-primary shrink-0" />
@@ -177,7 +176,6 @@ export default function PopulationInsights() {
           </p>
           <p className="text-xs text-muted-foreground font-body mt-2">You're not alone in this journey.</p>
         </div>
-      </motion.div>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Moon as MoonIcon, Sun, Clock, TrendingUp, Sparkles, Plus } from 'lucide-react';
+import PageHeader from '@/components/PageHeader';
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip, BarChart, Bar, Cell } from 'recharts';
 import { callAI } from '@/lib/ai';
 import { genId } from '@/lib/storage';
@@ -99,9 +100,7 @@ export default function Sleep() {
 
   return (
     <div className="p-4 lg:p-8 max-w-2xl mx-auto">
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="font-display text-3xl text-foreground mb-1 font-semibold">Sleep Tracker</h1>
-        <p className="text-muted-foreground mb-6 font-body">Rest is the foundation of wellness</p>
+      <PageHeader title="Sleep Tracker" subtitle="Rest is the foundation of wellness" emoji="🌙" gradient="from-secondary/10 to-sky-soft/10" />
 
         {/* Stats */}
         <div className="grid grid-cols-3 gap-3 mb-6">
@@ -282,7 +281,6 @@ export default function Sleep() {
             "Sleep is the single most effective thing you can do to reset your brain and body health each day." — Dr. Matthew Walker
           </p>
         </div>
-      </motion.div>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Target, CheckCircle2, Flame, Trophy, Gift, RefreshCw, Sparkles, Lock, Star } from 'lucide-react';
+import PageHeader from '@/components/PageHeader';
 import { toast } from 'sonner';
 
 // ─── Challenge Data ───
@@ -213,18 +214,7 @@ export default function DailyChallenges() {
         )}
       </AnimatePresence>
 
-      {/* Header */}
-      <motion.div {...fadeUp(0.05)}>
-        <div className="flex items-center gap-3 mb-1">
-          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-            <Target className="w-5 h-5 text-primary" />
-          </div>
-          <div>
-            <h1 className="font-display text-2xl lg:text-3xl text-foreground font-semibold">Daily Challenges</h1>
-            <p className="text-sm text-muted-foreground font-body">Small steps, big change ✨</p>
-          </div>
-        </div>
-      </motion.div>
+      <PageHeader title="Daily Challenges" subtitle="Small steps, big change ✨" emoji="🎯" gradient="from-primary/10 to-mint/8" />
 
       {/* Streak & XP Bar */}
       <motion.div {...fadeUp(0.12)} className="mt-6 glass-static rounded-2xl p-5">

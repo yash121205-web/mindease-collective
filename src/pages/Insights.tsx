@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { getMoods, getJournalEntries, getSessions, getHabits, getTodayHabits, calculateEHS, MOOD_MAP, getChatHistory } from '@/lib/storage';
 import { callAI } from '@/lib/ai';
 import { Activity, Sparkles, BarChart3, TrendingUp, Brain, Zap } from 'lucide-react';
+import PageHeader from '@/components/PageHeader';
 import {
   LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip,
   PieChart, Pie, Cell, BarChart, Bar,
@@ -148,9 +149,7 @@ export default function Insights() {
 
   return (
     <div className="p-4 lg:p-8 max-w-5xl mx-auto overflow-y-auto">
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="font-display text-3xl text-foreground mb-1 font-semibold">Insights</h1>
-        <p className="text-muted-foreground mb-8 font-body">Understand your emotional patterns</p>
+      <PageHeader title="Insights" subtitle="Understand your emotional patterns" emoji="📊" gradient="from-secondary/10 to-primary/8" />
 
         {moods.length === 0 ? (
           <div className="glass-static rounded-3xl p-12 text-center">
@@ -348,7 +347,7 @@ export default function Insights() {
             </div>
           </div>
         )}
-      </motion.div>
+      
     </div>
   );
 }

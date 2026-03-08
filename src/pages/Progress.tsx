@@ -7,6 +7,7 @@ import {
 import { callAI } from '@/lib/ai';
 import { Flame, BookOpen, Smile, Wind, Timer, Sparkles, Award, Copy } from 'lucide-react';
 import { toast } from 'sonner';
+import PageHeader from '@/components/PageHeader';
 
 const habitList: { key: keyof HabitDay; label: string; emoji: string }[] = [
   { key: 'meditated', label: 'Meditated', emoji: '🧘' },
@@ -120,9 +121,7 @@ export default function Progress() {
 
   return (
     <div className="p-4 lg:p-8 max-w-5xl mx-auto overflow-y-auto">
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="font-display text-3xl text-foreground mb-1 font-semibold">Progress</h1>
-        <p className="text-muted-foreground mb-8 font-body">Track your wellness journey</p>
+      <PageHeader title="Progress" subtitle="Track your wellness journey" emoji="🏆" gradient="from-warm-peach/10 to-mint/8" />
 
         {/* Top Stats */}
         <div className="grid gap-4 grid-cols-2 md:grid-cols-4 mb-6">
@@ -330,7 +329,6 @@ export default function Progress() {
             ))}
           </div>
         </div>
-      </motion.div>
     </div>
   );
 }

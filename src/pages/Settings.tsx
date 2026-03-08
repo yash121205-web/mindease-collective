@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { getUser, saveUser, clearAllData, exportData, logoutUser } from '@/lib/storage';
 import { User, Shield, Database, Info, Download, Trash2, Key, Bell, Mic, Globe } from 'lucide-react';
 import { toast } from 'sonner';
+import PageHeader from '@/components/PageHeader';
 
 function Toggle({ enabled, onToggle, label }: { enabled: boolean; onToggle: () => void; label: string }) {
   return (
@@ -115,9 +116,7 @@ export default function SettingsPage() {
 
   return (
     <div className="p-4 lg:p-8 max-w-2xl mx-auto">
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="font-display text-3xl text-foreground mb-1 font-semibold">Settings</h1>
-        <p className="text-muted-foreground mb-8 font-body">Personalize your experience</p>
+      <PageHeader title="Settings" subtitle="Personalize your experience" emoji="⚙️" gradient="from-muted to-sky-soft/8" />
 
         <div className="space-y-6">
           {/* Profile */}
@@ -211,7 +210,7 @@ export default function SettingsPage() {
             Sign Out
           </button>
         </div>
-      </motion.div>
+      
     </div>
   );
 }
