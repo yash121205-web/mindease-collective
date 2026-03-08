@@ -1,15 +1,31 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { getMoods, getJournalEntries, getSessions, getHabits, getTodayHabits, calculateEHS, MOOD_MAP, getChatHistory } from '@/lib/storage';
+import { getMoods, getJournalEntries, getSessions, getHabits, calculateEHS, MOOD_MAP, getChatHistory } from '@/lib/storage';
 import { callAI } from '@/lib/ai';
-import { Activity, Sparkles, BarChart3, TrendingUp, Brain, Zap } from 'lucide-react';
+import { Activity, Sparkles, TrendingUp, Brain, Zap, Heart, Flame, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import PageHeader from '@/components/PageHeader';
 import {
   LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip,
   PieChart, Pie, Cell, BarChart, Bar,
 } from 'recharts';
 
-const COLORS = ['hsl(330 100% 85%)', 'hsl(197 88% 66%)', 'hsl(45 90% 70%)', 'hsl(270 40% 80%)', 'hsl(0 70% 80%)'];
+const COLORS = ['hsl(207 90% 72%)', 'hsl(263 60% 76%)', 'hsl(156 55% 72%)', 'hsl(20 90% 87%)', 'hsl(330 60% 75%)'];
+
+const fadeUp = {
+  initial: { opacity: 0, y: 16 },
+  animate: { opacity: 1, y: 0 },
+};
+
+function SectionLabel({ icon: Icon, label }: { icon: any; label: string }) {
+  return (
+    <div className="flex items-center gap-2 mb-3">
+      <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-primary/15 to-secondary/10 flex items-center justify-center">
+        <Icon className="w-3 h-3 text-primary" />
+      </div>
+      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider font-body">{label}</p>
+    </div>
+  );
+}
 
 export default function Insights() {
   const moods = getMoods();
@@ -28,25 +44,27 @@ export default function Insights() {
       d.setDate(d.getDate() - i);
       const key = d.toISOString().split('T')[0];
       const mood = moods.find(m => m.date === key);
-      data.push({
-        day: d.toLocaleDateString([], { month: 'short', day: 'numeric' }),
-        score: mood?.moodScore || null,
-        date: key,
-      });
+      data.push({ day: d.toLocaleDateString([], { month: 'short', day: 'numeric' }), score: mood?.moodScore || null, date: key });
     }
     return data;
   }, [moods]);
 
-  const last7 = last30.slice(-7);
+  // Trend direction
+  const trendDirection = useMemo(() => {
+    const recent = moods.slice(-7);
+    const older = moods.slice(-14, -7);
+    if (recent.length < 2 || older.length < 2) return null;
+    const recentAvg = recent.reduce((s, m) => s + m.moodScore, 0) / recent.length;
+    const olderAvg = older.reduce((s, m) => s + m.moodScore, 0) / older.length;
+    return recentAvg - olderAvg;
+  }, [moods]);
 
   // Distribution
   const distData = useMemo(() => {
     const distMap: Record<string, number> = {};
     moods.forEach(m => { distMap[m.mood] = (distMap[m.mood] || 0) + 1; });
     return Object.entries(distMap).map(([mood, count]) => ({
-      name: MOOD_MAP[mood]?.label || mood,
-      value: count,
-      emoji: MOOD_MAP[mood]?.emoji || '😐',
+      name: MOOD_MAP[mood]?.label || mood, value: count, emoji: MOOD_MAP[mood]?.emoji || '😐',
     }));
   }, [moods]);
 
@@ -54,10 +72,7 @@ export default function Insights() {
   const factorData = useMemo(() => {
     const factorMap: Record<string, number> = {};
     moods.forEach(m => m.factors?.forEach(f => { factorMap[f] = (factorMap[f] || 0) + 1; }));
-    return Object.entries(factorMap)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 6)
-      .map(([name, count]) => ({ name, count }));
+    return Object.entries(factorMap).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([name, count]) => ({ name, count }));
   }, [moods]);
 
   // Heatmap
@@ -76,32 +91,25 @@ export default function Insights() {
     return data;
   }, [moods]);
 
-  // Word cloud from journals + chats
+  // Word cloud
   const wordCloudData = useMemo(() => {
     const emotionWords = ['stress', 'anxious', 'happy', 'sad', 'tired', 'overwhelm', 'lonely', 'grateful', 'calm', 'angry', 'worried', 'excited', 'frustrated', 'peaceful', 'nervous', 'hopeful', 'confused', 'motivated', 'exhausted', 'proud', 'afraid', 'content', 'restless', 'inspired'];
     const allText = [...journal.map(j => j.content), ...chatHistory.filter(m => m.role === 'user').map(m => m.content)].join(' ').toLowerCase();
     const freq: Record<string, number> = {};
-    emotionWords.forEach(w => {
-      const count = (allText.match(new RegExp(w, 'gi')) || []).length;
-      if (count > 0) freq[w] = count;
-    });
+    emotionWords.forEach(w => { const count = (allText.match(new RegExp(w, 'gi')) || []).length; if (count > 0) freq[w] = count; });
     return Object.entries(freq).sort((a, b) => b[1] - a[1]).slice(0, 12);
   }, [journal, chatHistory]);
 
-  // Peak stress analysis
+  // Peak stress
   const stressAnalysis = useMemo(() => {
     const stressMoods = moods.filter(m => m.moodScore <= 25);
     const dayCount: Record<string, number> = { Mon: 0, Tue: 0, Wed: 0, Thu: 0, Fri: 0, Sat: 0, Sun: 0 };
-    stressMoods.forEach(m => {
-      const d = new Date(m.timestamp);
-      const day = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d.getDay()];
-      dayCount[day]++;
-    });
+    stressMoods.forEach(m => { const d = new Date(m.timestamp); const day = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d.getDay()]; dayCount[day]++; });
     const peakDay = Object.entries(dayCount).sort((a, b) => b[1] - a[1])[0];
     return { dayCount: Object.entries(dayCount).map(([name, count]) => ({ name, count })), peakDay: peakDay?.[1] > 0 ? peakDay[0] : null };
   }, [moods]);
 
-  // Mood vs habit correlation
+  // Correlation
   const correlation = useMemo(() => {
     const withHabits: number[] = [];
     const withoutHabits: number[] = [];
@@ -118,7 +126,7 @@ export default function Insights() {
     return { avgWith, avgWithout };
   }, [moods, allHabits]);
 
-  // Top stress triggers
+  // Stress triggers
   const stressTriggers = useMemo(() => {
     const triggers: Record<string, number> = {};
     moods.filter(m => m.moodScore <= 50).forEach(m => m.factors?.forEach(f => { triggers[f] = (triggers[f] || 0) + 1; }));
@@ -126,14 +134,15 @@ export default function Insights() {
   }, [moods]);
 
   const heatColor = (score: number) => {
-    if (score === 0) return 'bg-muted';
+    if (score === 0) return 'bg-muted/40';
     if (score >= 75) return 'bg-secondary';
-    if (score >= 50) return 'bg-primary/30';
-    if (score >= 25) return 'bg-primary/50';
-    return 'bg-rose-soft/60';
+    if (score >= 50) return 'bg-primary/40';
+    if (score >= 25) return 'bg-primary/60';
+    return 'bg-rose-soft/70';
   };
 
   const ehsColor = ehs >= 70 ? 'text-secondary' : ehs >= 40 ? 'text-primary' : 'text-rose-soft';
+  const ehsStroke = ehs >= 70 ? 'hsl(var(--secondary))' : ehs >= 40 ? 'hsl(var(--primary))' : 'hsl(var(--rose-soft))';
 
   const generateInsight = async () => {
     setLoadingInsight(true);
@@ -151,203 +160,310 @@ export default function Insights() {
     <div className="p-4 lg:p-8 max-w-5xl mx-auto overflow-y-auto">
       <PageHeader title="Insights" subtitle="Understand your emotional patterns" emoji="📊" gradient="from-secondary/10 to-primary/8" />
 
-        {moods.length === 0 ? (
-          <div className="glass-static rounded-3xl p-12 text-center">
-            <Activity className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
-            <p className="text-foreground font-body font-medium">No mood data yet</p>
-            <p className="text-sm text-muted-foreground mt-1 font-body">Start logging your moods to see insights here.</p>
-          </div>
-        ) : (
-          <div className="grid gap-5 md:grid-cols-2">
+      {moods.length === 0 ? (
+        <div className="bg-card/80 backdrop-blur-sm border border-border/40 rounded-3xl p-12 text-center">
+          <Activity className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
+          <p className="text-foreground font-body font-medium">No mood data yet</p>
+          <p className="text-sm text-muted-foreground mt-1 font-body">Start logging your moods to see insights here.</p>
+        </div>
+      ) : (
+        <div className="space-y-5">
+          {/* ─── Hero Stats Row ─── */}
+          <motion.div {...fadeUp} transition={{ duration: 0.4 }} className="grid grid-cols-2 lg:grid-cols-4 gap-3">
             {/* EHS */}
-            <div className="glass-static rounded-3xl p-6 flex flex-col items-center">
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3 font-body">Emotional Health Score</p>
-              <div className="relative w-28 h-28 mb-2">
+            <div className="col-span-2 lg:col-span-1 bg-card/90 backdrop-blur-sm border border-border/40 rounded-2xl p-5 flex items-center gap-4">
+              <div className="relative w-16 h-16 shrink-0">
                 <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
                   <circle cx="50" cy="50" r="42" fill="none" stroke="hsl(var(--muted))" strokeWidth="8" />
-                  <motion.circle cx="50" cy="50" r="42" fill="none"
-                    stroke={ehs >= 70 ? 'hsl(var(--secondary))' : ehs >= 40 ? 'hsl(var(--primary))' : 'hsl(var(--rose-soft))'}
-                    strokeWidth="8" strokeLinecap="round"
+                  <motion.circle cx="50" cy="50" r="42" fill="none" stroke={ehsStroke} strokeWidth="8" strokeLinecap="round"
                     strokeDasharray={`${2 * Math.PI * 42}`}
                     initial={{ strokeDashoffset: 2 * Math.PI * 42 }}
                     animate={{ strokeDashoffset: 2 * Math.PI * 42 * (1 - ehs / 100) }}
-                    transition={{ duration: 1.5 }}
+                    transition={{ duration: 1.2, ease: 'easeOut' }}
                   />
                 </svg>
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <span className={`text-3xl font-bold font-number ${ehsColor}`}>{ehs}</span>
+                  <span className={`text-lg font-bold font-number ${ehsColor}`}>{ehs}</span>
                 </div>
               </div>
-            </div>
-
-            {/* 30-day trend */}
-            <div className="glass-static rounded-3xl p-6">
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3 font-body flex items-center gap-1"><TrendingUp className="w-3 h-3" /> 30-Day Mood Trend</p>
-              <ResponsiveContainer width="100%" height={140}>
-                <LineChart data={last30.filter(d => d.score !== null)}>
-                  <XAxis dataKey="day" tick={{ fontSize: 9, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} interval="preserveStartEnd" />
-                  <YAxis domain={[0, 100]} hide />
-                  <Tooltip contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '12px', fontSize: '11px' }} />
-                  <Line type="monotone" dataKey="score" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ fill: 'hsl(var(--primary))', r: 2 }} connectNulls />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-
-            {/* Heatmap */}
-            <div className="glass-static rounded-3xl p-6 md:col-span-2">
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3 font-body">Emotional Heatmap</p>
-              <div className="grid grid-cols-7 gap-1">
-                {dayNames.map(d => <span key={d} className="text-[9px] text-muted-foreground text-center font-body">{d}</span>)}
-                {heatmapData.map((cell, i) => (
-                  <div key={i} className={`aspect-square rounded-md ${heatColor(cell.score)} transition-colors cursor-default`}
-                    title={`${cell.date}: ${cell.score || 'No data'}`} />
-                ))}
-              </div>
-              <div className="flex items-center gap-2 mt-3 text-[9px] text-muted-foreground font-body">
-                <span>Less</span>
-                <div className="w-3 h-3 rounded bg-muted" />
-                <div className="w-3 h-3 rounded bg-rose-soft/60" />
-                <div className="w-3 h-3 rounded bg-primary/30" />
-                <div className="w-3 h-3 rounded bg-secondary" />
-                <span>More</span>
+              <div>
+                <p className="text-[11px] text-muted-foreground font-body uppercase tracking-wider">EHS</p>
+                <p className="font-display text-sm font-semibold text-foreground mt-0.5">
+                  {ehs >= 70 ? 'Thriving 🌟' : ehs >= 40 ? 'Steady 💙' : 'Needs care 🫂'}
+                </p>
               </div>
             </div>
 
+            {/* Trend */}
+            <div className="bg-card/90 backdrop-blur-sm border border-border/40 rounded-2xl p-5">
+              <p className="text-[11px] text-muted-foreground font-body uppercase tracking-wider mb-1">Weekly Trend</p>
+              <div className="flex items-center gap-1.5">
+                {trendDirection !== null ? (
+                  <>
+                    {trendDirection >= 0 ? (
+                      <ArrowUpRight className="w-4 h-4 text-secondary" />
+                    ) : (
+                      <ArrowDownRight className="w-4 h-4 text-rose-soft" />
+                    )}
+                    <span className={`font-number text-lg font-bold ${trendDirection >= 0 ? 'text-secondary' : 'text-rose-soft'}`}>
+                      {trendDirection >= 0 ? '+' : ''}{Math.round(trendDirection)}
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-sm text-muted-foreground font-body">Not enough data</span>
+                )}
+              </div>
+              <p className="text-[10px] text-muted-foreground font-body mt-1">vs last week</p>
+            </div>
+
+            {/* Total logs */}
+            <div className="bg-card/90 backdrop-blur-sm border border-border/40 rounded-2xl p-5">
+              <p className="text-[11px] text-muted-foreground font-body uppercase tracking-wider mb-1">Mood Logs</p>
+              <p className="font-number text-lg font-bold text-foreground">{moods.length}</p>
+              <p className="text-[10px] text-muted-foreground font-body mt-1">all time</p>
+            </div>
+
+            {/* Journal count */}
+            <div className="bg-card/90 backdrop-blur-sm border border-border/40 rounded-2xl p-5">
+              <p className="text-[11px] text-muted-foreground font-body uppercase tracking-wider mb-1">Journal Entries</p>
+              <p className="font-number text-lg font-bold text-foreground">{journal.length}</p>
+              <p className="text-[10px] text-muted-foreground font-body mt-1">all time</p>
+            </div>
+          </motion.div>
+
+          {/* ─── 30-Day Trend Chart ─── */}
+          <motion.div {...fadeUp} transition={{ duration: 0.4, delay: 0.05 }}
+            className="bg-card/90 backdrop-blur-sm border border-border/40 rounded-2xl p-5">
+            <SectionLabel icon={TrendingUp} label="30-Day Mood Trend" />
+            <ResponsiveContainer width="100%" height={160}>
+              <LineChart data={last30.filter(d => d.score !== null)}>
+                <defs>
+                  <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stopColor="hsl(var(--primary))" />
+                    <stop offset="100%" stopColor="hsl(var(--secondary))" />
+                  </linearGradient>
+                </defs>
+                <XAxis dataKey="day" tick={{ fontSize: 9, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} interval="preserveStartEnd" />
+                <YAxis domain={[0, 100]} hide />
+                <Tooltip contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '12px', fontSize: '11px', boxShadow: '0 4px 20px hsl(0 0% 0% / 0.08)' }} />
+                <Line type="monotone" dataKey="score" stroke="url(#lineGrad)" strokeWidth={2.5} dot={{ fill: 'hsl(var(--primary))', r: 2.5, strokeWidth: 0 }} activeDot={{ r: 5, fill: 'hsl(var(--primary))', strokeWidth: 2, stroke: 'hsl(var(--card))' }} connectNulls />
+              </LineChart>
+            </ResponsiveContainer>
+          </motion.div>
+
+          {/* ─── Heatmap ─── */}
+          <motion.div {...fadeUp} transition={{ duration: 0.4, delay: 0.1 }}
+            className="bg-card/90 backdrop-blur-sm border border-border/40 rounded-2xl p-5">
+            <SectionLabel icon={Flame} label="Emotional Heatmap" />
+            <div className="grid grid-cols-7 gap-1.5">
+              {dayNames.map(d => <span key={d} className="text-[10px] text-muted-foreground text-center font-body font-medium">{d}</span>)}
+              {heatmapData.map((cell, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ scale: 0.5, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.15 + i * 0.008 }}
+                  className={`aspect-square rounded-lg ${heatColor(cell.score)} transition-colors cursor-default`}
+                  title={`${cell.date}: ${cell.score || 'No data'}`}
+                />
+              ))}
+            </div>
+            <div className="flex items-center gap-2 mt-3 text-[10px] text-muted-foreground font-body">
+              <span>Less</span>
+              <div className="w-3 h-3 rounded bg-muted/40" />
+              <div className="w-3 h-3 rounded bg-rose-soft/70" />
+              <div className="w-3 h-3 rounded bg-primary/40" />
+              <div className="w-3 h-3 rounded bg-secondary" />
+              <span>More</span>
+            </div>
+          </motion.div>
+
+          {/* ─── Distribution + Factors Row ─── */}
+          <div className="grid gap-5 md:grid-cols-2">
             {/* Distribution */}
             {distData.length > 0 && (
-              <div className="glass-static rounded-3xl p-6">
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3 font-body">Mood Distribution</p>
-                <ResponsiveContainer width="100%" height={160}>
+              <motion.div {...fadeUp} transition={{ duration: 0.4, delay: 0.15 }}
+                className="bg-card/90 backdrop-blur-sm border border-border/40 rounded-2xl p-5">
+                <SectionLabel icon={Activity} label="Mood Distribution" />
+                <ResponsiveContainer width="100%" height={170}>
                   <PieChart>
-                    <Pie data={distData} cx="50%" cy="50%" innerRadius={40} outerRadius={65} dataKey="value" paddingAngle={3}>
+                    <Pie data={distData} cx="50%" cy="50%" innerRadius={42} outerRadius={68} dataKey="value" paddingAngle={3} strokeWidth={0}>
                       {distData.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                     </Pie>
-                    <Tooltip contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '12px', fontSize: '11px' }} />
+                    <Tooltip contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '12px', fontSize: '11px', boxShadow: '0 4px 20px hsl(0 0% 0% / 0.08)' }} />
                   </PieChart>
                 </ResponsiveContainer>
-                <div className="flex flex-wrap justify-center gap-2 mt-2">
+                <div className="flex flex-wrap justify-center gap-x-3 gap-y-1 mt-2">
                   {distData.map((d, i) => (
-                    <span key={i} className="text-[10px] text-muted-foreground flex items-center gap-1 font-body">
-                      <span className="w-2 h-2 rounded-full" style={{ background: COLORS[i % COLORS.length] }} />
-                      {d.emoji} {d.name}
+                    <span key={i} className="text-[11px] text-muted-foreground flex items-center gap-1.5 font-body">
+                      <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: COLORS[i % COLORS.length] }} />
+                      {d.emoji} {d.name} <span className="font-number text-foreground/70">({d.value})</span>
                     </span>
                   ))}
                 </div>
-              </div>
+              </motion.div>
             )}
 
             {/* Factors */}
             {factorData.length > 0 && (
-              <div className="glass-static rounded-3xl p-6">
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3 font-body">Top Mood Factors</p>
-                <ResponsiveContainer width="100%" height={160}>
-                  <BarChart data={factorData} layout="vertical">
-                    <XAxis type="number" hide />
-                    <YAxis type="category" dataKey="name" tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} width={80} />
-                    <Bar dataKey="count" fill="hsl(var(--primary))" radius={[0, 6, 6, 0]} barSize={16} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
+              <motion.div {...fadeUp} transition={{ duration: 0.4, delay: 0.2 }}
+                className="bg-card/90 backdrop-blur-sm border border-border/40 rounded-2xl p-5">
+                <SectionLabel icon={Heart} label="Top Mood Factors" />
+                <div className="space-y-2.5 mt-1">
+                  {factorData.map((f, i) => {
+                    const maxCount = factorData[0]?.count || 1;
+                    return (
+                      <div key={f.name}>
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-xs font-body text-foreground font-medium">{f.name}</span>
+                          <span className="text-[10px] font-number text-muted-foreground">{f.count}×</span>
+                        </div>
+                        <div className="h-2 bg-muted/40 rounded-full overflow-hidden">
+                          <motion.div
+                            initial={{ width: 0 }}
+                            animate={{ width: `${(f.count / maxCount) * 100}%` }}
+                            transition={{ duration: 0.6, delay: 0.2 + i * 0.08 }}
+                            className="h-full rounded-full"
+                            style={{ background: COLORS[i % COLORS.length] }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </motion.div>
             )}
+          </div>
 
+          {/* ─── Word Cloud + Stress Row ─── */}
+          <div className="grid gap-5 md:grid-cols-2">
             {/* Emotion Word Cloud */}
             {wordCloudData.length > 0 && (
-              <div className="glass-static rounded-3xl p-6">
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3 font-body flex items-center gap-1"><Brain className="w-3 h-3" /> Emotion Word Cloud</p>
+              <motion.div {...fadeUp} transition={{ duration: 0.4, delay: 0.25 }}
+                className="bg-card/90 backdrop-blur-sm border border-border/40 rounded-2xl p-5">
+                <SectionLabel icon={Brain} label="Emotion Word Cloud" />
                 <div className="flex flex-wrap gap-2 justify-center py-4">
                   {wordCloudData.map(([word, count], i) => (
-                    <span key={word} className="font-body font-medium transition-all" style={{
-                      fontSize: `${Math.max(12, Math.min(28, 12 + count * 4))}px`,
-                      color: i % 2 === 0 ? 'hsl(var(--primary))' : 'hsl(var(--mint))',
-                      opacity: 0.7 + (count / (wordCloudData[0]?.[1] || 1)) * 0.3,
-                    }}>
+                    <motion.span
+                      key={word}
+                      initial={{ opacity: 0, scale: 0.7 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.3 + i * 0.04 }}
+                      className="font-display font-semibold px-2 py-0.5 rounded-lg transition-all hover:scale-110"
+                      style={{
+                        fontSize: `${Math.max(13, Math.min(26, 13 + count * 3.5))}px`,
+                        color: COLORS[i % COLORS.length],
+                        background: `${COLORS[i % COLORS.length]}15`,
+                      }}
+                    >
                       {word}
-                    </span>
+                    </motion.span>
                   ))}
                 </div>
-              </div>
+              </motion.div>
             )}
 
-            {/* Peak Stress Analysis */}
+            {/* Peak Stress */}
             {stressAnalysis.peakDay && (
-              <div className="glass-static rounded-3xl p-6">
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3 font-body flex items-center gap-1"><Zap className="w-3 h-3" /> Stress Patterns</p>
+              <motion.div {...fadeUp} transition={{ duration: 0.4, delay: 0.3 }}
+                className="bg-card/90 backdrop-blur-sm border border-border/40 rounded-2xl p-5">
+                <SectionLabel icon={Zap} label="Stress Patterns" />
                 <p className="text-sm text-foreground font-body mb-3">
-                  You tend to feel most stressed on <strong>{stressAnalysis.peakDay}s</strong>.
+                  Peak stress day: <span className="font-semibold text-rose-soft">{stressAnalysis.peakDay}s</span>
                 </p>
-                <ResponsiveContainer width="100%" height={100}>
+                <ResponsiveContainer width="100%" height={110}>
                   <BarChart data={stressAnalysis.dayCount}>
                     <XAxis dataKey="name" tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
-                    <Bar dataKey="count" fill="hsl(var(--rose-soft))" radius={[4, 4, 0, 0]} barSize={20} />
+                    <Bar dataKey="count" fill="hsl(var(--rose-soft))" radius={[6, 6, 0, 0]} barSize={22} />
                   </BarChart>
                 </ResponsiveContainer>
-              </div>
+              </motion.div>
             )}
+          </div>
 
+          {/* ─── Correlation + Triggers Row ─── */}
+          <div className="grid gap-5 md:grid-cols-2">
             {/* Mood vs Habit Correlation */}
             {(correlation.avgWith !== null || correlation.avgWithout !== null) && (
-              <div className="glass-static rounded-3xl p-6">
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3 font-body">Mood vs. Habits</p>
-                <div className="flex items-center gap-4">
-                  <div className="flex-1 text-center p-3 rounded-xl bg-secondary/10">
+              <motion.div {...fadeUp} transition={{ duration: 0.4, delay: 0.35 }}
+                className="bg-card/90 backdrop-blur-sm border border-border/40 rounded-2xl p-5">
+                <SectionLabel icon={Activity} label="Mood vs. Habits" />
+                <div className="flex items-center gap-3 mt-2">
+                  <div className="flex-1 text-center p-4 rounded-xl bg-secondary/8 border border-secondary/15">
                     <p className="text-2xl font-bold font-number text-foreground">{correlation.avgWith || '—'}</p>
-                    <p className="text-[10px] text-muted-foreground font-body">With habits</p>
+                    <p className="text-[10px] text-muted-foreground font-body mt-1">With habits ✅</p>
                   </div>
-                  <span className="text-muted-foreground font-body">vs</span>
-                  <div className="flex-1 text-center p-3 rounded-xl bg-rose-soft/10">
+                  <div className="text-muted-foreground/50 font-display text-sm font-bold">vs</div>
+                  <div className="flex-1 text-center p-4 rounded-xl bg-rose-soft/8 border border-rose-soft/15">
                     <p className="text-2xl font-bold font-number text-foreground">{correlation.avgWithout || '—'}</p>
-                    <p className="text-[10px] text-muted-foreground font-body">Without habits</p>
+                    <p className="text-[10px] text-muted-foreground font-body mt-1">Without habits</p>
                   </div>
                 </div>
-                <p className="text-xs text-muted-foreground font-body mt-3 text-center">
+                <p className="text-xs text-muted-foreground font-body mt-3 text-center leading-relaxed">
                   {correlation.avgWith && correlation.avgWithout && correlation.avgWith > correlation.avgWithout
-                    ? `Habits boost your mood by ${correlation.avgWith - correlation.avgWithout} points! Keep it up.`
+                    ? `✨ Habits boost your mood by ${correlation.avgWith - correlation.avgWithout} points!`
                     : 'Keep tracking to see the impact of your habits.'}
                 </p>
-              </div>
+              </motion.div>
             )}
 
             {/* Stress Triggers */}
             {stressTriggers.length > 0 && (
-              <div className="glass-static rounded-3xl p-6">
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3 font-body">Top Stress Triggers</p>
-                <div className="space-y-2">
+              <motion.div {...fadeUp} transition={{ duration: 0.4, delay: 0.4 }}
+                className="bg-card/90 backdrop-blur-sm border border-border/40 rounded-2xl p-5">
+                <SectionLabel icon={Zap} label="Top Stress Triggers" />
+                <div className="space-y-2 mt-1">
                   {stressTriggers.map(([factor, count], i) => (
-                    <div key={factor} className="flex items-center justify-between p-2 rounded-xl bg-muted/30">
-                      <span className="text-sm font-body text-foreground">{factor}</span>
-                      <span className="text-xs font-number text-muted-foreground">{count}x</span>
+                    <div key={factor} className="flex items-center justify-between p-3 rounded-xl bg-muted/20 border border-border/20">
+                      <div className="flex items-center gap-2">
+                        <span className="text-base">{i === 0 ? '🔴' : i === 1 ? '🟠' : '🟡'}</span>
+                        <span className="text-sm font-body font-medium text-foreground">{factor}</span>
+                      </div>
+                      <span className="text-xs font-number text-muted-foreground bg-muted/50 px-2 py-0.5 rounded-md">{count}×</span>
                     </div>
                   ))}
                 </div>
-              </div>
+              </motion.div>
             )}
+          </div>
 
-            {/* SERA Weekly Insight */}
-            <div className="md:col-span-2 rounded-3xl p-6 border border-border"
-              style={{ background: 'linear-gradient(135deg, hsl(var(--primary) / 0.08), hsl(var(--card)), hsl(var(--mint) / 0.08))' }}>
-              <div className="flex items-center gap-2 mb-3">
-                <Sparkles className="w-4 h-4 text-primary" />
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider font-body">SERA's Weekly Insight</p>
+          {/* ─── SERA Weekly Insight ─── */}
+          <motion.div {...fadeUp} transition={{ duration: 0.4, delay: 0.45 }}
+            className="relative rounded-2xl p-6 border border-primary/15 overflow-hidden"
+            style={{ background: 'linear-gradient(135deg, hsl(var(--primary) / 0.06), hsl(var(--card)), hsl(var(--mint) / 0.06))' }}
+          >
+            {/* Decorative corner */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-primary/5 to-transparent rounded-bl-full" />
+
+            <div className="relative z-10">
+              <div className="flex items-center gap-2.5 mb-4">
+                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary/20 to-secondary/15 flex items-center justify-center">
+                  <Sparkles className="w-4 h-4 text-primary" />
+                </div>
+                <div>
+                  <p className="text-xs font-semibold text-foreground font-body">SERA's Weekly Insight</p>
+                  <p className="text-[10px] text-muted-foreground font-body">AI-generated emotional analysis</p>
+                </div>
               </div>
               {aiInsight ? (
                 <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-sm text-foreground leading-relaxed whitespace-pre-line font-body">
                   {aiInsight}
                 </motion.p>
               ) : loadingInsight ? (
-                <div className="space-y-2">
-                  <div className="h-3 bg-muted rounded-full w-full animate-pulse" />
-                  <div className="h-3 bg-muted rounded-full w-4/5 animate-pulse" />
-                  <div className="h-3 bg-muted rounded-full w-3/4 animate-pulse" />
+                <div className="space-y-2.5">
+                  <div className="h-3 bg-muted/50 rounded-full w-full animate-pulse" />
+                  <div className="h-3 bg-muted/50 rounded-full w-4/5 animate-pulse" />
+                  <div className="h-3 bg-muted/50 rounded-full w-3/5 animate-pulse" />
                 </div>
               ) : (
-                <button onClick={generateInsight} className="btn-primary">
-                  Generate This Week's Insight
+                <button onClick={generateInsight} className="btn-primary text-sm">
+                  ✨ Generate This Week's Insight
                 </button>
               )}
             </div>
-          </div>
-        )}
-      
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 }
