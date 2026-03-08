@@ -295,7 +295,7 @@ export default function Chat() {
                   ? 'text-primary-foreground rounded-br-md'
                   : 'glass-static rounded-bl-md border-l-2 border-primary/30'
               }`}
-                style={msg.role === 'user' ? { background: 'linear-gradient(135deg, hsl(330,100%,85%), hsl(197,88%,66%))' } : {}}>
+                style={msg.role === 'user' ? { background: 'linear-gradient(135deg, hsl(207,90%,72%), hsl(260,60%,78%))' } : {}}>
                 {msg.content}
               </div>
               <div className="flex items-center gap-2 mt-1 px-1">
