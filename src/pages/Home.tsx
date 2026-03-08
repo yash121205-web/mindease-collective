@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform, useInView } from 'framer-motion';
 import {
   Leaf, ArrowRight, MessageCircle, Smile, BookOpen,
   Brain, Sparkles, Heart, Shield, Star, TrendingUp,
@@ -9,33 +9,39 @@ import {
 } from 'lucide-react';
 
 /* ─── Animation helpers ─── */
-const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 24 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
-});
+const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
 
 const stagger = {
   initial: {},
-  animate: { transition: { staggerChildren: 0.1, delayChildren: 0.2 } },
+  animate: { transition: { staggerChildren: 0.08, delayChildren: 0.15 } },
 };
 
 const childFade = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } },
+  initial: { opacity: 0, y: 24 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.6, ease } },
 };
 
-function Section({ children, className = '', id }: { children: React.ReactNode; className?: string; id?: string }) {
+/* ─── Viewport-triggered section wrapper ─── */
+function RevealSection({ children, className = '', id }: { children: React.ReactNode; className?: string; id?: string }) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: '-80px' });
   return (
-    <section id={id} className={`py-20 md:py-28 px-5 md:px-10 ${className}`}>
-      <div className="max-w-6xl mx-auto">{children}</div>
+    <section id={id} ref={ref} className={`py-24 md:py-32 px-5 md:px-10 ${className}`}>
+      <motion.div
+        className="max-w-6xl mx-auto"
+        initial={{ opacity: 0, y: 40 }}
+        animate={isInView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.7, ease }}
+      >
+        {children}
+      </motion.div>
     </section>
   );
 }
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold bg-primary/8 text-primary border border-primary/15 mb-5 tracking-wide">
+    <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold bg-primary/8 text-primary border border-primary/12 mb-5 tracking-wide uppercase">
       <Sparkles className="w-3.5 h-3.5" />
       {children}
     </span>
@@ -47,20 +53,20 @@ function HeroBlob({ className, delay = 0 }: { className: string; delay?: number 
   return (
     <motion.div
       className={className}
-      animate={{ x: [0, 15, -10, 0], y: [0, -12, 8, 0], scale: [1, 1.05, 0.97, 1] }}
-      transition={{ duration: 8 + delay, repeat: Infinity, ease: 'easeInOut' }}
+      animate={{ x: [0, 20, -15, 0], y: [0, -18, 12, 0], scale: [1, 1.08, 0.95, 1] }}
+      transition={{ duration: 10 + delay * 2, repeat: Infinity, ease: 'easeInOut' }}
     />
   );
 }
 
-/* ─── Typing animation for chat preview ─── */
+/* ─── Typing animation ─── */
 function TypingDots() {
   return (
     <div className="flex gap-1 items-center px-3 py-2">
       {[0, 1, 2].map(i => (
         <motion.div
           key={i}
-          className="w-2 h-2 rounded-full bg-primary/50"
+          className="w-1.5 h-1.5 rounded-full bg-primary/50"
           animate={{ y: [0, -4, 0] }}
           transition={{ duration: 0.6, delay: i * 0.15, repeat: Infinity, repeatDelay: 0.5 }}
         />
@@ -75,18 +81,18 @@ function ChatBubble({ role, text, delay }: { role: 'user' | 'ai'; text: string; 
     <motion.div
       initial={{ opacity: 0, y: 12, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ delay, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ delay, duration: 0.5, ease }}
       className={`flex ${role === 'user' ? 'justify-end' : 'justify-start'}`}
     >
       {role === 'ai' && (
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center mr-2 shrink-0 mt-1">
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center mr-2 shrink-0 mt-1 shadow-md">
           <Leaf className="w-4 h-4 text-white" />
         </div>
       )}
       <div className={`max-w-[75%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${
         role === 'user'
-          ? 'bg-primary text-white rounded-br-sm'
-          : 'bg-muted/60 text-foreground rounded-bl-sm border border-border/30'
+          ? 'bg-gradient-to-br from-primary to-primary/90 text-white rounded-br-sm shadow-md shadow-primary/20'
+          : 'bg-card text-foreground rounded-bl-sm border border-border/40 shadow-sm'
       }`}>
         {text}
       </div>
@@ -97,15 +103,17 @@ function ChatBubble({ role, text, delay }: { role: 'user' | 'ai'; text: string; 
 /* ─── Breathing circle ─── */
 function BreathingCircle() {
   return (
-    <div className="relative w-40 h-40 mx-auto">
+    <div className="relative w-44 h-44 mx-auto">
       <motion.div
-        className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/20 to-accent/20"
-        animate={{ scale: [1, 1.3, 1.3, 1], opacity: [0.5, 0.8, 0.8, 0.5] }}
+        className="absolute inset-0 rounded-full"
+        style={{ background: 'radial-gradient(circle, hsl(var(--primary) / 0.12), hsl(var(--accent) / 0.08))' }}
+        animate={{ scale: [1, 1.35, 1.35, 1], opacity: [0.4, 0.7, 0.7, 0.4] }}
         transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
       />
       <motion.div
-        className="absolute inset-4 rounded-full bg-gradient-to-br from-primary/30 to-accent/30"
-        animate={{ scale: [1, 1.2, 1.2, 1], opacity: [0.6, 0.9, 0.9, 0.6] }}
+        className="absolute inset-4 rounded-full"
+        style={{ background: 'radial-gradient(circle, hsl(var(--primary) / 0.2), hsl(var(--accent) / 0.15))' }}
+        animate={{ scale: [1, 1.25, 1.25, 1], opacity: [0.5, 0.85, 0.85, 0.5] }}
         transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut', delay: 0.2 }}
       />
       <motion.div
@@ -114,7 +122,7 @@ function BreathingCircle() {
         transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut', delay: 0.4 }}
       >
         <motion.span
-          className="text-white text-sm font-medium"
+          className="text-white text-sm font-semibold tracking-wide"
           animate={{ opacity: [1, 1, 0, 0, 1, 1, 0, 0, 1] }}
           transition={{ duration: 12, repeat: Infinity }}
         >
@@ -129,8 +137,11 @@ function BreathingCircle() {
 function FAQItem({ question, answer }: { question: string; answer: string }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="bg-card rounded-2xl border border-border/40 overflow-hidden hover:border-primary/20 transition-colors">
-      <button onClick={() => setOpen(!open)} className="w-full flex items-center justify-between p-5 text-left">
+    <motion.div
+      className="bg-card rounded-2xl border border-border/30 overflow-hidden hover:border-primary/15 transition-all"
+      whileHover={{ y: -1 }}
+    >
+      <button onClick={() => setOpen(!open)} className="w-full flex items-center justify-between p-6 text-left">
         <span className="font-display font-medium text-foreground text-sm md:text-base pr-4">{question}</span>
         <motion.div animate={{ rotate: open ? 90 : 0 }} transition={{ duration: 0.2 }}>
           <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
@@ -145,24 +156,43 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
             transition={{ duration: 0.3 }}
             className="overflow-hidden"
           >
-            <div className="px-5 pb-5 -mt-1">
+            <div className="px-6 pb-6 -mt-1">
               <p className="text-sm text-muted-foreground leading-relaxed">{answer}</p>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </motion.div>
   );
+}
+
+/* ─── Number counter ─── */
+function CountUp({ target, suffix = '' }: { target: number; suffix?: string }) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    if (!isInView) return;
+    let start = 0;
+    const step = Math.ceil(target / 40);
+    const interval = setInterval(() => {
+      start += step;
+      if (start >= target) { setCount(target); clearInterval(interval); }
+      else setCount(start);
+    }, 30);
+    return () => clearInterval(interval);
+  }, [isInView, target]);
+  return <span ref={ref} className="font-number">{count.toLocaleString()}{suffix}</span>;
 }
 
 /* ─── Data ─── */
 const features = [
-  { icon: MessageCircle, title: 'AI Emotional Companion', desc: 'Talk to SERA, your empathetic AI companion who provides personalized emotional support anytime.', gradient: 'from-primary/10 to-accent/5' },
-  { icon: Smile, title: 'Mood Tracking', desc: 'Log emotions with quick emoji check-ins. Track patterns and discover what lifts your spirits.', gradient: 'from-accent/10 to-primary/5' },
-  { icon: Timer, title: 'Guided Meditation', desc: 'Scientifically-backed guided sessions to reduce anxiety and build focus in under 10 minutes.', gradient: 'from-secondary/10 to-primary/5' },
-  { icon: BookOpen, title: 'Personal Journal', desc: 'Write freely and receive warm, insightful AI reflections that help you understand your emotions.', gradient: 'from-warm-peach/12 to-primary/5' },
-  { icon: Heart, title: 'Gratitude Wall', desc: 'Build a visual garden of things you\'re grateful for. Research shows gratitude boosts wellbeing by 25%.', gradient: 'from-rose-soft/10 to-accent/5' },
-  { icon: Headphones, title: 'Relaxing Soundscapes', desc: 'Curated ambient soundscapes designed to calm your mind and improve focus during study sessions.', gradient: 'from-primary/8 to-secondary/5' },
+  { icon: MessageCircle, title: 'AI Emotional Companion', desc: 'Talk to SERA, your empathetic AI companion who provides personalized emotional support anytime.', gradient: 'from-primary/8 to-accent/4' },
+  { icon: Smile, title: 'Mood Tracking', desc: 'Log emotions with quick emoji check-ins. Track patterns and discover what lifts your spirits.', gradient: 'from-accent/8 to-primary/4' },
+  { icon: Timer, title: 'Guided Meditation', desc: 'Scientifically-backed guided sessions to reduce anxiety and build focus in under 10 minutes.', gradient: 'from-secondary/8 to-primary/4' },
+  { icon: BookOpen, title: 'Personal Journal', desc: 'Write freely and receive warm, insightful AI reflections that help you understand your emotions.', gradient: 'from-warm-peach/10 to-primary/4' },
+  { icon: Heart, title: 'Gratitude Wall', desc: 'Build a visual garden of things you\'re grateful for. Research shows gratitude boosts wellbeing by 25%.', gradient: 'from-rose-soft/8 to-accent/4' },
+  { icon: Headphones, title: 'Relaxing Soundscapes', desc: 'Curated ambient soundscapes designed to calm your mind and improve focus during study sessions.', gradient: 'from-primary/6 to-secondary/4' },
 ];
 
 const chatMessages = [
@@ -173,9 +203,9 @@ const chatMessages = [
 ];
 
 const testimonials = [
-  { text: "MindEase helped me manage anxiety during exams. The AI companion feels like talking to a real friend.", name: "Priya S.", role: "Engineering Student" },
-  { text: "The journaling insights helped me understand my emotions better than any app I've tried.", name: "James L.", role: "Graduate Student" },
-  { text: "I love the breathing exercises and mood tracking. It's become part of my daily routine.", name: "Aisha K.", role: "Medical Student" },
+  { text: "MindEase helped me manage anxiety during exams. The AI companion feels like talking to a real friend.", name: "Priya S.", role: "Engineering Student", avatar: "🧑‍💻" },
+  { text: "The journaling insights helped me understand my emotions better than any app I've tried.", name: "James L.", role: "Graduate Student", avatar: "👨‍🎓" },
+  { text: "I love the breathing exercises and mood tracking. It's become part of my daily routine.", name: "Aisha K.", role: "Medical Student", avatar: "👩‍⚕️" },
 ];
 
 const trustBadges = [
@@ -191,11 +221,22 @@ const crisisLines = [
   { country: '🇬🇧 UK', name: 'Samaritans', number: '116 123' },
 ];
 
+const stats = [
+  { value: 50, suffix: 'K+', label: 'Students helped' },
+  { value: 95, suffix: '%', label: 'Felt calmer' },
+  { value: 90, suffix: '+', label: 'Languages' },
+  { value: 4.9, suffix: '', label: 'App rating' },
+];
+
 export default function Home() {
   const location = useLocation();
   const navigate = useNavigate();
   const [mobileMenu, setMobileMenu] = useState(false);
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
+  const heroRef = useRef(null);
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
+  const heroY = useTransform(scrollYProgress, [0, 1], [0, 150]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
   const navLinks = [
     { label: 'Home', id: 'home' },
@@ -226,7 +267,6 @@ export default function Home() {
     return () => cancelAnimationFrame(frame);
   }, [location.hash]);
 
-  // Auto-slide testimonials
   useEffect(() => {
     const t = setInterval(() => setCurrentTestimonial(p => (p + 1) % testimonials.length), 5000);
     return () => clearInterval(t);
@@ -236,10 +276,10 @@ export default function Home() {
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
 
       {/* ━━━ NAVBAR ━━━ */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/30 shadow-sm">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-background/70 backdrop-blur-2xl border-b border-border/20">
         <div className="max-w-6xl mx-auto flex items-center justify-between px-5 md:px-10 py-3.5">
           <button type="button" onClick={() => handleNavClick('home')} className="flex items-center gap-2.5 text-left">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-md">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-md shadow-primary/20">
               <Leaf className="w-5 h-5 text-white" />
             </div>
             <span className="font-display text-xl font-bold text-foreground tracking-tight">MindEase</span>
@@ -257,7 +297,15 @@ export default function Home() {
 
           <div className="hidden lg:flex items-center gap-3">
             <button type="button" onClick={() => navigate('/login')} className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-4 py-2">Login</button>
-            <button type="button" onClick={() => navigate('/login')} className="btn-primary text-sm px-6 py-2.5">Start Free</button>
+            <motion.button
+              type="button"
+              onClick={() => navigate('/login')}
+              className="btn-primary text-sm px-6 py-2.5"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+            >
+              Start Free
+            </motion.button>
           </div>
 
           <button type="button" onClick={() => setMobileMenu(!mobileMenu)} className="lg:hidden p-2" aria-label="Toggle menu">
@@ -271,7 +319,7 @@ export default function Home() {
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="lg:hidden bg-card/95 backdrop-blur-xl border-t border-border/30 px-5 pb-5 pt-3 space-y-3 overflow-hidden"
+              className="lg:hidden bg-card/95 backdrop-blur-2xl border-t border-border/20 px-5 pb-5 pt-3 space-y-3 overflow-hidden"
             >
               {navLinks.map((link) => (
                 <button type="button" key={link.label} onClick={() => handleNavClick(link.id)}
@@ -284,26 +332,30 @@ export default function Home() {
       </nav>
 
       {/* ━━━ IMMERSIVE HERO ━━━ */}
-      <section id="home" className="relative min-h-screen flex items-center overflow-hidden pt-20">
+      <section id="home" ref={heroRef} className="relative min-h-screen flex items-center overflow-hidden pt-20">
         {/* Animated background blobs */}
-        <HeroBlob className="absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full bg-primary/[0.06] blur-3xl" delay={0} />
-        <HeroBlob className="absolute -bottom-40 -right-40 w-[500px] h-[500px] rounded-full bg-accent/[0.06] blur-3xl" delay={3} />
-        <HeroBlob className="absolute top-1/4 right-1/4 w-[300px] h-[300px] rounded-full bg-secondary/[0.04] blur-3xl" delay={5} />
+        <HeroBlob className="absolute -top-40 -left-40 w-[700px] h-[700px] rounded-full bg-primary/[0.05] blur-[100px]" delay={0} />
+        <HeroBlob className="absolute -bottom-40 -right-40 w-[600px] h-[600px] rounded-full bg-accent/[0.05] blur-[100px]" delay={3} />
+        <HeroBlob className="absolute top-1/4 right-1/4 w-[400px] h-[400px] rounded-full bg-secondary/[0.04] blur-[80px]" delay={5} />
 
-        {/* Breathing animation in background */}
+        {/* Breathing circle in background */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
           <motion.div
-            className="w-[800px] h-[800px] rounded-full border border-primary/[0.04]"
-            animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.6, 0.3] }}
-            transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+            className="w-[900px] h-[900px] rounded-full border border-primary/[0.03]"
+            animate={{ scale: [1, 1.08, 1], opacity: [0.2, 0.5, 0.2] }}
+            transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
           />
         </div>
 
-        <div className="max-w-6xl mx-auto px-5 md:px-10 w-full">
+        <motion.div style={{ y: heroY, opacity: heroOpacity }} className="max-w-6xl mx-auto px-5 md:px-10 w-full relative z-10">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div className="relative z-10">
-              <motion.div {...fadeUp()}>
-                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium bg-primary/8 text-primary border border-primary/15">
+            <div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, ease }}
+              >
+                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold bg-primary/8 text-primary border border-primary/12 tracking-wide">
                   <motion.div animate={{ rotate: [0, 360] }} transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}>
                     <Sparkles className="w-3.5 h-3.5" />
                   </motion.div>
@@ -311,21 +363,36 @@ export default function Home() {
                 </span>
               </motion.div>
 
-              <motion.h1 {...fadeUp(0.1)} className="font-display text-4xl sm:text-5xl lg:text-6xl xl:text-[4.25rem] font-bold text-foreground leading-[1.08] mt-6 mb-6">
+              <motion.h1
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.1, ease }}
+                className="font-display text-4xl sm:text-5xl lg:text-6xl xl:text-[4.25rem] font-bold text-foreground leading-[1.08] mt-8 mb-6"
+              >
                 Your{' '}
-                <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent bg-[length:200%_auto] animate-shimmer">
                   AI Companion
                 </span>{' '}
                 for Mental Wellness
               </motion.h1>
 
-              <motion.p {...fadeUp(0.18)} className="text-muted-foreground text-lg md:text-xl leading-relaxed mb-10 max-w-xl">
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.2, ease }}
+                className="text-muted-foreground text-lg md:text-xl leading-relaxed mb-10 max-w-xl"
+              >
                 Talk to an empathetic AI, track your mood, and build healthier habits — in a safe, private digital space designed for students.
               </motion.p>
 
-              <motion.div {...fadeUp(0.24)} className="flex flex-wrap gap-4">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.3, ease }}
+                className="flex flex-wrap gap-4"
+              >
                 <motion.button
-                  whileHover={{ scale: 1.03, y: -2 }}
+                  whileHover={{ scale: 1.04, y: -3 }}
                   whileTap={{ scale: 0.97 }}
                   onClick={() => navigate('/login')}
                   className="btn-primary flex items-center gap-2.5 text-base px-8 py-4"
@@ -333,7 +400,7 @@ export default function Home() {
                   Start Free Session <ArrowRight className="w-4 h-4" />
                 </motion.button>
                 <motion.button
-                  whileHover={{ scale: 1.03, y: -2 }}
+                  whileHover={{ scale: 1.04, y: -3 }}
                   whileTap={{ scale: 0.97 }}
                   onClick={() => handleNavClick('features')}
                   className="btn-secondary flex items-center gap-2.5 text-base px-8 py-4"
@@ -342,7 +409,12 @@ export default function Home() {
                 </motion.button>
               </motion.div>
 
-              <motion.div {...fadeUp(0.32)} className="flex items-center gap-6 mt-10 text-xs text-muted-foreground">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5, duration: 0.7 }}
+                className="flex items-center gap-6 mt-10 text-xs text-muted-foreground"
+              >
                 {[
                   { icon: Lock, text: '100% Private' },
                   { icon: Zap, text: 'AI-Powered' },
@@ -356,12 +428,20 @@ export default function Home() {
               </motion.div>
             </div>
 
-            {/* Chat preview */}
-            <motion.div {...fadeUp(0.15)} className="relative hidden lg:block">
-              <div className="relative bg-card/80 backdrop-blur-xl border border-border/40 rounded-3xl p-6 shadow-2xl shadow-primary/5">
+            {/* ─── Chat preview with parallax ─── */}
+            <motion.div
+              initial={{ opacity: 0, x: 40 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.9, delay: 0.3, ease }}
+              className="relative hidden lg:block"
+            >
+              <div className="relative bg-card/80 backdrop-blur-2xl border border-border/30 rounded-3xl p-6 shadow-2xl shadow-primary/5">
+                {/* Top gradient bar */}
+                <div className="absolute top-0 left-4 right-4 h-[2px] bg-gradient-to-r from-transparent via-primary/40 to-transparent rounded-full" />
+
                 {/* Chat header */}
-                <div className="flex items-center gap-3 mb-5 pb-4 border-b border-border/30">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+                <div className="flex items-center gap-3 mb-5 pb-4 border-b border-border/20">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-md shadow-primary/20">
                     <Leaf className="w-5 h-5 text-white" />
                   </div>
                   <div>
@@ -376,238 +456,270 @@ export default function Home() {
                 {/* Messages */}
                 <div className="space-y-3">
                   {chatMessages.map((msg, i) => (
-                    <ChatBubble key={i} role={msg.role} text={msg.text} delay={0.5 + i * 0.3} />
+                    <ChatBubble key={i} role={msg.role} text={msg.text} delay={0.6 + i * 0.4} />
                   ))}
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 2 }}
-                  >
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.8 }}>
                     <TypingDots />
                   </motion.div>
                 </div>
 
-                {/* Floating emotion badge */}
+                {/* Emotion detection badge */}
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 1.5, type: 'spring' }}
-                  className="absolute -top-3 -right-3 px-3 py-1.5 rounded-full bg-accent/15 border border-accent/20 text-xs font-medium text-accent-foreground flex items-center gap-1.5"
+                  initial={{ opacity: 0, scale: 0.8, y: 8 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  transition={{ delay: 2, type: 'spring', stiffness: 200, damping: 15 }}
+                  className="absolute -top-3 -right-3 px-3 py-1.5 rounded-full bg-accent/12 border border-accent/15 text-xs font-semibold text-accent-foreground flex items-center gap-1.5 shadow-lg shadow-accent/10"
                 >
                   <Activity className="w-3 h-3 text-accent" /> Detected: Stress
                 </motion.div>
               </div>
 
-              {/* Floating stats cards */}
+              {/* Floating wellness score */}
               <motion.div
-                animate={{ y: [0, -6, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                className="absolute -bottom-4 -left-4 bg-card/90 backdrop-blur-md rounded-2xl p-3 flex items-center gap-2.5 shadow-lg border border-border/30"
+                animate={{ y: [0, -8, 0] }}
+                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+                className="absolute -bottom-4 -left-4 bg-card/95 backdrop-blur-xl rounded-2xl p-3 flex items-center gap-2.5 shadow-xl border border-border/30"
               >
-                <div className="w-9 h-9 rounded-xl bg-accent/15 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent/15 to-accent/5 flex items-center justify-center">
                   <TrendingUp className="w-5 h-5 text-accent" />
                 </div>
                 <div>
-                  <p className="text-xs font-semibold text-foreground font-mono">76%</p>
+                  <p className="text-sm font-bold text-foreground font-number">76%</p>
                   <p className="text-[10px] text-muted-foreground">Wellness Score</p>
                 </div>
               </motion.div>
             </motion.div>
           </div>
-        </div>
+        </motion.div>
 
         {/* Scroll indicator */}
         <motion.div
-          className="absolute bottom-8 left-1/2 -translate-x-1/2"
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1"
+          animate={{ y: [0, 8, 0], opacity: [0.4, 0.8, 0.4] }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
         >
-          <ChevronDown className="w-5 h-5 text-muted-foreground/50" />
+          <span className="text-[10px] text-muted-foreground/50 tracking-widest uppercase font-medium">Scroll</span>
+          <ChevronDown className="w-4 h-4 text-muted-foreground/40" />
         </motion.div>
       </section>
 
+      {/* ━━━ SOCIAL PROOF STATS ━━━ */}
+      <div className="section-divider" />
+      <RevealSection>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+          {stats.map((stat, i) => (
+            <motion.div
+              key={stat.label}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1, duration: 0.5, ease }}
+              className="text-center"
+            >
+              <p className="text-3xl md:text-4xl font-bold text-foreground mb-1">
+                <CountUp target={typeof stat.value === 'number' ? stat.value : 0} suffix={stat.suffix} />
+              </p>
+              <p className="text-sm text-muted-foreground">{stat.label}</p>
+            </motion.div>
+          ))}
+        </div>
+      </RevealSection>
+      <div className="section-divider" />
+
       {/* ━━━ FEATURES ━━━ */}
-      <Section id="features">
-        <motion.div {...fadeUp()} className="text-center mb-16">
+      <RevealSection id="features">
+        <div className="text-center mb-16">
           <SectionLabel>Features</SectionLabel>
           <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-foreground leading-tight">
             Everything You Need for{' '}
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Mental Wellness</span>
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto mt-4 text-lg leading-relaxed">
+          <p className="text-muted-foreground max-w-2xl mx-auto mt-5 text-lg leading-relaxed">
             Scientifically-backed tools designed to support your emotional health journey.
           </p>
-        </motion.div>
+        </div>
 
-        <motion.div variants={stagger} initial="initial" animate="animate" className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {features.map((feat, i) => (
+        <motion.div variants={stagger} initial="initial" whileInView="animate" viewport={{ once: true }} className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {features.map((feat) => (
             <motion.div
               key={feat.title}
               variants={childFade}
-              whileHover={{ y: -6, boxShadow: '0 20px 40px -12px hsl(var(--primary) / 0.12)' }}
-              className={`rounded-3xl p-7 bg-gradient-to-br ${feat.gradient} border border-border/30 group cursor-pointer transition-all`}
+              whileHover={{ y: -8, transition: { duration: 0.3 } }}
+              className={`rounded-3xl p-8 bg-gradient-to-br ${feat.gradient} border border-border/20 group cursor-pointer`}
               onClick={() => navigate('/login')}
             >
-              <div className="w-12 h-12 rounded-2xl bg-primary/12 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+              <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-5 group-hover:scale-110 group-hover:bg-primary/15 transition-all duration-300">
                 <feat.icon className="w-6 h-6 text-primary" />
               </div>
               <h3 className="font-display text-lg font-bold text-foreground mb-2">{feat.title}</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">{feat.desc}</p>
-              <div className="flex items-center gap-1 mt-4 text-primary text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="flex items-center gap-1 mt-5 text-primary text-sm font-semibold opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
                 Try it <ArrowRight className="w-3.5 h-3.5" />
               </div>
             </motion.div>
           ))}
         </motion.div>
-      </Section>
+      </RevealSection>
 
-      {/* ━━━ AI THERAPIST + BREATHING ━━━ */}
-      <Section id="how-it-works" className="bg-muted/30">
-        <motion.div {...fadeUp()} className="text-center mb-16">
+      {/* ━━━ HOW IT WORKS ━━━ */}
+      <RevealSection id="how-it-works" className="bg-muted/20">
+        <div className="text-center mb-16">
           <SectionLabel>How It Works</SectionLabel>
           <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-foreground">
             Your Personal{' '}
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Wellness Journey</span>
           </h2>
-        </motion.div>
+        </div>
 
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="grid lg:grid-cols-2 gap-8 items-stretch">
           {/* Breathing exercise */}
-          <motion.div {...fadeUp(0.1)} className="bg-card rounded-3xl border border-border/30 p-10 text-center shadow-lg">
-            <h3 className="font-display text-xl font-bold text-foreground mb-6">Breathing Exercise</h3>
+          <motion.div
+            whileHover={{ y: -4 }}
+            className="bg-card rounded-3xl border border-border/20 p-10 text-center shadow-sm flex flex-col justify-center"
+          >
+            <h3 className="font-display text-xl font-bold text-foreground mb-8">Breathing Exercise</h3>
             <BreathingCircle />
-            <div className="mt-6 space-y-1 text-sm text-muted-foreground">
+            <div className="mt-8 space-y-1.5 text-sm text-muted-foreground">
               <p>Inhale for 4 seconds</p>
-              <p>Hold for 4 seconds</p>
+              <p className="text-muted-foreground/60">Hold for 4 seconds</p>
               <p>Exhale for 4 seconds</p>
             </div>
           </motion.div>
 
           {/* Mood tracker preview */}
-          <motion.div {...fadeUp(0.2)} className="bg-card rounded-3xl border border-border/30 p-8 shadow-lg">
+          <motion.div
+            whileHover={{ y: -4 }}
+            className="bg-card rounded-3xl border border-border/20 p-8 shadow-sm"
+          >
             <h3 className="font-display text-xl font-bold text-foreground mb-6">Interactive Mood Tracker</h3>
             <div className="flex justify-center gap-3 mb-8">
               {['😄', '🙂', '😐', '😔', '😰'].map((emoji, i) => (
                 <motion.button
                   key={emoji}
-                  whileHover={{ scale: 1.2, y: -4 }}
+                  whileHover={{ scale: 1.25, y: -6 }}
                   whileTap={{ scale: 0.9 }}
                   className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl border transition-all ${
-                    i === 0 ? 'bg-primary/10 border-primary/30 shadow-md' : 'bg-muted/40 border-border/30 hover:bg-muted/60'
+                    i === 0 ? 'bg-primary/10 border-primary/25 shadow-md shadow-primary/10' : 'bg-muted/30 border-border/20 hover:bg-muted/50'
                   }`}
                 >
                   {emoji}
                 </motion.button>
               ))}
             </div>
-            <p className="text-xs text-muted-foreground uppercase tracking-wider mb-3 font-semibold">Weekly Mood Trend</p>
-            <div className="flex items-end gap-2 h-24">
-              {[70, 85, 60, 90, 55, 80, 75].map((h, i) => (
+            <p className="text-xs text-muted-foreground uppercase tracking-wider mb-4 font-semibold">Weekly Mood Trend</p>
+            <div className="flex items-end gap-2 h-28">
+              {[65, 82, 55, 90, 48, 78, 72].map((h, i) => (
                 <motion.div
                   key={i}
                   className="flex-1 rounded-lg"
                   style={{ background: `linear-gradient(180deg, hsl(var(--primary)), hsl(var(--accent)))` }}
                   initial={{ height: 0 }}
-                  animate={{ height: `${h}%` }}
-                  transition={{ delay: 0.5 + i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                  whileInView={{ height: `${h}%` }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.2 + i * 0.08, duration: 0.7, ease }}
                 />
               ))}
             </div>
-            <div className="flex justify-between mt-2 text-[10px] text-muted-foreground font-mono">
+            <div className="flex justify-between mt-3 text-[10px] text-muted-foreground font-number">
               {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(d => (
                 <span key={d}>{d}</span>
               ))}
             </div>
           </motion.div>
         </div>
-      </Section>
+      </RevealSection>
 
       {/* ━━━ TRUST & PRIVACY ━━━ */}
-      <Section id="trust">
-        <motion.div {...fadeUp()} className="text-center mb-16">
+      <RevealSection id="trust">
+        <div className="text-center mb-16">
           <SectionLabel>Trust & Privacy</SectionLabel>
           <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-foreground">
             Your Privacy is{' '}
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Sacred</span>
           </h2>
-          <p className="text-muted-foreground max-w-xl mx-auto mt-4 text-lg">
+          <p className="text-muted-foreground max-w-xl mx-auto mt-5 text-lg">
             We built MindEase with privacy-first architecture. Your data never leaves your control.
           </p>
-        </motion.div>
+        </div>
 
-        <motion.div variants={stagger} initial="initial" animate="animate" className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <motion.div variants={stagger} initial="initial" whileInView="animate" viewport={{ once: true }} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {trustBadges.map((badge) => (
             <motion.div
               key={badge.title}
               variants={childFade}
-              whileHover={{ y: -4 }}
-              className="bg-card rounded-2xl border border-border/30 p-6 text-center"
+              whileHover={{ y: -6, borderColor: 'hsl(var(--primary) / 0.2)' }}
+              className="bg-card rounded-2xl border border-border/20 p-7 text-center transition-all"
             >
               <motion.div
-                animate={{ scale: [1, 1.05, 1] }}
-                transition={{ duration: 3, repeat: Infinity }}
-                className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4"
+                animate={{ scale: [1, 1.06, 1] }}
+                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                className="w-14 h-14 rounded-2xl bg-primary/8 flex items-center justify-center mx-auto mb-5"
               >
                 <badge.icon className="w-7 h-7 text-primary" />
               </motion.div>
-              <h3 className="font-display font-bold text-foreground mb-1">{badge.title}</h3>
-              <p className="text-sm text-muted-foreground">{badge.desc}</p>
+              <h3 className="font-display font-bold text-foreground mb-1.5">{badge.title}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">{badge.desc}</p>
             </motion.div>
           ))}
         </motion.div>
-      </Section>
+      </RevealSection>
 
       {/* ━━━ TESTIMONIALS ━━━ */}
-      <Section className="bg-muted/30">
-        <motion.div {...fadeUp()} className="text-center mb-12">
+      <RevealSection className="bg-muted/20">
+        <div className="text-center mb-14">
           <SectionLabel>Testimonials</SectionLabel>
           <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">
-            Loved by Students
+            Loved by <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Students</span>
           </h2>
-        </motion.div>
+        </div>
 
         <div className="max-w-2xl mx-auto">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentTestimonial}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.4 }}
-              className="bg-card rounded-3xl border border-border/30 p-8 md:p-10 text-center shadow-lg"
+              exit={{ opacity: 0, y: -24 }}
+              transition={{ duration: 0.5, ease }}
+              className="bg-card rounded-3xl border border-border/20 p-10 md:p-12 text-center shadow-sm"
             >
-              <div className="flex justify-center gap-1 mb-5">
+              <div className="flex justify-center gap-1 mb-6">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} className="w-5 h-5 text-primary fill-primary" />
                 ))}
               </div>
-              <p className="text-lg md:text-xl text-foreground leading-relaxed italic font-display mb-6">
+              <p className="text-lg md:text-xl text-foreground leading-relaxed italic font-display mb-8">
                 "{testimonials[currentTestimonial].text}"
               </p>
-              <p className="font-semibold text-foreground">{testimonials[currentTestimonial].name}</p>
-              <p className="text-sm text-muted-foreground">{testimonials[currentTestimonial].role}</p>
+              <div className="flex items-center justify-center gap-3">
+                <span className="text-2xl">{testimonials[currentTestimonial].avatar}</span>
+                <div className="text-left">
+                  <p className="font-semibold text-foreground text-sm">{testimonials[currentTestimonial].name}</p>
+                  <p className="text-xs text-muted-foreground">{testimonials[currentTestimonial].role}</p>
+                </div>
+              </div>
             </motion.div>
           </AnimatePresence>
 
-          <div className="flex justify-center gap-2 mt-6">
+          <div className="flex justify-center gap-2 mt-8">
             {testimonials.map((_, i) => (
               <button
                 key={i}
                 onClick={() => setCurrentTestimonial(i)}
-                className={`w-2.5 h-2.5 rounded-full transition-all ${
-                  i === currentTestimonial ? 'bg-primary w-8' : 'bg-muted-foreground/20'
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  i === currentTestimonial ? 'bg-primary w-8' : 'bg-muted-foreground/15 w-2'
                 }`}
               />
             ))}
           </div>
         </div>
-      </Section>
+      </RevealSection>
 
       {/* ━━━ CRISIS SUPPORT ━━━ */}
-      <Section>
-        <motion.div {...fadeUp()} className="bg-card rounded-3xl border border-border/30 p-8 md:p-10 max-w-3xl mx-auto">
-          <div className="text-center mb-8">
-            <div className="w-14 h-14 rounded-2xl bg-rose-soft/15 flex items-center justify-center mx-auto mb-4">
+      <RevealSection>
+        <div className="bg-card rounded-3xl border border-border/20 p-8 md:p-12 max-w-3xl mx-auto shadow-sm">
+          <div className="text-center mb-10">
+            <div className="w-14 h-14 rounded-2xl bg-rose-soft/12 flex items-center justify-center mx-auto mb-5">
               <Phone className="w-7 h-7 text-rose-soft" />
             </div>
             <h2 className="font-display text-2xl font-bold text-foreground mb-2">Need Immediate Support?</h2>
@@ -615,22 +727,26 @@ export default function Home() {
           </div>
           <div className="grid sm:grid-cols-3 gap-4">
             {crisisLines.map((line) => (
-              <div key={line.country} className="bg-muted/30 rounded-2xl p-4 text-center border border-border/20">
+              <motion.div
+                key={line.country}
+                whileHover={{ y: -3, borderColor: 'hsl(var(--primary) / 0.15)' }}
+                className="bg-muted/20 rounded-2xl p-5 text-center border border-border/15 transition-all"
+              >
                 <p className="text-sm font-semibold text-foreground mb-1">{line.country}</p>
                 <p className="text-xs text-muted-foreground mb-2">{line.name}</p>
-                <p className="font-mono text-lg font-bold text-primary">{line.number}</p>
-              </div>
+                <p className="font-number text-lg font-bold text-primary">{line.number}</p>
+              </motion.div>
             ))}
           </div>
-        </motion.div>
-      </Section>
+        </div>
+      </RevealSection>
 
       {/* ━━━ FAQ ━━━ */}
-      <Section id="faq" className="bg-muted/30">
-        <motion.div {...fadeUp()} className="text-center mb-12">
+      <RevealSection id="faq" className="bg-muted/20">
+        <div className="text-center mb-14">
           <SectionLabel>FAQ</SectionLabel>
           <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">Common Questions</h2>
-        </motion.div>
+        </div>
         <div className="max-w-2xl mx-auto space-y-3">
           {[
             { q: 'Is MindEase really free?', a: 'Yes! All core features are completely free. We believe mental wellness should be accessible to everyone.' },
@@ -641,29 +757,27 @@ export default function Home() {
             <FAQItem key={faq.q} question={faq.q} answer={faq.a} />
           ))}
         </div>
-      </Section>
+      </RevealSection>
 
       {/* ━━━ FINAL CTA ━━━ */}
-      <Section>
-        <motion.div
-          {...fadeUp()}
-          className="relative rounded-3xl overflow-hidden p-12 md:p-16 text-center"
-          style={{ background: 'linear-gradient(135deg, hsl(239 84% 74% / 0.08), hsl(160 84% 67% / 0.08))' }}
+      <RevealSection>
+        <div className="relative rounded-3xl overflow-hidden p-12 md:p-20 text-center"
+          style={{ background: 'linear-gradient(135deg, hsl(var(--primary) / 0.06), hsl(var(--accent) / 0.06))' }}
         >
-          <HeroBlob className="absolute -top-20 -left-20 w-60 h-60 rounded-full bg-primary/10 blur-3xl" />
-          <HeroBlob className="absolute -bottom-20 -right-20 w-60 h-60 rounded-full bg-accent/10 blur-3xl" delay={3} />
+          <HeroBlob className="absolute -top-20 -left-20 w-72 h-72 rounded-full bg-primary/10 blur-[80px]" />
+          <HeroBlob className="absolute -bottom-20 -right-20 w-72 h-72 rounded-full bg-accent/10 blur-[80px]" delay={3} />
 
           <div className="relative z-10">
-            <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-4">
+            <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-5">
               Start Your Mental Wellness Journey{' '}
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Today</span>
             </h2>
-            <p className="text-muted-foreground text-lg mb-8 max-w-xl mx-auto">
+            <p className="text-muted-foreground text-lg mb-10 max-w-xl mx-auto leading-relaxed">
               Join thousands of students building healthier minds with AI-powered support.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <motion.button
-                whileHover={{ scale: 1.05, boxShadow: '0 0 40px hsl(239 84% 74% / 0.3)' }}
+                whileHover={{ scale: 1.05, boxShadow: '0 0 50px hsl(237 95% 74% / 0.3)' }}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => navigate('/login')}
                 className="btn-primary text-base px-10 py-4 flex items-center gap-2"
@@ -680,14 +794,14 @@ export default function Home() {
               </motion.button>
             </div>
           </div>
-        </motion.div>
-      </Section>
+        </div>
+      </RevealSection>
 
       {/* ━━━ FOOTER ━━━ */}
-      <footer className="border-t border-border/30 py-10 px-5 md:px-10">
+      <footer className="border-t border-border/20 py-12 px-5 md:px-10">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-md shadow-primary/15">
               <Leaf className="w-4 h-4 text-white" />
             </div>
             <span className="font-display font-bold text-foreground">MindEase AI</span>
