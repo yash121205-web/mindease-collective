@@ -298,9 +298,9 @@ export default function Login() {
             <motion.div {...stagger(5)}>
               <button type="button" onClick={handleSubmit} disabled={!isValid() || loading}
                 className={`w-full py-3.5 rounded-2xl text-sm font-body font-semibold transition-all flex items-center justify-center gap-2 ${
-                  isValid() && !loading ? 'text-white cursor-pointer shadow-[0_4px_20px_hsl(330_80%_85%/0.4)] hover:shadow-[0_6px_28px_hsl(330_80%_82%/0.5)] hover:scale-[1.02]' : 'bg-muted text-muted-foreground cursor-not-allowed'
+                  isValid() && !loading ? 'text-white cursor-pointer shadow-[0_4px_20px_hsl(207_80%_75%/0.4)] hover:shadow-[0_6px_28px_hsl(207_80%_72%/0.5)] hover:scale-[1.02]' : 'bg-muted text-muted-foreground cursor-not-allowed'
                 }`}
-                style={isValid() && !loading ? { background: 'linear-gradient(135deg, hsl(330,100%,85%), hsl(197,88%,66%))' } : undefined}
+                style={isValid() && !loading ? { background: 'linear-gradient(135deg, hsl(207,90%,72%), hsl(260,60%,78%))' } : undefined}
               >
                 {loading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <>Enter MindEase ✨</>}
               </button>
