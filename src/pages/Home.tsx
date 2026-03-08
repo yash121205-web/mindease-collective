@@ -6,8 +6,9 @@ import {
   Brain, Sparkles, Github, Heart, Shield, Star, TrendingUp,
   ChevronRight, Activity, Zap, Users, Lock, BarChart3,
   Flame, PenLine, Clock, Target, CheckCircle2, Play,
-  Menu, X
+  Menu, X, Headphones, Timer
 } from 'lucide-react';
+import meditationHero from '@/assets/meditation-hero.png';
 
 /* ─── Animation helpers ─── */
 const fadeUp = (delay = 0) => ({
@@ -22,14 +23,14 @@ const stagger = (i: number, base = 0.08) => fadeUp(i * base);
 function Section({ children, className = '', id }: { children: React.ReactNode; className?: string; id?: string }) {
   return (
     <section id={id} className={`py-20 md:py-28 px-5 md:px-10 ${className}`}>
-      <div className="max-w-7xl mx-auto">{children}</div>
+      <div className="max-w-6xl mx-auto">{children}</div>
     </section>
   );
 }
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <motion.span {...fadeUp()} className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-body font-medium bg-primary/10 text-primary mb-5 tracking-wide">
+    <motion.span {...fadeUp()} className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-body font-medium bg-primary/8 text-primary border border-primary/12 mb-5 tracking-wide">
       <Sparkles className="w-3.5 h-3.5" />
       {children}
     </motion.span>
@@ -38,7 +39,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 
 function SectionHeading({ children, sub }: { children: React.ReactNode; sub?: string }) {
   return (
-    <motion.div {...fadeUp()} className="text-center mb-14">
+    <motion.div {...fadeUp()} className="text-center mb-16">
       <SectionLabel>{typeof children === 'string' ? children : 'Feature'}</SectionLabel>
       <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-semibold text-foreground leading-tight">
         {children}
@@ -124,24 +125,34 @@ const stressBars = [35, 50, 40, 60, 45, 30, 25];
 
 const features = [
   {
-    icon: MessageCircle, title: 'AI Companion Chat',
+    icon: MessageCircle, title: 'AI Emotional Companion',
     desc: 'Talk to SERA, your empathetic AI companion who listens without judgment and provides personalized emotional support anytime.',
-    gradient: 'from-primary/12 to-primary/4', iconBg: 'bg-primary/15', iconColor: 'text-primary',
+    gradient: 'from-primary/8 to-secondary/4', iconBg: 'bg-primary/12', iconColor: 'text-primary',
   },
   {
-    icon: Smile, title: 'Smart Mood Tracker',
-    desc: 'Log emotions with quick emoji check-ins. Track patterns over time and discover what lifts your spirits or triggers stress.',
-    gradient: 'from-mint/12 to-secondary/4', iconBg: 'bg-mint/20', iconColor: 'text-foreground',
+    icon: Smile, title: 'Mood Tracking',
+    desc: 'Log emotions with quick emoji check-ins. Track patterns over time and discover what lifts your spirits.',
+    gradient: 'from-mint/8 to-primary/4', iconBg: 'bg-mint/15', iconColor: 'text-foreground',
   },
   {
-    icon: BookOpen, title: 'AI Journaling Assistant',
-    desc: 'Write freely and receive warm, insightful AI reflections that help you understand your emotions and grow.',
-    gradient: 'from-secondary/12 to-primary/4', iconBg: 'bg-secondary/20', iconColor: 'text-primary',
+    icon: Timer, title: 'Guided Meditation',
+    desc: 'Scientifically-backed guided sessions to reduce anxiety and build focus in under 10 minutes.',
+    gradient: 'from-secondary/8 to-primary/4', iconBg: 'bg-secondary/15', iconColor: 'text-secondary',
   },
   {
-    icon: Wind, title: 'Guided Wellness Exercises',
-    desc: 'Box breathing, body scans, desk yoga — hand-picked exercises to reduce stress in under 10 minutes.',
-    gradient: 'from-sky-soft/15 to-mint/5', iconBg: 'bg-sky-soft/25', iconColor: 'text-foreground',
+    icon: BookOpen, title: 'Personal Journal',
+    desc: 'Write freely and receive warm, insightful AI reflections that help you understand your emotions.',
+    gradient: 'from-warm-peach/10 to-primary/4', iconBg: 'bg-warm-peach/15', iconColor: 'text-foreground',
+  },
+  {
+    icon: Heart, title: 'Gratitude Wall',
+    desc: 'Build a visual garden of things you\'re grateful for. Research shows gratitude boosts wellbeing by 25%.',
+    gradient: 'from-mint/8 to-secondary/4', iconBg: 'bg-mint/15', iconColor: 'text-foreground',
+  },
+  {
+    icon: Headphones, title: 'Relaxing Soundscapes',
+    desc: 'Curated ambient soundscapes designed to calm your mind and improve focus during study sessions.',
+    gradient: 'from-sky-soft/10 to-primary/5', iconBg: 'bg-sky-soft/20', iconColor: 'text-primary',
   },
 ];
 
@@ -161,15 +172,15 @@ const benefits = [
 
 const chatMessages = [
   { role: 'user' as const, text: "I'm feeling really stressed about my finals 😰" },
-  { role: 'ai' as const, text: "Exam season can feel like a mountain — but you've climbed them before. What subject is weighing on you the most right now?" },
+  { role: 'ai' as const, text: "Exam season can feel like a mountain — but you've climbed them before. What subject is weighing on you the most?" },
   { role: 'user' as const, text: "Organic chemistry. I feel so behind." },
-  { role: 'ai' as const, text: "Falling behind doesn't mean failing. Let's make a small, manageable plan — even 25 focused minutes today counts. Would you like to try a Pomodoro session together?" },
+  { role: 'ai' as const, text: "Falling behind doesn't mean failing. Let's make a small, manageable plan — even 25 focused minutes today counts." },
 ];
 
 const insightCards = [
-  { title: 'Journaling Impact', text: 'Your mood improves by 23% on days you journal. Consider a quick reflection before bed tonight.', color: 'from-primary/10 to-secondary/8' },
-  { title: 'Stress Pattern', text: 'Your stress peaks on Tuesdays and Wednesdays — try a 5-minute breathing session before your first class.', color: 'from-mint/10 to-primary/8' },
-  { title: 'Sleep Connection', text: 'On nights you use the breathing tool, your next-day mood averages 15% higher. Great habit to keep!', color: 'from-secondary/10 to-mint/8' },
+  { title: 'Journaling Impact', text: 'Your mood improves by 23% on days you journal. Consider a quick reflection before bed tonight.', color: 'from-primary/6 to-secondary/5' },
+  { title: 'Stress Pattern', text: 'Your stress peaks on Tuesdays and Wednesdays — try a 5-minute breathing session before your first class.', color: 'from-mint/8 to-primary/5' },
+  { title: 'Sleep Connection', text: 'On nights you use the breathing tool, your next-day mood averages 15% higher. Great habit to keep!', color: 'from-secondary/6 to-mint/5' },
 ];
 
 const progressStats = [
@@ -177,6 +188,13 @@ const progressStats = [
   { icon: PenLine, label: 'Journal Entries', value: '28', sub: 'This month' },
   { icon: Smile, label: 'Moods Logged', value: '47', sub: 'Total check-ins' },
   { icon: Wind, label: 'Wellness Sessions', value: '15', sub: 'Completed' },
+];
+
+const challengeCards = [
+  { title: 'Stretch Break', desc: 'Stand up and stretch for 3 minutes', emoji: '🧘', streak: 5 },
+  { title: 'Gratitude Reflection', desc: 'Write 3 things you\'re grateful for', emoji: '🙏', streak: 12 },
+  { title: 'Digital Sunset', desc: 'No screens 30 min before bed', emoji: '🌅', streak: 3 },
+  { title: 'Mindful Breathing', desc: '4-7-8 breathing for 5 minutes', emoji: '🌬️', streak: 8 },
 ];
 
 export default function Home() {
@@ -198,10 +216,8 @@ export default function Home() {
   const scrollToSection = (sectionId: string) => {
     const el = document.getElementById(sectionId);
     if (!el) return;
-
     const offset = 96;
     const targetTop = el.getBoundingClientRect().top + window.scrollY - offset;
-
     window.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' });
     window.history.replaceState({}, '', `#${sectionId}`);
   };
@@ -225,7 +241,7 @@ export default function Home() {
   }, [location.hash]);
 
   return (
-    <div className="min-h-screen gradient-mesh font-body text-foreground overflow-x-hidden grain">
+    <div className="min-h-screen bg-background font-body text-foreground overflow-x-hidden">
 
       {/* ━━━━━━━━━━ NAVBAR ━━━━━━━━━━ */}
       <motion.nav
@@ -233,21 +249,17 @@ export default function Home() {
         animate={{ y: 0 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled ? 'glass-strong shadow-lg' : 'bg-transparent'
+          scrolled ? 'bg-background/80 backdrop-blur-xl border-b border-border/50 shadow-sm' : 'bg-transparent'
         }`}
       >
-        <div className="max-w-7xl mx-auto flex items-center justify-between px-5 md:px-10 py-4">
+        <div className="max-w-6xl mx-auto flex items-center justify-between px-5 md:px-10 py-4">
           <button type="button" onClick={() => handleNavClick('home')} className="flex items-center gap-3 text-left">
-            <motion.div
-              whileHover={{ rotate: 10 }}
-              className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-md"
-            >
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-md">
               <Leaf className="w-5 h-5 text-primary-foreground" />
-            </motion.div>
+            </div>
             <span className="font-display text-xl font-bold text-foreground tracking-tight">MindEase AI</span>
           </button>
 
-          {/* Desktop nav */}
           <div className="hidden lg:flex items-center gap-8">
             {navLinks.map((link) => (
               <button
@@ -266,23 +278,21 @@ export default function Home() {
             <button type="button" onClick={() => navigate('/login')} className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-4 py-2">
               Login
             </button>
-            <button type="button" onClick={() => navigate('/login')} className="btn-primary text-sm px-5 py-2.5">
+            <button type="button" onClick={() => navigate('/login')} className="btn-primary text-sm px-6 py-2.5">
               Start Free
             </button>
           </div>
 
-          {/* Mobile toggle */}
           <button type="button" onClick={() => setMobileMenu(!mobileMenu)} className="lg:hidden p-2" aria-label="Toggle navigation menu">
             {mobileMenu ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
 
-        {/* Mobile menu */}
         {mobileMenu && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
-            className="lg:hidden glass-strong border-t border-border px-5 pb-5 pt-3 space-y-3"
+            className="lg:hidden bg-background/95 backdrop-blur-xl border-t border-border/50 px-5 pb-5 pt-3 space-y-3"
           >
             {navLinks.map((link) => (
               <button
@@ -300,15 +310,15 @@ export default function Home() {
       </motion.nav>
 
       {/* ━━━━━━━━━━ HERO ━━━━━━━━━━ */}
-      <Section id="home" className="pt-32 md:pt-44 pb-4">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+      <Section id="home" className="pt-32 md:pt-44 pb-8">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <motion.div style={{ y: heroParallax }}>
-            <motion.div {...fadeUp()} className="mb-4">
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium bg-primary/8 text-primary border border-primary/15">
+            <motion.div {...fadeUp()} className="mb-5">
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium bg-primary/6 text-primary border border-primary/10">
                 <Star className="w-3.5 h-3.5 fill-primary/30" /> AI-Powered Mental Wellness Platform
               </span>
             </motion.div>
-            <motion.h1 {...fadeUp(0.1)} className="font-display text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-foreground leading-[1.1] mb-6">
+            <motion.h1 {...fadeUp(0.1)} className="font-display text-4xl sm:text-5xl lg:text-6xl xl:text-[4.25rem] font-bold text-foreground leading-[1.08] mb-6">
               Your AI Companion for{' '}
               <span className="bg-gradient-to-r from-primary via-secondary to-mint bg-clip-text text-transparent">
                 Mental Wellness
@@ -318,85 +328,45 @@ export default function Home() {
               Track emotions, reflect through journaling, and receive AI-powered emotional support — anytime, anywhere. Built with compassion for students.
             </motion.p>
             <motion.div {...fadeUp(0.3)} className="flex flex-wrap gap-4">
-              <button onClick={() => navigate('/login')} className="btn-primary flex items-center gap-2.5 text-base px-8 py-3.5 shadow-lg hover:shadow-xl transition-shadow">
+              <button onClick={() => navigate('/login')} className="btn-primary flex items-center gap-2.5 text-base px-8 py-3.5">
                 Start Your Wellness Journey <ArrowRight className="w-4 h-4" />
               </button>
               <button onClick={() => navigate('/login')} className="btn-secondary flex items-center gap-2.5 text-base px-8 py-3.5">
                 <MessageCircle className="w-4 h-4" /> Talk to AI Companion
               </button>
             </motion.div>
-            {/* Trust badges */}
-            <motion.div {...fadeUp(0.4)} className="flex items-center gap-5 mt-10 text-xs text-muted-foreground">
+            <motion.div {...fadeUp(0.4)} className="flex items-center gap-6 mt-10 text-xs text-muted-foreground">
               <span className="flex items-center gap-1.5"><Lock className="w-3.5 h-3.5" /> 100% Private</span>
               <span className="flex items-center gap-1.5"><Zap className="w-3.5 h-3.5" /> AI Powered</span>
               <span className="flex items-center gap-1.5"><Heart className="w-3.5 h-3.5" /> Free Forever</span>
             </motion.div>
           </motion.div>
 
-          {/* Hero illustration — neumorphic card cluster */}
+          {/* Hero illustration */}
           <motion.div {...fadeUp(0.2)} className="relative flex items-center justify-center">
             <div className="relative w-full max-w-lg mx-auto">
               {/* Glow orbs */}
-              <div className="absolute -top-16 -right-16 w-64 h-64 bg-primary/10 rounded-full blur-3xl" />
-              <div className="absolute -bottom-12 -left-12 w-52 h-52 bg-secondary/10 rounded-full blur-3xl" />
-              <div className="absolute top-1/3 left-1/4 w-40 h-40 bg-mint/8 rounded-full blur-3xl" />
+              <div className="absolute -top-20 -right-20 w-72 h-72 bg-primary/8 rounded-full blur-3xl" />
+              <div className="absolute -bottom-16 -left-16 w-56 h-56 bg-secondary/8 rounded-full blur-3xl" />
+              <div className="absolute top-1/3 left-1/4 w-40 h-40 bg-mint/6 rounded-full blur-3xl" />
 
-              {/* Main hero card */}
+              {/* Main hero illustration */}
               <motion.div
-                whileHover={{ scale: 1.02 }}
-                transition={{ type: 'spring', stiffness: 300 }}
-                className="neu p-8 md:p-10 relative overflow-hidden"
+                animate={{ y: [0, -12, 0] }}
+                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+                className="relative z-10"
               >
-                <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl from-primary/12 to-transparent rounded-bl-full" />
-                <div className="absolute bottom-0 left-0 w-36 h-36 bg-gradient-to-tr from-secondary/12 to-transparent rounded-tr-full" />
-                <div className="flex flex-col items-center text-center relative z-10">
-                  {/* Meditation Illustration */}
-                  <motion.div
-                    animate={{ y: [0, -10, 0] }}
-                    transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
-                    className="w-36 h-36 mb-6 relative"
-                  >
-                    <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-                      {/* Outer glow rings */}
-                      <circle cx="100" cy="100" r="90" fill="hsl(207 90% 72% / 0.06)" />
-                      <circle cx="100" cy="100" r="70" fill="hsl(260 60% 78% / 0.08)" />
-                      <circle cx="100" cy="100" r="50" fill="hsl(156 60% 76% / 0.1)" />
-                      {/* Person meditating */}
-                      <circle cx="100" cy="65" r="16" fill="hsl(207 90% 72% / 0.3)" stroke="hsl(207 90% 72%)" strokeWidth="2" />
-                      {/* Body */}
-                      <path d="M75 105 Q80 85 100 82 Q120 85 125 105" stroke="hsl(207 90% 72%)" strokeWidth="2.5" fill="hsl(207 90% 72% / 0.15)" strokeLinecap="round" />
-                      {/* Crossed legs */}
-                      <path d="M72 108 Q85 118 100 115 Q115 118 128 108" stroke="hsl(260 60% 78%)" strokeWidth="2.5" fill="hsl(260 60% 78% / 0.12)" strokeLinecap="round" />
-                      {/* Arms raised */}
-                      <path d="M78 95 Q65 80 58 75" stroke="hsl(207 90% 72%)" strokeWidth="2" fill="none" strokeLinecap="round" />
-                      <path d="M122 95 Q135 80 142 75" stroke="hsl(207 90% 72%)" strokeWidth="2" fill="none" strokeLinecap="round" />
-                      {/* Energy dots */}
-                      <circle cx="55" cy="72" r="3" fill="hsl(156 60% 76%)" opacity="0.7" />
-                      <circle cx="145" cy="72" r="3" fill="hsl(156 60% 76%)" opacity="0.7" />
-                      <circle cx="100" cy="42" r="3.5" fill="hsl(260 60% 78%)" opacity="0.6" />
-                      {/* Lotus base */}
-                      <path d="M70 120 Q85 130 100 128 Q115 130 130 120" stroke="hsl(156 60% 76%)" strokeWidth="1.5" fill="hsl(156 60% 76% / 0.1)" strokeLinecap="round" />
-                      <path d="M78 125 Q90 135 100 133 Q110 135 122 125" stroke="hsl(156 60% 76%)" strokeWidth="1.5" fill="hsl(156 60% 76% / 0.08)" strokeLinecap="round" />
-                    </svg>
-                  </motion.div>
-                  <p className="font-display text-2xl md:text-3xl font-bold text-foreground mb-2">Calm & Clarity</p>
-                  <p className="text-sm text-muted-foreground mb-4">Your wellness journey starts here</p>
-                  <div className="flex gap-2">
-                    {['AI Companion', 'Mood Tracking', 'Wellness Tools'].map((pill) => (
-                      <span key={pill} className="text-[10px] px-3 py-1 rounded-full bg-primary/8 text-primary font-medium">{pill}</span>
-                    ))}
-                  </div>
-                </div>
+                <img src={meditationHero} alt="Person meditating peacefully" className="w-full max-w-md mx-auto drop-shadow-xl" />
               </motion.div>
 
               {/* Floating cards */}
               <motion.div
                 animate={{ y: [0, -8, 0] }}
                 transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
-                className="absolute -top-5 -right-5 md:-right-8 neu-flat p-3 flex items-center gap-2.5 shadow-md"
+                className="absolute -top-3 -right-3 md:-right-6 bg-background/90 backdrop-blur-md rounded-2xl p-3 flex items-center gap-2.5 shadow-lg border border-border/40"
               >
-                <div className="w-9 h-9 rounded-xl bg-mint/20 flex items-center justify-center">
-                  <Smile className="w-5 h-5 text-secondary" />
+                <div className="w-9 h-9 rounded-xl bg-mint/15 flex items-center justify-center">
+                  <Smile className="w-5 h-5 text-foreground" />
                 </div>
                 <div>
                   <p className="text-xs font-semibold text-foreground">Mood: Great</p>
@@ -407,9 +377,9 @@ export default function Home() {
               <motion.div
                 animate={{ y: [0, -6, 0] }}
                 transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-                className="absolute -bottom-4 -left-5 md:-left-8 neu-flat p-3 flex items-center gap-2.5 shadow-md"
+                className="absolute -bottom-2 -left-3 md:-left-6 bg-background/90 backdrop-blur-md rounded-2xl p-3 flex items-center gap-2.5 shadow-lg border border-border/40"
               >
-                <div className="w-9 h-9 rounded-xl bg-primary/15 flex items-center justify-center">
+                <div className="w-9 h-9 rounded-xl bg-primary/12 flex items-center justify-center">
                   <Activity className="w-5 h-5 text-primary" />
                 </div>
                 <div>
@@ -421,10 +391,10 @@ export default function Home() {
               <motion.div
                 animate={{ y: [0, -7, 0] }}
                 transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
-                className="absolute top-1/2 -right-3 md:-right-6 transform -translate-y-1/2 neu-flat p-2.5 flex items-center gap-2 shadow-md"
+                className="absolute top-1/2 -right-1 md:-right-4 transform -translate-y-1/2 bg-background/90 backdrop-blur-md rounded-2xl p-2.5 flex items-center gap-2 shadow-lg border border-border/40"
               >
-                <div className="w-7 h-7 rounded-lg bg-rose-soft/20 flex items-center justify-center">
-                  <Flame className="w-3.5 h-3.5 text-rose-soft" />
+                <div className="w-7 h-7 rounded-lg bg-warm-peach/20 flex items-center justify-center">
+                  <Flame className="w-3.5 h-3.5 text-foreground" />
                 </div>
                 <p className="text-[10px] font-semibold text-foreground">🔥 12 streak</p>
               </motion.div>
@@ -433,17 +403,43 @@ export default function Home() {
         </div>
       </Section>
 
-      {/* ━━━━━━━━━━ EMOTIONAL HEALTH DASHBOARD ━━━━━━━━━━ */}
+      {/* ━━━━━━━━━━ FEATURE PREVIEW CARDS ━━━━━━━━━━ */}
+      <Section className="!py-10">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[
+            { icon: MessageCircle, title: 'AI Emotional Companion', desc: 'Empathetic support', color: 'bg-primary/8' },
+            { icon: Smile, title: 'Mood Tracking', desc: 'Daily check-ins', color: 'bg-secondary/8' },
+            { icon: Timer, title: 'Guided Meditation', desc: 'Calm your mind', color: 'bg-mint/10' },
+            { icon: BookOpen, title: 'Personal Journal', desc: 'AI-powered reflection', color: 'bg-warm-peach/12' },
+          ].map((card, i) => (
+            <motion.div
+              key={card.title}
+              {...stagger(i)}
+              whileHover={{ y: -4, scale: 1.02 }}
+              className="bg-background rounded-2xl border border-border/50 p-5 text-center shadow-sm hover:shadow-md transition-all cursor-pointer"
+              onClick={() => navigate('/login')}
+            >
+              <div className={`w-12 h-12 rounded-2xl ${card.color} flex items-center justify-center mx-auto mb-3`}>
+                <card.icon className="w-6 h-6 text-foreground" />
+              </div>
+              <p className="font-display text-sm font-semibold text-foreground mb-1">{card.title}</p>
+              <p className="text-[11px] text-muted-foreground">{card.desc}</p>
+            </motion.div>
+          ))}
+        </div>
+      </Section>
+
+      {/* ━━━━━━━━━━ DASHBOARD PREVIEW ━━━━━━━━━━ */}
       <Section id="dashboard">
         <SectionHeading sub="Real-time emotional intelligence at your fingertips. Every metric is powered by your daily interactions.">
           Emotional Health at a Glance
         </SectionHeading>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {/* EHS Score */}
-          <motion.div {...stagger(0)} className="neu p-7 flex flex-col items-center sm:col-span-2 lg:col-span-1">
+          <motion.div {...stagger(0)} className="bg-background rounded-2xl border border-border/50 p-7 flex flex-col items-center sm:col-span-2 lg:col-span-1 shadow-sm">
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest mb-5">Emotional Health</p>
-            <div className="relative w-32 h-32 mb-4">
+            <div className="relative w-28 h-28 mb-4">
               <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
                 <circle cx="50" cy="50" r="42" fill="none" stroke="hsl(var(--muted))" strokeWidth="6" />
                 <motion.circle
@@ -464,18 +460,18 @@ export default function Home() {
                 </defs>
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-3xl font-bold font-number text-foreground">76</span>
+                <span className="text-2xl font-bold font-number text-foreground">76</span>
                 <span className="text-[10px] text-muted-foreground">/ 100</span>
               </div>
             </div>
-            <span className="text-xs text-primary font-medium px-3 py-1 rounded-full bg-primary/10">↑ +8 pts this week</span>
+            <span className="text-xs text-primary font-medium px-3 py-1 rounded-full bg-primary/8">↑ +8 pts this week</span>
           </motion.div>
 
           {/* Today's Mood */}
-          <motion.div {...stagger(1)} className="neu p-7">
+          <motion.div {...stagger(1)} className="bg-background rounded-2xl border border-border/50 p-7 shadow-sm">
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest mb-4">Today's Mood</p>
             <div className="flex items-center gap-3 mb-4">
-              <span className="text-5xl">😊</span>
+              <span className="text-4xl">😊</span>
               <div>
                 <p className="font-semibold text-lg text-foreground">Good</p>
                 <p className="text-xs text-muted-foreground">Feeling positive today</p>
@@ -484,7 +480,7 @@ export default function Home() {
             <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-2">This Week</p>
             <div className="flex gap-1.5">
               {['😄', '🙂', '🙂', '😐', '🙂', '😄', '🙂'].map((e, i) => (
-                <motion.div key={i} {...stagger(i, 0.04)} className="neu-inset w-8 h-8 flex items-center justify-center text-sm rounded-xl">
+                <motion.div key={i} {...stagger(i, 0.04)} className="bg-muted/40 w-8 h-8 flex items-center justify-center text-sm rounded-xl border border-border/30">
                   {e}
                 </motion.div>
               ))}
@@ -492,7 +488,7 @@ export default function Home() {
           </motion.div>
 
           {/* Stress Level */}
-          <motion.div {...stagger(2)} className="neu p-7">
+          <motion.div {...stagger(2)} className="bg-background rounded-2xl border border-border/50 p-7 shadow-sm">
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest mb-4">Stress Level</p>
             <div className="flex items-end gap-1.5 h-20 mb-4">
               {stressBars.map((h, i) => (
@@ -502,18 +498,18 @@ export default function Home() {
                   whileInView={{ height: `${h}%` }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: i * 0.06 }}
-                  className="flex-1 rounded-xl bg-gradient-to-t from-primary/35 to-primary/10"
+                  className="flex-1 rounded-lg bg-gradient-to-t from-primary/30 to-primary/8"
                 />
               ))}
             </div>
             <div className="flex items-center justify-between">
               <span className="text-xs text-muted-foreground">↓ 12% this week</span>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-mint/15 text-secondary font-medium">Improving</span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-mint/12 text-foreground font-medium">Improving</span>
             </div>
           </motion.div>
 
           {/* AI Insight */}
-          <motion.div {...stagger(3)} className="neu p-7 bg-gradient-to-br from-primary/6 to-mint/6">
+          <motion.div {...stagger(3)} className="bg-background rounded-2xl border border-border/50 p-7 bg-gradient-to-br from-primary/4 to-mint/4 shadow-sm">
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest mb-4">SERA's Insight</p>
             <div className="flex items-start gap-3">
               <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center flex-shrink-0">
@@ -521,7 +517,7 @@ export default function Home() {
               </div>
               <div>
                 <p className="text-sm text-foreground leading-relaxed mb-3">
-                  "Your stress levels increased during late evening study sessions. Consider short 5-minute breaks every 25 minutes."
+                  "Your stress levels increased during late evening study sessions. Consider short 5-minute breaks."
                 </p>
                 <span className="text-[10px] text-primary font-medium">Based on 7-day analysis</span>
               </div>
@@ -530,46 +526,25 @@ export default function Home() {
         </div>
       </Section>
 
-      {/* ━━━━━━━━━━ QUICK ACTIONS ━━━━━━━━━━ */}
-      <Section className="!py-0">
-        <motion.div {...fadeUp()} className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {quickActions.map((action, i) => (
-            <motion.button
-              key={action.label}
-              {...stagger(i)}
-              whileHover={{ scale: 1.04, y: -4 }}
-              whileTap={{ scale: 0.97 }}
-              onClick={() => navigate(action.path)}
-              className="neu p-5 flex flex-col items-center gap-3 group cursor-pointer"
-            >
-              <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${action.color} flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow`}>
-                <action.icon className="w-5 h-5 text-primary-foreground" />
-              </div>
-              <span className="text-sm font-medium text-foreground">{action.label}</span>
-            </motion.button>
-          ))}
-        </motion.div>
-      </Section>
-
       {/* ━━━━━━━━━━ CORE FEATURES ━━━━━━━━━━ */}
       <Section id="features">
         <SectionHeading sub="Powerful AI tools designed around your emotional wellbeing — gentle, private, and always available.">
           Everything You Need to Feel Better
         </SectionHeading>
 
-        <div className="grid sm:grid-cols-2 gap-6">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {features.map((f, i) => (
             <motion.div
               key={f.title}
               {...stagger(i)}
               whileHover={{ y: -6 }}
-              className={`neu p-8 bg-gradient-to-br ${f.gradient} group cursor-pointer`}
+              className={`bg-background rounded-2xl border border-border/50 p-8 bg-gradient-to-br ${f.gradient} group cursor-pointer shadow-sm hover:shadow-lg transition-all`}
               onClick={() => navigate('/login')}
             >
               <div className={`w-14 h-14 rounded-2xl ${f.iconBg} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform`}>
                 <f.icon className={`w-7 h-7 ${f.iconColor}`} />
               </div>
-              <h3 className="font-display text-xl md:text-2xl font-semibold text-foreground mb-3">{f.title}</h3>
+              <h3 className="font-display text-xl font-semibold text-foreground mb-3">{f.title}</h3>
               <p className="text-sm text-muted-foreground leading-relaxed mb-4">{f.desc}</p>
               <span className="inline-flex items-center gap-1.5 text-xs font-medium text-primary group-hover:gap-3 transition-all">
                 Explore <ChevronRight className="w-3.5 h-3.5" />
@@ -585,9 +560,9 @@ export default function Home() {
           Understand Your Emotions Deeply
         </SectionHeading>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-3 gap-5">
           {/* Weekly Mood Chart */}
-          <motion.div {...stagger(0)} className="neu p-7">
+          <motion.div {...stagger(0)} className="bg-background rounded-2xl border border-border/50 p-7 shadow-sm">
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest mb-5">Weekly Mood Trend</p>
             <div className="flex items-end gap-2.5 h-36">
               {weekDays.map((day, i) => (
@@ -597,8 +572,8 @@ export default function Home() {
                     whileInView={{ height: `${moodBars[i]}%` }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.7, delay: i * 0.07 }}
-                    className={`w-full rounded-xl bg-gradient-to-t ${
-                      moodBars[i] >= 80 ? 'from-mint/50 to-mint/20' : moodBars[i] >= 60 ? 'from-primary/40 to-primary/15' : 'from-rose-soft/40 to-rose-soft/15'
+                    className={`w-full rounded-lg bg-gradient-to-t ${
+                      moodBars[i] >= 80 ? 'from-mint/40 to-mint/15' : moodBars[i] >= 60 ? 'from-primary/35 to-primary/10' : 'from-warm-peach/40 to-warm-peach/15'
                     }`}
                   />
                   <span className="text-[10px] text-muted-foreground font-medium">{day}</span>
@@ -608,11 +583,11 @@ export default function Home() {
           </motion.div>
 
           {/* Emotion Heatmap */}
-          <motion.div {...stagger(1)} className="neu p-7">
+          <motion.div {...stagger(1)} className="bg-background rounded-2xl border border-border/50 p-7 shadow-sm">
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest mb-5">Emotion Heatmap</p>
             <div className="grid grid-cols-7 gap-2">
               {Array.from({ length: 35 }, (_, i) => {
-                const intensity = [0.08, 0.2, 0.35, 0.55, 0.75][Math.floor(Math.random() * 5)];
+                const intensity = [0.06, 0.15, 0.28, 0.45, 0.65][Math.floor(Math.random() * 5)];
                 return (
                   <motion.div
                     key={i}
@@ -620,7 +595,7 @@ export default function Home() {
                     whileInView={{ scale: 1, opacity: 1 }}
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.012 }}
-                    className="aspect-square rounded-lg cursor-pointer hover:ring-2 hover:ring-primary/30 transition-all"
+                    className="aspect-square rounded-md cursor-pointer hover:ring-2 hover:ring-primary/30 transition-all"
                     style={{ background: `hsl(var(--primary) / ${intensity})` }}
                     title={`Week ${Math.floor(i / 7) + 1}, ${weekDays[i % 7]}`}
                   />
@@ -630,7 +605,7 @@ export default function Home() {
             <div className="flex items-center justify-between mt-4">
               <span className="text-[10px] text-muted-foreground">Less active</span>
               <div className="flex gap-1">
-                {[0.08, 0.2, 0.35, 0.55, 0.75].map((o, i) => (
+                {[0.06, 0.15, 0.28, 0.45, 0.65].map((o, i) => (
                   <div key={i} className="w-3.5 h-3.5 rounded" style={{ background: `hsl(var(--primary) / ${o})` }} />
                 ))}
               </div>
@@ -639,12 +614,12 @@ export default function Home() {
           </motion.div>
 
           {/* Stress Trend */}
-          <motion.div {...stagger(2)} className="neu p-7">
+          <motion.div {...stagger(2)} className="bg-background rounded-2xl border border-border/50 p-7 shadow-sm">
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest mb-5">Stress Trend</p>
             <svg viewBox="0 0 200 90" className="w-full h-32">
               <defs>
                 <linearGradient id="stressAreaGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.25" />
+                  <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.2" />
                   <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0" />
                 </linearGradient>
               </defs>
@@ -660,7 +635,6 @@ export default function Home() {
                 viewport={{ once: true }}
                 transition={{ duration: 2, ease: 'easeOut' }}
               />
-              {/* Dots */}
               {[[0,65],[50,55],[100,38],[150,42],[200,28]].map(([cx,cy], i) => (
                 <motion.circle
                   key={i} cx={cx} cy={cy} r="3.5"
@@ -678,6 +652,36 @@ export default function Home() {
         </div>
       </Section>
 
+      {/* ━━━━━━━━━━ DAILY WELLNESS CHALLENGES ━━━━━━━━━━ */}
+      <Section>
+        <SectionHeading sub="Small daily actions that build lasting habits. Complete challenges and watch your streak grow.">
+          Daily Wellness Challenges
+        </SectionHeading>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {challengeCards.map((c, i) => (
+            <motion.div
+              key={c.title}
+              {...stagger(i)}
+              whileHover={{ y: -4, scale: 1.02 }}
+              className="bg-background rounded-2xl border border-border/50 p-6 shadow-sm hover:shadow-md transition-all group cursor-pointer"
+            >
+              <span className="text-3xl block mb-3">{c.emoji}</span>
+              <h3 className="font-display text-base font-semibold text-foreground mb-1">{c.title}</h3>
+              <p className="text-xs text-muted-foreground mb-4">{c.desc}</p>
+              <div className="flex items-center justify-between">
+                <button className="px-4 py-1.5 rounded-xl bg-primary/8 text-primary text-xs font-medium group-hover:bg-primary group-hover:text-primary-foreground transition-all">
+                  Complete
+                </button>
+                <span className="text-[10px] text-muted-foreground flex items-center gap-1">
+                  <Flame className="w-3 h-3" /> {c.streak}d streak
+                </span>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </Section>
+
       {/* ━━━━━━━━━━ AI CHAT PREVIEW ━━━━━━━━━━ */}
       <Section>
         <div className="grid lg:grid-cols-2 gap-14 items-center">
@@ -687,17 +691,17 @@ export default function Home() {
               Meet SERA — Your Supportive AI
             </h2>
             <p className="text-muted-foreground text-base md:text-lg leading-relaxed mb-8 max-w-lg">
-              SERA listens without judgment, remembers your context, and provides warm, evidence-based emotional support tailored specifically to students and young adults.
+              SERA listens without judgment, remembers your context, and provides warm, evidence-based emotional support tailored specifically to students.
             </p>
             <ul className="space-y-4 mb-8">
               {[
-                { icon: Heart, text: 'Empathetic emotion detection in every message' },
-                { icon: Shield, text: 'Crisis support with professional resources when needed' },
-                { icon: Lock, text: '100% private — conversations never leave your device' },
-                { icon: Zap, text: 'Contextual responses using conversation history' },
+                { icon: Brain, text: 'Detects emotional patterns and triggers' },
+                { icon: Shield, text: '100% private — no data leaves your device' },
+                { icon: Heart, text: 'Warm, empathetic, and culturally sensitive' },
+                { icon: Clock, text: 'Available 24/7 — no appointments needed' },
               ].map((item, i) => (
-                <motion.li key={i} {...stagger(i)} className="flex items-center gap-3 text-sm text-foreground">
-                  <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <motion.li key={i} {...stagger(i)} className="flex items-center gap-3 text-sm text-foreground font-body">
+                  <div className="w-8 h-8 rounded-xl bg-primary/8 flex items-center justify-center flex-shrink-0">
                     <item.icon className="w-4 h-4 text-primary" />
                   </div>
                   {item.text}
@@ -710,8 +714,8 @@ export default function Home() {
           </motion.div>
 
           {/* Chat mockup */}
-          <motion.div {...fadeUp(0.2)} className="neu p-6 max-w-md mx-auto w-full">
-            <div className="flex items-center gap-3 mb-5 pb-4 border-b border-border">
+          <motion.div {...fadeUp(0.2)} className="bg-background rounded-2xl border border-border/50 p-6 max-w-md mx-auto w-full shadow-lg">
+            <div className="flex items-center gap-3 mb-5 pb-4 border-b border-border/50">
               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-md">
                 <Leaf className="w-5 h-5 text-primary-foreground" />
               </div>
@@ -719,7 +723,7 @@ export default function Home() {
                 <p className="text-sm font-semibold text-foreground">SERA</p>
                 <div className="flex items-center gap-1.5">
                   <div className="w-2 h-2 rounded-full bg-mint animate-pulse" />
-                  <p className="text-[10px] text-muted-foreground">Online • Ready to listen</p>
+                  <p className="text-[10px] text-muted-foreground">Online • Powered by AI</p>
                 </div>
               </div>
             </div>
@@ -735,14 +739,13 @@ export default function Home() {
                 >
                   <div className={`text-sm px-4 py-3 max-w-[85%] ${
                     msg.role === 'user'
-                      ? 'bg-primary text-primary-foreground rounded-2xl rounded-br-md'
-                      : 'neu-flat rounded-2xl rounded-bl-md text-foreground'
+                      ? 'bg-gradient-to-br from-primary to-secondary text-primary-foreground rounded-2xl rounded-br-md'
+                      : 'bg-muted/50 border border-border/40 rounded-2xl rounded-bl-md text-foreground'
                   }`}>
                     {msg.text}
                   </div>
                 </motion.div>
               ))}
-              {/* Emotion tag */}
               <motion.div
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
@@ -750,12 +753,11 @@ export default function Home() {
                 transition={{ delay: 1.2 }}
                 className="flex justify-start"
               >
-                <span className="text-[10px] px-2.5 py-1 rounded-full bg-primary/10 text-primary font-medium">
+                <span className="text-[10px] px-2.5 py-1 rounded-full bg-primary/8 text-primary font-medium">
                   😟 Detected: Academic Stress
                 </span>
               </motion.div>
             </div>
-            {/* Typing indicator */}
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
@@ -768,7 +770,7 @@ export default function Home() {
                   key={i}
                   animate={{ y: [0, -4, 0] }}
                   transition={{ duration: 0.6, repeat: Infinity, delay: d }}
-                  className="w-2 h-2 rounded-full bg-muted-foreground/40"
+                  className="w-2 h-2 rounded-full bg-muted-foreground/30"
                 />
               ))}
               <span className="text-[10px] text-muted-foreground ml-1">SERA is typing...</span>
@@ -783,16 +785,16 @@ export default function Home() {
           Intelligent Wellness Insights
         </SectionHeading>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-3 gap-5">
           {insightCards.map((card, i) => (
             <motion.div
               key={card.title}
               {...stagger(i)}
               whileHover={{ y: -5 }}
-              className={`neu p-7 bg-gradient-to-br ${card.color} relative overflow-hidden`}
+              className={`bg-background rounded-2xl border border-border/50 p-7 bg-gradient-to-br ${card.color} relative overflow-hidden shadow-sm hover:shadow-md transition-all`}
             >
               <div className="absolute top-3 right-3">
-                <Sparkles className="w-4 h-4 text-primary/30" />
+                <Sparkles className="w-4 h-4 text-primary/20" />
               </div>
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center mb-4 shadow-sm">
                 <Brain className="w-5 h-5 text-primary-foreground" />
@@ -810,10 +812,10 @@ export default function Home() {
           Your Progress Journey
         </SectionHeading>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {progressStats.map((stat, i) => (
-            <motion.div key={stat.label} {...stagger(i)} className="neu p-6 text-center">
-              <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
+            <motion.div key={stat.label} {...stagger(i)} className="bg-background rounded-2xl border border-border/50 p-6 text-center shadow-sm">
+              <div className="w-12 h-12 rounded-2xl bg-primary/8 flex items-center justify-center mx-auto mb-4">
                 <stat.icon className="w-6 h-6 text-primary" />
               </div>
               <p className="text-3xl font-bold font-number text-foreground mb-1">{stat.value}</p>
@@ -824,13 +826,13 @@ export default function Home() {
         </div>
 
         {/* Habit preview */}
-        <motion.div {...fadeUp(0.2)} className="neu p-7 mt-6">
+        <motion.div {...fadeUp(0.2)} className="bg-background rounded-2xl border border-border/50 p-7 mt-5 shadow-sm">
           <div className="flex items-center justify-between mb-5">
             <div>
               <p className="font-display text-lg font-semibold text-foreground">Weekly Habits</p>
               <p className="text-xs text-muted-foreground">Track your daily wellness routines</p>
             </div>
-            <span className="text-xs px-3 py-1 rounded-full bg-mint/15 text-secondary font-medium">71% complete</span>
+            <span className="text-xs px-3 py-1 rounded-full bg-mint/10 text-foreground font-medium">71% complete</span>
           </div>
           <div className="grid grid-cols-8 gap-2 text-center">
             <div />
@@ -847,7 +849,7 @@ export default function Home() {
                 </p>
                 {habit.checks.map((c, j) => (
                   <div key={j} className={`w-full aspect-square rounded-lg flex items-center justify-center ${
-                    c ? 'bg-primary/15' : 'neu-inset'
+                    c ? 'bg-primary/10' : 'bg-muted/30 border border-border/30'
                   }`}>
                     {c ? <CheckCircle2 className="w-3.5 h-3.5 text-primary" /> : null}
                   </div>
@@ -864,10 +866,10 @@ export default function Home() {
           Why MindEase AI Matters
         </SectionHeading>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {benefits.map((b, i) => (
-            <motion.div key={b.title} {...stagger(i)} whileHover={{ y: -5 }} className="neu p-7 text-center">
-              <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-5">
+            <motion.div key={b.title} {...stagger(i)} whileHover={{ y: -5 }} className="bg-background rounded-2xl border border-border/50 p-7 text-center shadow-sm hover:shadow-md transition-all">
+              <div className="w-14 h-14 rounded-2xl bg-primary/8 flex items-center justify-center mx-auto mb-5">
                 <b.icon className="w-7 h-7 text-primary" />
               </div>
               <h3 className="font-display text-lg font-semibold text-foreground mb-2">{b.title}</h3>
@@ -903,13 +905,12 @@ export default function Home() {
           Contact & Support
         </SectionHeading>
 
-        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-          {/* Contact Info */}
-          <motion.div {...fadeUp()} className="neu p-8">
+        <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+          <motion.div {...fadeUp()} className="bg-background rounded-2xl border border-border/50 p-8 shadow-sm">
             <h3 className="font-display text-xl font-semibold text-foreground mb-6">Get in Touch</h3>
             <div className="space-y-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-primary/8 flex items-center justify-center">
                   <span className="text-lg">📧</span>
                 </div>
                 <div>
@@ -918,7 +919,7 @@ export default function Home() {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-primary/8 flex items-center justify-center">
                   <span className="text-lg">📞</span>
                 </div>
                 <div>
@@ -927,7 +928,7 @@ export default function Home() {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-primary/8 flex items-center justify-center">
                   <span className="text-lg">🕐</span>
                 </div>
                 <div>
@@ -936,14 +937,13 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <div className="mt-6 p-4 rounded-xl bg-rose-soft/10 border border-rose-soft/20">
+            <div className="mt-6 p-4 rounded-xl bg-warm-peach/10 border border-warm-peach/20">
               <p className="text-xs text-foreground font-body font-medium">🆘 Crisis Support (24/7)</p>
               <p className="text-xs text-muted-foreground font-body mt-1">iCall: 9152987821 · Vandrevala: 1860-2662-345</p>
             </div>
           </motion.div>
 
-          {/* Support Form */}
-          <motion.div {...fadeUp(0.1)} className="neu p-8">
+          <motion.div {...fadeUp(0.1)} className="bg-background rounded-2xl border border-border/50 p-8 shadow-sm">
             <h3 className="font-display text-xl font-semibold text-foreground mb-6">Send Us a Message</h3>
             <ContactForm />
           </motion.div>
@@ -954,10 +954,10 @@ export default function Home() {
       <Section id="about">
         <motion.div
           {...fadeUp()}
-          className="neu p-12 md:p-20 text-center bg-gradient-to-br from-primary/8 to-secondary/8 relative overflow-hidden"
+          className="bg-background rounded-3xl border border-border/50 p-12 md:p-20 text-center bg-gradient-to-br from-primary/5 to-secondary/5 relative overflow-hidden shadow-sm"
         >
-          <div className="absolute top-0 right-0 w-72 h-72 bg-gradient-to-bl from-primary/12 to-transparent rounded-bl-full" />
-          <div className="absolute bottom-0 left-0 w-56 h-56 bg-gradient-to-tr from-secondary/12 to-transparent rounded-tr-full" />
+          <div className="absolute top-0 right-0 w-72 h-72 bg-gradient-to-bl from-primary/8 to-transparent rounded-bl-full" />
+          <div className="absolute bottom-0 left-0 w-56 h-56 bg-gradient-to-tr from-secondary/8 to-transparent rounded-tr-full" />
           <div className="relative z-10">
             <motion.div {...fadeUp(0.1)} className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center mx-auto mb-8 shadow-lg">
               <Heart className="w-8 h-8 text-primary-foreground" />
@@ -971,7 +971,7 @@ export default function Home() {
             <div className="flex flex-wrap items-center justify-center gap-4">
               <button
                 onClick={() => navigate('/login')}
-                className="btn-primary text-base px-10 py-4 inline-flex items-center gap-2.5 shadow-xl hover:shadow-2xl transition-shadow"
+                className="btn-primary text-base px-10 py-4 inline-flex items-center gap-2.5"
               >
                 Start Free <ArrowRight className="w-5 h-5" />
               </button>
@@ -987,8 +987,8 @@ export default function Home() {
       </Section>
 
       {/* ━━━━━━━━━━ FOOTER ━━━━━━━━━━ */}
-      <footer className="border-t border-border py-12 px-5 md:px-10">
-        <div className="max-w-7xl mx-auto">
+      <footer className="border-t border-border/50 py-12 px-5 md:px-10">
+        <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-sm">
@@ -1008,7 +1008,7 @@ export default function Home() {
               </a>
             </div>
           </div>
-          <div className="mt-8 pt-6 border-t border-border/50 text-center">
+          <div className="mt-8 pt-6 border-t border-border/30 text-center">
             <p className="text-xs text-muted-foreground">© 2026 MindEase AI. Built with 💙 for student mental wellness.</p>
           </div>
         </div>
