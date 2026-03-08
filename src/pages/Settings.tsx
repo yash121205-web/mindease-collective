@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { getUser, saveUser, clearAllData, exportData, logoutUser } from '@/lib/storage';
 import { User, Shield, Database, Info, Download, Trash2, Key, Bell, Mic, Globe } from 'lucide-react';
 import { toast } from 'sonner';
+import PageHeader from '@/components/PageHeader';
 
 function Toggle({ enabled, onToggle, label }: { enabled: boolean; onToggle: () => void; label: string }) {
   return (
