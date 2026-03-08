@@ -57,7 +57,7 @@ function processNode(node: Node) {
   }
   const el = node as Element;
   if (!el.tagName || el.tagName === 'SCRIPT' || el.tagName === 'STYLE' || el.tagName === 'IMG') return;
-  if (el.dataset?.ae === '1') return;
+  if ((el as HTMLElement).dataset?.ae === '1') return;
   const children = Array.from(node.childNodes);
   for (let i = 0; i < children.length; i++) {
     processNode(children[i]);
