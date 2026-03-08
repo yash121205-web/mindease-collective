@@ -4,8 +4,8 @@ import { motion } from 'framer-motion';
 import {
   Leaf, ArrowRight, MessageCircle, Smile, BookOpen, Wind,
   Brain, Sparkles, Github, Heart, Shield, Star, TrendingUp,
-  ChevronRight, Activity, Zap, Users, Lock, BarChart3,
-  Flame, PenLine, Clock, Target, CheckCircle2,
+  ChevronRight, Activity, Zap, Users, Lock,
+  Flame, PenLine, Clock, CheckCircle2,
   Menu, X, Headphones, Timer
 } from 'lucide-react';
 import meditationHero from '@/assets/meditation-hero.png';
