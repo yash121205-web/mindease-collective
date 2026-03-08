@@ -111,9 +111,7 @@ export default function Resources() {
 
   return (
     <div className="p-4 lg:p-8 max-w-4xl mx-auto overflow-y-auto">
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="font-display text-3xl text-foreground mb-1 font-semibold">Resources</h1>
-        <p className="text-muted-foreground mb-6 font-body">Support when you need it most</p>
+      <PageHeader title="Resources" subtitle="Support when you need it most" emoji="📚" gradient="from-rose-soft/10 to-secondary/8" />
 
         {/* Search Bar */}
         <div className="relative mb-8">

@@ -100,9 +100,7 @@ export default function Sleep() {
 
   return (
     <div className="p-4 lg:p-8 max-w-2xl mx-auto">
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="font-display text-3xl text-foreground mb-1 font-semibold">Sleep Tracker</h1>
-        <p className="text-muted-foreground mb-6 font-body">Rest is the foundation of wellness</p>
+      <PageHeader title="Sleep Tracker" subtitle="Rest is the foundation of wellness" emoji="🌙" gradient="from-secondary/10 to-sky-soft/10" />
 
         {/* Stats */}
         <div className="grid grid-cols-3 gap-3 mb-6">

@@ -147,9 +147,7 @@ export default function Wellness() {
 
   return (
     <div className="p-4 lg:p-8 max-w-5xl mx-auto overflow-y-auto">
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="font-display text-3xl text-foreground mb-1 font-semibold">Wellness</h1>
-        <p className="text-muted-foreground mb-6 font-body">Nurture your mind and body</p>
+      <PageHeader title="Wellness" subtitle="Nurture your mind and body" emoji="🌿" gradient="from-mint/10 to-primary/8" />
 
         {/* Tabs */}
         <div className="flex gap-1 mb-8 overflow-x-auto">

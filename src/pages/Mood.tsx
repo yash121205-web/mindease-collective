@@ -102,9 +102,7 @@ export default function Mood() {
 
   return (
     <div className="p-4 lg:p-8 max-w-2xl mx-auto">
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="font-display text-3xl text-foreground mb-1 font-semibold">Mood Check-In</h1>
-        <p className="text-muted-foreground mb-8 font-body">How are you feeling right now?</p>
+      <PageHeader title="Mood Check-In" subtitle="How are you feeling right now?" emoji="😊" gradient="from-primary/10 to-mint/8" />
 
         {!submitted ? (
           <div className="space-y-6">
