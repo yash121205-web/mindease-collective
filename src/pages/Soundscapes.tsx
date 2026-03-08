@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Volume2, VolumeX, Play, Pause, SkipForward, Headphones } from 'lucide-react';
+import PageHeader from '@/components/PageHeader';
 
 interface Soundscape {
   id: string;
