@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Leaf, ArrowRight, BookOpen, Smile, Wind, Sparkles, Copy, Timer, Heart, Headphones, Star, BarChart3, TrendingUp, Calendar, Target } from 'lucide-react';
+import { Leaf, ArrowRight, BookOpen, Smile, Wind, Sparkles, Copy, Star, BarChart3, TrendingUp } from 'lucide-react';
 import { getTodayMood, saveMood, calculateEHS, getUser, saveUser, genId, MOOD_MAP, getMoods, getJournalEntries, getSessions, calculateStreak } from '@/lib/storage';
 import { callAI } from '@/lib/ai';
 import { toast } from 'sonner';
