@@ -73,7 +73,7 @@ function ChatBubbleCard() {
     <motion.div className="bg-white rounded-2xl p-5 w-64 shadow-lg border border-border" animate={{ y: [0, -10, 0] }} transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}>
       <div className="space-y-3">
         <div className="flex justify-end">
-          <div className="text-white text-xs rounded-2xl rounded-tr-sm px-3 py-2 max-w-[80%] font-body" style={{ background: 'linear-gradient(135deg, hsl(330,100%,85%), hsl(197,88%,66%))' }}>
+          <div className="text-white text-xs rounded-2xl rounded-tr-sm px-3 py-2 max-w-[80%] font-body" style={{ background: 'linear-gradient(135deg, hsl(207,90%,72%), hsl(260,60%,78%))' }}>
             I'm feeling anxious today
           </div>
         </div>
