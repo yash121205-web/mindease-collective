@@ -197,15 +197,25 @@ export default function Wellness() {
                   {expandedEx === i && (
                     <motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} className="overflow-hidden">
                       <div className="px-5 pb-5">
-                        <div className="aspect-video rounded-xl overflow-hidden">
+                        <div className="aspect-video rounded-xl overflow-hidden bg-muted">
                           <iframe
-                            src={ex.video}
+                            src={`https://www.youtube-nocookie.com/embed/${ex.videoId}?rel=0&modestbranding=1&playsinline=1`}
                             className="w-full h-full"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            referrerPolicy="strict-origin-when-cross-origin"
                             allowFullScreen
                             title={ex.title}
+                            loading="lazy"
                           />
                         </div>
+                        <a
+                          href={`https://www.youtube.com/watch?v=${ex.videoId}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="mt-2 inline-flex text-xs font-body font-medium text-primary hover:underline"
+                        >
+                          Video not loading? Open on YouTube
+                        </a>
                       </div>
                     </motion.div>
                   )}
