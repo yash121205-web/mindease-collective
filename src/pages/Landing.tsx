@@ -150,80 +150,89 @@ export default function Landing() {
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-foreground/20 backdrop-blur-md"
+            className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-foreground/20 backdrop-blur-sm"
           >
-            <motion.div
-              initial={{ scale: 0.85, opacity: 0, y: 30 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.85, opacity: 0, y: 20 }}
-              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              className="glass-strong rounded-3xl p-8 max-w-md w-full text-center"
-            >
-              {!selectedMood ? (
-                <>
+            <div className="relative w-full max-w-md">
+              {/* Decorative glow */}
+              <div className="absolute inset-0 -m-4 rounded-[2rem] bg-gradient-to-br from-primary/10 via-secondary/5 to-mint/10 blur-2xl opacity-50" />
+              
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0, y: 24 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.9, opacity: 0, y: 16 }}
+                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                className="relative bg-card/95 backdrop-blur-xl border border-border/40 rounded-3xl p-8 text-center shadow-xl overflow-hidden"
+              >
+                {/* Top gradient accent */}
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-mint rounded-t-3xl" />
+
+                {!selectedMood ? (
+                  <>
+                    <motion.div
+                      initial={{ scale: 0, rotate: -20 }}
+                      animate={{ scale: 1, rotate: 0 }}
+                      transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.1 }}
+                      className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/15 to-secondary/10 border border-primary/10 flex items-center justify-center mx-auto mb-4"
+                    >
+                      <Leaf className="w-7 h-7 text-primary" />
+                    </motion.div>
+                    <motion.h2
+                      initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.15, duration: 0.35 }}
+                      className="font-display text-2xl text-foreground mb-1 font-bold"
+                    >
+                      {greeting()}{user.name ? `, ${user.name}` : ''}.
+                    </motion.h2>
+                    <motion.p
+                      initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                      transition={{ delay: 0.25 }}
+                      className="text-muted-foreground font-body mb-6"
+                    >
+                      How are you feeling today?
+                    </motion.p>
+                    <div className="flex justify-center gap-2 flex-wrap">
+                      {moods.map((mood, i) => (
+                        <motion.button
+                          key={mood.key}
+                          initial={{ opacity: 0, y: 16 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.3 + i * 0.06, type: 'spring', stiffness: 300, damping: 22 }}
+                          whileHover={{ scale: 1.1, y: -3 }}
+                          whileTap={{ scale: 0.95 }}
+                          onClick={() => handleMoodSelect(mood)}
+                          className="flex flex-col items-center gap-1.5 p-3 rounded-2xl border border-transparent hover:border-primary/15 hover:bg-primary/5 transition-all"
+                        >
+                          <span className="text-3xl">{mood.emoji}</span>
+                          <span className="text-xs font-medium text-muted-foreground">{mood.label}</span>
+                        </motion.button>
+                      ))}
+                    </div>
+                  </>
+                ) : (
                   <motion.div
-                    initial={{ scale: 0, rotate: -20 }}
-                    animate={{ scale: 1, rotate: 0 }}
-                    transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.15 }}
-                    className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center mx-auto mb-5"
+                    initial={{ opacity: 0, scale: 0.6 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+                    className="py-4"
                   >
-                    <Leaf className="w-8 h-8 text-primary" />
+                    <motion.span
+                      className="text-6xl mb-4 block"
+                      animate={{ rotate: [0, -8, 8, -4, 0] }}
+                      transition={{ duration: 0.5, delay: 0.15 }}
+                    >
+                      {moods.find(m => m.key === selectedMood)?.emoji}
+                    </motion.span>
+                    <motion.p
+                      initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.25 }}
+                      className="font-display text-foreground font-semibold text-lg italic"
+                    >
+                      {message}
+                    </motion.p>
                   </motion.div>
-                  <motion.h2
-                    initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2, duration: 0.4 }}
-                    className="font-display text-2xl text-foreground mb-1 font-bold"
-                  >
-                    {greeting()}{user.name ? `, ${user.name}` : ''}.
-                  </motion.h2>
-                  <motion.p
-                    initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                    transition={{ delay: 0.3 }}
-                    className="text-muted-foreground font-body mb-6"
-                  >
-                    How are you feeling today?
-                  </motion.p>
-                  <div className="flex justify-center gap-3 flex-wrap">
-                    {moods.map((mood, i) => (
-                      <motion.button
-                        key={mood.key}
-                        initial={{ opacity: 0, y: 24, scale: 0.8 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        transition={{ delay: 0.35 + i * 0.07, type: 'spring', stiffness: 300, damping: 20 }}
-                        whileHover={{ scale: 1.15, y: -4 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => handleMoodSelect(mood)}
-                        className="flex flex-col items-center gap-1.5 p-3 rounded-2xl hover:bg-muted/50 transition-colors"
-                      >
-                        <span className="text-3xl">{mood.emoji}</span>
-                        <span className="text-xs font-medium text-muted-foreground">{mood.label}</span>
-                      </motion.button>
-                    ))}
-                  </div>
-                </>
-              ) : (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-                >
-                  <motion.span
-                    className="text-6xl mb-4 block"
-                    animate={{ rotate: [0, -10, 10, -5, 0] }}
-                    transition={{ duration: 0.6, delay: 0.2 }}
-                  >
-                    {moods.find(m => m.key === selectedMood)?.emoji}
-                  </motion.span>
-                  <motion.p
-                    initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
-                    className="font-display text-foreground font-semibold text-lg italic"
-                  >
-                    {message}
-                  </motion.p>
-                </motion.div>
-              )}
-            </motion.div>
+                )}
+              </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
