@@ -39,7 +39,7 @@ function SectionHeading({ children, sub }: { children: React.ReactNode; sub?: st
   return (
     <motion.div {...fadeUp()} className="text-center mb-14">
       <SectionLabel>{typeof children === 'string' ? children : 'Feature'}</SectionLabel>
-      <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-normal text-foreground leading-tight italic">
+      <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-semibold text-foreground leading-tight">
         {children}
       </h2>
       {sub && <p className="text-muted-foreground max-w-2xl mx-auto mt-4 text-base md:text-lg leading-relaxed">{sub}</p>}
@@ -239,9 +239,9 @@ export default function Home() {
                 <Star className="w-3.5 h-3.5 fill-primary/30" /> AI-Powered Mental Wellness Platform
               </span>
             </motion.div>
-            <motion.h1 {...fadeUp(0.08)} className="font-display text-4xl sm:text-5xl lg:text-6xl xl:text-[4.25rem] font-normal text-foreground leading-[1.08] mb-6 italic">
+            <motion.h1 {...fadeUp(0.08)} className="font-display text-4xl sm:text-5xl lg:text-6xl xl:text-[4.5rem] font-bold text-foreground leading-[1.08] mb-6">
               Your{' '}
-              <span className="bg-gradient-to-r from-primary via-secondary to-mint bg-clip-text text-transparent not-italic">
+              <span className="bg-gradient-to-r from-primary via-secondary to-mint bg-clip-text text-transparent">
                 AI-Powered
               </span>{' '}
               Mental Wellness Companion
