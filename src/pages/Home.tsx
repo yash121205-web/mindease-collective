@@ -310,7 +310,7 @@ export default function Home() {
             </motion.div>
             <motion.h1 {...fadeUp(0.1)} className="font-display text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-foreground leading-[1.1] mb-6">
               Your AI Companion for{' '}
-              <span className="bg-gradient-to-r from-primary via-indigo to-mint bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-primary via-secondary to-mint bg-clip-text text-transparent">
                 Mental Wellness
               </span>
             </motion.h1>
