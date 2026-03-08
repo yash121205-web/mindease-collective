@@ -12,10 +12,10 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ['"Lora"', 'serif'],
-        body: ['"Lora"', 'serif'],
-        accent: ['"Caveat"', 'cursive'],
-        mono: ['"JetBrains Mono"', 'monospace'],
+        display: ['"Lora"', 'serif', '"EmojiFont"', '"Apple Color Emoji"', '"Segoe UI Emoji"', '"Noto Color Emoji"'],
+        body: ['"Lora"', 'serif', '"EmojiFont"', '"Apple Color Emoji"', '"Segoe UI Emoji"', '"Noto Color Emoji"'],
+        accent: ['"Caveat"', 'cursive', '"EmojiFont"', '"Apple Color Emoji"', '"Segoe UI Emoji"', '"Noto Color Emoji"'],
+        mono: ['"JetBrains Mono"', 'monospace', '"EmojiFont"', '"Apple Color Emoji"', '"Segoe UI Emoji"', '"Noto Color Emoji"'],
       },
       colors: {
         border: "hsl(var(--border))",
