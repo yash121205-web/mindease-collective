@@ -179,7 +179,7 @@ export default function Landing() {
               ) : (
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
                   <span className="text-5xl mb-4 block">{moods.find(m => m.key === selectedMood)?.emoji}</span>
-                  <p className="text-foreground font-medium text-lg font-body">{message}</p>
+                  <p className="font-display text-foreground font-semibold text-lg italic">{message}</p>
                 </motion.div>
               )}
             </motion.div>

@@ -332,7 +332,7 @@ export default function Chat() {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center pt-16 lg:pt-24">
             <div className="flex justify-center"><SeraAvatar /></div>
             <div className="mx-auto mt-4 mb-2">
-              <h2 className="font-display text-2xl text-foreground font-semibold">Hi, I'm SERA 💙</h2>
+              <h2 className="font-display text-2xl text-foreground font-semibold italic">Hi, I'm SERA 💙</h2>
               <p className="text-muted-foreground text-sm mt-1 max-w-sm mx-auto font-body">
                 Your Supportive Emotional Response Assistant. I'm here to listen without judgment and help you navigate whatever you're going through.
               </p>
