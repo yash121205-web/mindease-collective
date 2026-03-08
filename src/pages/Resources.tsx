@@ -4,6 +4,7 @@ import { callAI } from '@/lib/ai';
 import { Phone, Sparkles, BookOpen, Heart, ExternalLink, ChevronDown, ChevronUp, Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import PageHeader from '@/components/PageHeader';
 
 const helplines = [
   { name: 'iCall', number: '9152987821', desc: 'Psychosocial helpline by TISS', hours: 'Mon–Sat, 8am–10pm' },
