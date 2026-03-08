@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, RefreshCw, Copy, Heart, Share2, ChevronLeft, ChevronRight } from 'lucide-react';
+import PageHeader from '@/components/PageHeader';
 import { callAI } from '@/lib/ai';
 import { getTodayMood, MOOD_MAP } from '@/lib/storage';
 import { toast } from 'sonner';
