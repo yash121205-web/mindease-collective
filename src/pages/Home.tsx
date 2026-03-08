@@ -1,14 +1,12 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Leaf, ArrowRight, MessageCircle, Smile, BookOpen, Wind,
+  Leaf, ArrowRight, MessageCircle, Smile, BookOpen,
   Brain, Sparkles, Heart, Shield, Star, TrendingUp,
   ChevronRight, Activity, Zap, Users, Lock,
-  Flame, PenLine, Clock, CheckCircle2,
-  Menu, X, Headphones, Timer, ChevronDown, Phone, Moon, Sun
+  Menu, X, Headphones, Timer, ChevronDown, Phone
 } from 'lucide-react';
-import logo from '@/assets/logo.png';
 
 /* ─── Animation helpers ─── */
 const fadeUp = (delay = 0) => ({
