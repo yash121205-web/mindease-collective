@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { getUser, saveUser, clearAllData, exportData, logoutUser } from '@/lib/storage';
-import { User, Shield, Database, Info, Download, Trash2, Key, Bell, Mic } from 'lucide-react';
+import { User, Shield, Database, Info, Download, Trash2, Key, Bell, Mic, Globe } from 'lucide-react';
 import { toast } from 'sonner';
 
 function Toggle({ enabled, onToggle, label }: { enabled: boolean; onToggle: () => void; label: string }) {
@@ -23,6 +23,26 @@ export default function SettingsPage() {
   const [notifications, setNotifications] = useState(() => localStorage.getItem('mindease_notifications') === 'true');
   const [voiceEnabled, setVoiceEnabled] = useState(() => localStorage.getItem('mindease_voice') !== 'false');
   const [moodReminder, setMoodReminder] = useState(() => localStorage.getItem('mindease_mood_reminder') !== 'false');
+  const [language, setLanguage] = useState(() => localStorage.getItem('mindease_lang') || 'en');
+
+  const languages = [
+    { code: 'en', label: 'English' },
+    { code: 'es', label: 'Español' },
+    { code: 'fr', label: 'Français' },
+    { code: 'de', label: 'Deutsch' },
+    { code: 'hi', label: 'हिन्दी' },
+    { code: 'zh', label: '中文' },
+    { code: 'ja', label: '日本語' },
+    { code: 'ko', label: '한국어' },
+    { code: 'ar', label: 'العربية' },
+    { code: 'pt', label: 'Português' },
+  ];
+
+  const handleLanguageChange = (code: string) => {
+    setLanguage(code);
+    localStorage.setItem('mindease_lang', code);
+    toast.success(`Language set to ${languages.find(l => l.code === code)?.label}`);
+  };
 
   const updateUser = (partial: Partial<typeof user>) => {
     const next = { ...user, ...partial };
@@ -125,7 +145,26 @@ export default function SettingsPage() {
             <Toggle enabled={notifications} onToggle={toggleNotifications} label="🔔 Notifications" />
           </div>
 
-          {/* Privacy */}
+          {/* Language */}
+          <div className="glass-static rounded-2xl p-5">
+            <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2 font-body"><Globe className="w-3.5 h-3.5" /> Language</h2>
+            <p className="text-xs text-muted-foreground mb-3 font-body">SERA will respond in your chosen language.</p>
+            <div className="grid grid-cols-2 gap-2">
+              {languages.map(lang => (
+                <button
+                  key={lang.code}
+                  onClick={() => handleLanguageChange(lang.code)}
+                  className={`px-3 py-2 rounded-xl text-sm font-body font-medium transition-all ${
+                    language === lang.code
+                      ? 'bg-primary text-primary-foreground shadow-md'
+                      : 'bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground'
+                  }`}
+                >
+                  {lang.label}
+                </button>
+              ))}
+            </div>
+          </div>
           <div className="glass-static rounded-2xl p-5">
             <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2 font-body"><Shield className="w-3.5 h-3.5" /> Privacy</h2>
             <Toggle enabled={user.anonymous} onToggle={() => updateUser({ anonymous: !user.anonymous, name: user.anonymous ? user.name : '' })} label="🕶️ Anonymous Mode" />
