@@ -26,6 +26,7 @@ import Meditation from "./pages/Meditation";
 import GratitudeWall from "./pages/GratitudeWall";
 import Soundscapes from "./pages/Soundscapes";
 import Affirmations from "./pages/Affirmations";
+import DailyChallenges from "./pages/DailyChallenges";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -77,6 +78,7 @@ const App = () => {
                 <Route path="/app/gratitude" element={<GratitudeWall />} />
                 <Route path="/app/soundscapes" element={<Soundscapes />} />
                 <Route path="/app/affirmations" element={<Affirmations />} />
+                <Route path="/app/challenges" element={<DailyChallenges />} />
                 <Route path="/app/settings" element={<SettingsPage />} />
               </Route>
               <Route path="*" element={<NotFound />} />

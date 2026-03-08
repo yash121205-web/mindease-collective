@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Leaf, ArrowRight, BookOpen, Smile, Wind, Sparkles, Copy, Timer, Heart, Headphones, Star, BarChart3, TrendingUp, Calendar } from 'lucide-react';
+import { Leaf, ArrowRight, BookOpen, Smile, Wind, Sparkles, Copy, Timer, Heart, Headphones, Star, BarChart3, TrendingUp, Calendar, Target } from 'lucide-react';
 import { getTodayMood, saveMood, calculateEHS, getUser, saveUser, genId, MOOD_MAP, getMoods, getJournalEntries, getSessions, calculateStreak } from '@/lib/storage';
 import { callAI } from '@/lib/ai';
 import { toast } from 'sonner';
@@ -305,6 +305,7 @@ export default function Landing() {
           {[
             { label: 'Guided Meditation', desc: 'Breathe, focus, find peace', icon: Timer, path: '/app/meditation', emoji: '🧘', gradient: 'from-primary/8 to-sky-soft/10' },
             { label: 'Gratitude Wall', desc: 'Grow your garden of joy', icon: Heart, path: '/app/gratitude', emoji: '🌸', gradient: 'from-secondary/8 to-rose-soft/10' },
+            { label: 'Daily Challenges', desc: 'Streak-based wellness quests', icon: Target, path: '/app/challenges', emoji: '🎯', gradient: 'from-rose-soft/8 to-primary/10' },
             { label: 'Mood Soundscapes', desc: 'Ambient sounds for calm', icon: Headphones, path: '/app/soundscapes', emoji: '🎧', gradient: 'from-mint/8 to-primary/10' },
             { label: 'Affirmations', desc: 'Nurture your inner world', icon: Sparkles, path: '/app/affirmations', emoji: '✨', gradient: 'from-warm-lavender/10 to-secondary/8' },
           ].map((feat, i) => (
