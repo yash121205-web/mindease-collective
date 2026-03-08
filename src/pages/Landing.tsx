@@ -337,17 +337,18 @@ export default function Landing() {
             {allMoods.slice(-7).map((m, i) => {
               const height = `${Math.max(m.moodScore, 10)}%`;
               return (
-                <motion.div key={i} className="flex-1 flex flex-col items-center gap-1">
-                  <motion.div
-                    className="w-full rounded-t-lg"
-                    style={{ background: m.moodScore >= 75 ? 'hsl(var(--secondary))' : m.moodScore >= 50 ? 'hsl(var(--primary))' : 'hsl(var(--rose-soft))' }}
-                    initial={{ height: 0 }} animate={{ height }}
-                    transition={{ delay: 1 + i * 0.08, duration: 0.5 }}
+                <div key={i} className="flex-1 flex flex-col items-center gap-1">
+                  <div
+                    className="w-full rounded-t-lg transition-all duration-500"
+                    style={{ 
+                      background: m.moodScore >= 75 ? 'hsl(var(--secondary))' : m.moodScore >= 50 ? 'hsl(var(--primary))' : 'hsl(var(--rose-soft))',
+                      height 
+                    }}
                   />
                   <span className="text-[10px] text-muted-foreground font-body">
                     {new Date(m.timestamp).toLocaleDateString([], { weekday: 'narrow' })}
                   </span>
-                </motion.div>
+                </div>
               );
             })}
           </div>
