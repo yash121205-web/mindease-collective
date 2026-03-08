@@ -4,54 +4,54 @@
 
 @layer base {
   :root {
-    --background: 340 100% 97%;
-    --foreground: 0 0% 18%;
+    --background: 210 40% 98%;
+    --foreground: 220 20% 18%;
 
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 18%;
+    --card-foreground: 220 20% 18%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 18%;
+    --popover-foreground: 220 20% 18%;
 
-    --primary: 197 88% 66%;
+    --primary: 207 90% 72%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 330 100% 85%;
-    --secondary-foreground: 0 0% 18%;
+    --secondary: 260 60% 78%;
+    --secondary-foreground: 220 20% 18%;
 
-    --muted: 340 40% 95%;
-    --muted-foreground: 0 0% 45%;
+    --muted: 210 30% 95%;
+    --muted-foreground: 220 10% 45%;
 
-    --accent: 197 88% 66%;
+    --accent: 207 90% 72%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 60% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 330 60% 91%;
-    --input: 340 60% 97%;
-    --ring: 197 88% 66%;
+    --border: 220 20% 90%;
+    --input: 210 30% 96%;
+    --ring: 207 90% 72%;
 
     --radius: 1rem;
 
-    --sidebar-background: 340 60% 98%;
-    --sidebar-foreground: 0 0% 18%;
-    --sidebar-primary: 197 88% 66%;
+    --sidebar-background: 210 35% 98%;
+    --sidebar-foreground: 220 20% 18%;
+    --sidebar-primary: 207 90% 72%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 340 50% 96%;
-    --sidebar-accent-foreground: 0 0% 18%;
-    --sidebar-border: 330 60% 93%;
-    --sidebar-ring: 197 88% 66%;
+    --sidebar-accent: 210 30% 96%;
+    --sidebar-accent-foreground: 220 20% 18%;
+    --sidebar-border: 220 20% 92%;
+    --sidebar-ring: 207 90% 72%;
 
-    --mint: 197 88% 66%;
-    --rose-soft: 330 100% 85%;
-    --indigo: 197 88% 66%;
+    --mint: 156 60% 76%;
+    --rose-soft: 260 60% 78%;
+    --indigo: 260 60% 78%;
 
-    --warm-peach: 330 100% 85%;
-    --warm-lavender: 197 60% 85%;
+    --warm-peach: 260 50% 82%;
+    --warm-lavender: 260 50% 85%;
 
-    --pink-glow: 330 100% 92%;
-    --sky-soft: 197 80% 88%;
+    --pink-glow: 260 55% 90%;
+    --sky-soft: 207 70% 88%;
   }
 
   /* Dark mode removed — light-only wellness theme */
