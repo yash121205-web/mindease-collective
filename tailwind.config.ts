@@ -12,8 +12,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ['"Outfit"', 'sans-serif'],
-        body: ['"Outfit"', 'sans-serif'],
+        display: ['"DM Serif Display"', 'serif'],
+        body: ['"Plus Jakarta Sans"', 'sans-serif'],
         accent: ['"Caveat"', 'cursive'],
         mono: ['"JetBrains Mono"', 'monospace'],
       },
