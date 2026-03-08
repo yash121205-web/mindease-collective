@@ -6,9 +6,6 @@ import { calculateStreak, getTodayMood, MOOD_MAP, logoutUser } from '@/lib/stora
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import logo from '@/assets/logo.png';
-import { calculateStreak, getTodayMood, MOOD_MAP, logoutUser } from '@/lib/storage';
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 
 const navItems = [
   { path: '/app/chat', label: 'Chat with SERA', icon: MessageCircle },
