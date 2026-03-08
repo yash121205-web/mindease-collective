@@ -23,6 +23,26 @@ export default function SettingsPage() {
   const [notifications, setNotifications] = useState(() => localStorage.getItem('mindease_notifications') === 'true');
   const [voiceEnabled, setVoiceEnabled] = useState(() => localStorage.getItem('mindease_voice') !== 'false');
   const [moodReminder, setMoodReminder] = useState(() => localStorage.getItem('mindease_mood_reminder') !== 'false');
+  const [language, setLanguage] = useState(() => localStorage.getItem('mindease_lang') || 'en');
+
+  const languages = [
+    { code: 'en', label: 'English' },
+    { code: 'es', label: 'Español' },
+    { code: 'fr', label: 'Français' },
+    { code: 'de', label: 'Deutsch' },
+    { code: 'hi', label: 'हिन्दी' },
+    { code: 'zh', label: '中文' },
+    { code: 'ja', label: '日本語' },
+    { code: 'ko', label: '한국어' },
+    { code: 'ar', label: 'العربية' },
+    { code: 'pt', label: 'Português' },
+  ];
+
+  const handleLanguageChange = (code: string) => {
+    setLanguage(code);
+    localStorage.setItem('mindease_lang', code);
+    toast.success(`Language set to ${languages.find(l => l.code === code)?.label}`);
+  };
 
   const updateUser = (partial: Partial<typeof user>) => {
     const next = { ...user, ...partial };
