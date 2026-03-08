@@ -150,7 +150,6 @@ const progressStats = [
 export default function Home() {
   const location = useLocation();
   const navigate = useNavigate();
-  const [scrolled, setScrolled] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
 
   // Stable heatmap values so they don't re-randomize on re-render
