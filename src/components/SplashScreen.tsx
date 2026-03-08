@@ -6,7 +6,7 @@ const ripple = {
   animate: (i: number) => ({
     scale: [0, 2.5],
     opacity: [0.4, 0],
-    transition: { duration: 1.8, delay: 0.3 + i * 0.35, ease: 'easeOut' },
+    transition: { duration: 1.8, delay: 0.3 + i * 0.35, ease: 'easeOut' as const },
   }),
 };
 
