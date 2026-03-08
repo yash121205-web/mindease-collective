@@ -17,9 +17,9 @@ const fadeUp = (delay = 0) => ({
   transition: { duration: 0.45, delay, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
 });
 
-function Section({ children, className = '', id, optimize = true }: { children: React.ReactNode; className?: string; id?: string; optimize?: boolean }) {
+function Section({ children, className = '', id }: { children: React.ReactNode; className?: string; id?: string }) {
   return (
-    <section id={id} className={`py-16 md:py-24 px-5 md:px-10 ${optimize ? 'content-auto' : ''} ${className}`}>
+    <section id={id} className={`py-16 md:py-24 px-5 md:px-10 ${className}`}>
       <div className="max-w-6xl mx-auto">{children}</div>
     </section>
   );
