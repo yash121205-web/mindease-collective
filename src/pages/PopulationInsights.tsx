@@ -55,9 +55,7 @@ export default function PopulationInsights() {
 
   return (
     <div className="p-4 lg:p-8 max-w-5xl mx-auto overflow-y-auto">
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="font-display text-3xl text-foreground mb-1 font-semibold">Community Wellness Insights</h1>
-        <p className="text-muted-foreground mb-2 font-body">Anonymized, aggregated mental wellness patterns</p>
+      <PageHeader title="Community Wellness" subtitle="Anonymized, aggregated mental wellness patterns" emoji="🌍" gradient="from-primary/10 to-secondary/8" />
         
         <div className="flex items-center gap-2 mb-8 p-3 rounded-xl bg-primary/5 border border-primary/10">
           <Shield className="w-4 h-4 text-primary shrink-0" />
