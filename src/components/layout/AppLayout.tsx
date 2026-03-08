@@ -4,6 +4,7 @@ import { Menu, ArrowLeft, Home } from 'lucide-react';
 import AppSidebar from './AppSidebar';
 import FloatingActionButton from '../FloatingActionButton';
 import StreakBanner from '../StreakBanner';
+import DecorativeBlobs from '../DecorativeBlobs';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const pageVariants = {
@@ -19,7 +20,8 @@ export default function AppLayout({ children }: { children?: React.ReactNode }) 
   const isDashboard = location.pathname === '/dashboard';
 
   return (
-    <div className="flex min-h-screen w-full gradient-mesh">
+    <div className="flex min-h-screen w-full gradient-mesh relative">
+      <DecorativeBlobs />
       <AppSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       
       <div className="flex-1 flex flex-col min-h-screen">
