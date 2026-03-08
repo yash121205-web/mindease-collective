@@ -145,7 +145,26 @@ export default function SettingsPage() {
             <Toggle enabled={notifications} onToggle={toggleNotifications} label="🔔 Notifications" />
           </div>
 
-          {/* Privacy */}
+          {/* Language */}
+          <div className="glass-static rounded-2xl p-5">
+            <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2 font-body"><Globe className="w-3.5 h-3.5" /> Language</h2>
+            <p className="text-xs text-muted-foreground mb-3 font-body">SERA will respond in your chosen language.</p>
+            <div className="grid grid-cols-2 gap-2">
+              {languages.map(lang => (
+                <button
+                  key={lang.code}
+                  onClick={() => handleLanguageChange(lang.code)}
+                  className={`px-3 py-2 rounded-xl text-sm font-body font-medium transition-all ${
+                    language === lang.code
+                      ? 'bg-primary text-primary-foreground shadow-md'
+                      : 'bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground'
+                  }`}
+                >
+                  {lang.label}
+                </button>
+              ))}
+            </div>
+          </div>
           <div className="glass-static rounded-2xl p-5">
             <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2 font-body"><Shield className="w-3.5 h-3.5" /> Privacy</h2>
             <Toggle enabled={user.anonymous} onToggle={() => updateUser({ anonymous: !user.anonymous, name: user.anonymous ? user.name : '' })} label="🕶️ Anonymous Mode" />
