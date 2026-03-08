@@ -22,6 +22,10 @@ import Games from "./pages/Games";
 import PopulationInsights from "./pages/PopulationInsights";
 import Sleep from "./pages/Sleep";
 import Diet from "./pages/Diet";
+import Meditation from "./pages/Meditation";
+import GratitudeWall from "./pages/GratitudeWall";
+import Soundscapes from "./pages/Soundscapes";
+import Affirmations from "./pages/Affirmations";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
