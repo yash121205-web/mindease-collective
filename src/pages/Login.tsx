@@ -54,7 +54,7 @@ function MoodChartCard() {
     { h: 70, color: 'hsl(var(--primary))' },
   ];
   return (
-    <motion.div className="bg-white rounded-2xl p-5 w-56 shadow-lg border border-border" animate={{ y: [0, -12, 0] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}>
+    <motion.div className="bg-card rounded-2xl p-5 w-56 shadow-lg border border-border" animate={{ y: [0, -12, 0] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}>
       <p className="text-[11px] font-body font-semibold text-muted-foreground uppercase tracking-widest mb-3">This Week's Mood</p>
       <div className="flex items-end gap-2 h-20">
         {bars.map((b, i) => (
@@ -70,7 +70,7 @@ function MoodChartCard() {
 
 function ChatBubbleCard() {
   return (
-    <motion.div className="bg-white rounded-2xl p-5 w-64 shadow-lg border border-border" animate={{ y: [0, -10, 0] }} transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}>
+    <motion.div className="bg-card rounded-2xl p-5 w-64 shadow-lg border border-border" animate={{ y: [0, -10, 0] }} transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}>
       <div className="space-y-3">
         <div className="flex justify-end">
           <div className="text-white text-xs rounded-2xl rounded-tr-sm px-3 py-2 max-w-[80%] font-body" style={{ background: 'linear-gradient(135deg, hsl(207,90%,72%), hsl(260,60%,78%))' }}>
@@ -200,7 +200,7 @@ export default function Login() {
     return `w-full rounded-2xl px-4 py-3 text-sm font-body transition-all border focus:outline-none focus:ring-2 ${
       hasError ? 'border-destructive bg-destructive/5 focus:ring-destructive/30 text-foreground'
       : ok ? 'border-primary bg-primary/5 focus:ring-primary/30 text-foreground'
-      : 'border-border bg-white focus:ring-primary/20 text-foreground placeholder:text-muted-foreground'
+      : 'border-border bg-background focus:ring-primary/20 text-foreground placeholder:text-muted-foreground'
     }`;
   };
 

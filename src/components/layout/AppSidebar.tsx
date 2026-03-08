@@ -3,9 +3,9 @@ import {
   MessageCircle, Smile, BookOpen, Leaf, BarChart3, Library, Trophy, Settings, Flame, Shield, Gamepad2, Users, BedDouble, Apple, Timer, Heart, Headphones, Sparkles, Target, LogOut, Moon, Sun
 } from 'lucide-react';
 import { calculateStreak, getTodayMood, MOOD_MAP, logoutUser } from '@/lib/storage';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import logo from '@/assets/logo.png';
+import { useTheme } from '@/hooks/useTheme';
 
 const navSections = [
   {
@@ -53,22 +53,7 @@ export default function AppSidebar({ open, onClose }: { open: boolean; onClose: 
   const [anon, setAnon] = useState(false);
   const streak = calculateStreak();
   const todayMood = getTodayMood();
-  const [dark, setDark] = useState(() => document.documentElement.classList.contains('dark'));
-
-  const toggleDark = () => {
-    const next = !dark;
-    setDark(next);
-    document.documentElement.classList.toggle('dark', next);
-    localStorage.setItem('mindease_theme', next ? 'dark' : 'light');
-  };
-
-  useEffect(() => {
-    const saved = localStorage.getItem('mindease_theme');
-    if (saved === 'dark') {
-      setDark(true);
-      document.documentElement.classList.add('dark');
-    }
-  }, []);
+  const { isDark, toggle: toggleDark } = useTheme();
 
   const handleLogout = () => {
     onClose();
@@ -146,8 +131,8 @@ export default function AppSidebar({ open, onClose }: { open: boolean; onClose: 
         {/* Footer */}
         <div className="p-4 border-t border-border/30 space-y-1.5">
           <button onClick={toggleDark} className="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-muted-foreground hover:bg-muted/40 transition-colors">
-            {dark ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
-            <span>{dark ? 'Light Mode' : 'Dark Mode'}</span>
+            {isDark ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
+            <span>{isDark ? 'Light Mode' : 'Dark Mode'}</span>
           </button>
           <button onClick={() => setAnon(!anon)} className="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs text-muted-foreground hover:bg-muted/40 transition-colors">
             <Shield className="w-3.5 h-3.5" /><span>Anonymous Mode</span>
