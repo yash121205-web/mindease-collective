@@ -167,9 +167,9 @@ const chatMessages = [
 ];
 
 const insightCards = [
-  { title: 'Journaling Impact', text: 'Your mood improves by 23% on days you journal. Consider a quick reflection before bed tonight.', color: 'from-primary/10 to-mint/8' },
-  { title: 'Stress Pattern', text: 'Your stress peaks on Tuesdays and Wednesdays — try a 5-minute breathing session before your first class.', color: 'from-mint/10 to-secondary/8' },
-  { title: 'Sleep Connection', text: 'On nights you use the breathing tool, your next-day mood averages 15% higher. Great habit to keep!', color: 'from-secondary/10 to-primary/8' },
+  { title: 'Journaling Impact', text: 'Your mood improves by 23% on days you journal. Consider a quick reflection before bed tonight.', color: 'from-primary/10 to-secondary/8' },
+  { title: 'Stress Pattern', text: 'Your stress peaks on Tuesdays and Wednesdays — try a 5-minute breathing session before your first class.', color: 'from-mint/10 to-primary/8' },
+  { title: 'Sleep Connection', text: 'On nights you use the breathing tool, your next-day mood averages 15% higher. Great habit to keep!', color: 'from-secondary/10 to-mint/8' },
 ];
 
 const progressStats = [
