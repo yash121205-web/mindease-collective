@@ -235,7 +235,7 @@ export default function Landing() {
       <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         {/* EHS Card */}
         <motion.div {...fadeUp(0.2)} className="glass-static rounded-3xl p-6 md:col-span-2 lg:col-span-1 flex flex-col items-center justify-center">
-          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3 font-body">Emotional Health Score</p>
+          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3 font-display">Emotional Health Score</p>
           <div className="relative w-32 h-32 mb-3">
             <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
               <circle cx="50" cy="50" r="42" fill="none" stroke="hsl(var(--muted))" strokeWidth="8" />
@@ -255,7 +255,7 @@ export default function Landing() {
 
         {/* Affirmation Card */}
         <motion.div {...fadeUp(0.3)} className={`glass-static rounded-3xl p-6 flex flex-col justify-between bg-gradient-to-br ${gradientClass}`}>
-          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3 font-body">Today's Affirmation</p>
+          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3 font-display">Today's Affirmation</p>
           <p className="font-display text-xl text-foreground italic leading-relaxed font-semibold tracking-wide">"{affirmation}"</p>
           <div className="flex items-center gap-2 mt-4">
             <button onClick={() => { navigator.clipboard.writeText(affirmation); toast.success('Copied!'); }} className="p-1.5 rounded-lg hover:bg-muted/50 text-muted-foreground">
@@ -269,7 +269,7 @@ export default function Landing() {
 
         {/* Today's Mood / Check-in Widget */}
         <motion.div {...fadeUp(0.4)} className="glass-static rounded-3xl p-6">
-          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3 font-body">How are you feeling?</p>
+          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3 font-display">How are you feeling?</p>
           {todayMood || selectedMood ? (
             <div>
               <div className="flex items-center gap-3">
@@ -349,7 +349,7 @@ export default function Landing() {
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <TrendingUp className="w-4 h-4 text-primary" />
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider font-body">This Week's Mood</p>
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider font-display">This Week's Mood</p>
             </div>
             <button onClick={() => navigate('/app/mood')} className="text-xs text-primary font-body hover:underline">See all →</button>
           </div>
