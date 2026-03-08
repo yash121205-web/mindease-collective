@@ -67,10 +67,14 @@
     font-family: 'Lora', serif;
     letter-spacing: -0.005em;
   }
-  button, [role="tab"], [role="radio"], [data-state] {
+  /* Apply Lora to all interactive & section elements */
+  button, [role="tab"], [role="radio"], [data-state],
+  .font-display, .font-body {
     font-family: 'Lora', serif;
   }
+  /* Section labels (uppercase tracking) */
   p, span, label, a {
+    font-family: 'Lora', serif;
     font-size: 1.01em;
   }
 }
