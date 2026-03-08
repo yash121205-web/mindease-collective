@@ -13,7 +13,7 @@ export default {
     extend: {
       fontFamily: {
         display: ['"Lora"', 'serif'],
-        body: ['"Outfit"', 'sans-serif'],
+        body: ['"Lora"', 'serif'],
         accent: ['"Caveat"', 'cursive'],
         mono: ['"JetBrains Mono"', 'monospace'],
       },
