@@ -65,7 +65,11 @@ export default function Landing() {
   useEffect(() => {
     setEhs(calculateEHS());
     const today = new Date().toISOString().split('T')[0];
-    if (!todayMood && user.lastCheckIn !== today) {
+    // Show onboarding for first-time users
+    const onboardingSeen = localStorage.getItem('mindease_onboarding_seen');
+    if (!onboardingSeen) {
+      setTimeout(() => setShowOnboarding(true), 500);
+    } else if (!todayMood && user.lastCheckIn !== today) {
       setTimeout(() => setShowCheckIn(true), 800);
     }
     const stored = localStorage.getItem('mindease_daily_affirmation');
