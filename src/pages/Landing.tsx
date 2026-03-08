@@ -6,6 +6,7 @@ import { getTodayMood, saveMood, calculateEHS, getUser, saveUser, genId, MOOD_MA
 import { callAI } from '@/lib/ai';
 import { toast } from 'sonner';
 import WellnessSummary from '@/components/WellnessSummary';
+import OnboardingTour from '@/components/OnboardingTour';
 
 const moods = [
   { key: 'great', emoji: '😄', label: 'Great', message: "That's amazing! Keep riding that positive wave. 🌟" },
