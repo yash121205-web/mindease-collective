@@ -12,7 +12,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ['"Cormorant Garamond"', 'serif'],
+        display: ['"Lora"', 'serif'],
         body: ['"Outfit"', 'sans-serif'],
         accent: ['"Caveat"', 'cursive'],
         mono: ['"JetBrains Mono"', 'monospace'],
