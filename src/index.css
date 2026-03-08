@@ -167,4 +167,12 @@
   .font-number {
     font-family: 'JetBrains Mono', monospace;
   }
+  .sticker {
+    @apply inline-block select-none;
+    animation: float 3s ease-in-out infinite;
+  }
+  .sticker-spin {
+    @apply inline-block select-none;
+    animation: float 3s ease-in-out infinite, glow-pulse 2s ease-in-out infinite;
+  }
 }
