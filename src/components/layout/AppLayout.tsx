@@ -1,6 +1,6 @@
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useState } from 'react';
-import { Menu, ArrowLeft, Home } from 'lucide-react';
+import { Menu, ArrowLeft, Home, Leaf } from 'lucide-react';
 import AppSidebar from './AppSidebar';
 import FloatingActionButton from '../FloatingActionButton';
 import StreakBanner from '../StreakBanner';
@@ -20,30 +20,33 @@ export default function AppLayout({ children }: { children?: React.ReactNode }) 
   const isDashboard = location.pathname === '/dashboard';
 
   return (
-    <div className="flex min-h-screen w-full gradient-mesh relative">
+    <div className="flex min-h-screen w-full gradient-mesh grain relative">
       <DecorativeBlobs />
       <AppSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       
       <div className="flex-1 flex flex-col min-h-screen">
         <StreakBanner />
 
-        {/* Header with back navigation */}
-        <header className="lg:hidden sticky top-0 z-30 h-14 flex items-center px-4 border-b border-border bg-background/80 backdrop-blur-lg gap-2">
-          <button onClick={() => setSidebarOpen(true)} className="p-2 rounded-xl hover:bg-muted transition-colors">
+        {/* Mobile header */}
+        <header className="lg:hidden sticky top-0 z-30 h-14 flex items-center px-4 border-b border-border/40 bg-background/80 backdrop-blur-xl gap-2">
+          <button onClick={() => setSidebarOpen(true)} className="p-2 rounded-xl hover:bg-muted/50 transition-colors">
             <Menu className="w-5 h-5 text-foreground" />
           </button>
           
           {!isDashboard && (
-            <button onClick={() => navigate(-1)} className="p-2 rounded-xl hover:bg-muted transition-colors" title="Go back">
+            <button onClick={() => navigate(-1)} className="p-2 rounded-xl hover:bg-muted/50 transition-colors" title="Go back">
               <ArrowLeft className="w-4 h-4 text-foreground" />
             </button>
           )}
 
-          <button onClick={() => navigate('/dashboard')} className="p-1.5 rounded-lg hover:bg-muted transition-colors" title="Home">
+          <button onClick={() => navigate('/dashboard')} className="p-1.5 rounded-lg hover:bg-muted/50 transition-colors" title="Home">
             <Home className="w-4 h-4 text-muted-foreground" />
           </button>
 
-          <span className="ml-1 font-display text-foreground text-lg font-semibold">MindEase AI</span>
+          <div className="ml-1 flex items-center gap-1.5">
+            <Leaf className="w-4 h-4 text-primary" />
+            <span className="font-display text-foreground text-base font-semibold">MindEase AI</span>
+          </div>
         </header>
 
         {/* Desktop back button */}

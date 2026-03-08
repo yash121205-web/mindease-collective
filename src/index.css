@@ -4,54 +4,59 @@
 
 @layer base {
   :root {
-    --background: 210 33% 98%;
-    --foreground: 220 20% 16%;
+    /* Warm wellness palette — sage, sand, terracotta, lavender */
+    --background: 40 30% 97%;
+    --foreground: 30 15% 18%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 220 20% 16%;
+    --card: 40 25% 99%;
+    --card-foreground: 30 15% 18%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 220 20% 16%;
+    --popover: 40 25% 99%;
+    --popover-foreground: 30 15% 18%;
 
-    --primary: 207 90% 72%;
+    --primary: 158 42% 58%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 263 60% 76%;
+    --secondary: 280 40% 72%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 210 25% 95%;
-    --muted-foreground: 220 10% 46%;
+    --muted: 40 20% 94%;
+    --muted-foreground: 30 8% 48%;
 
-    --accent: 207 90% 72%;
+    --accent: 158 42% 58%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 60% 55%;
+    --destructive: 0 55% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 18% 91%;
-    --input: 210 25% 96%;
-    --ring: 207 90% 72%;
+    --border: 35 18% 89%;
+    --input: 40 20% 95%;
+    --ring: 158 42% 58%;
 
     --radius: 1rem;
 
-    --sidebar-background: 210 30% 98%;
-    --sidebar-foreground: 220 20% 16%;
-    --sidebar-primary: 207 90% 72%;
+    --sidebar-background: 40 28% 97%;
+    --sidebar-foreground: 30 15% 18%;
+    --sidebar-primary: 158 42% 58%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 25% 96%;
-    --sidebar-accent-foreground: 220 20% 16%;
-    --sidebar-border: 220 18% 93%;
-    --sidebar-ring: 207 90% 72%;
+    --sidebar-accent: 40 22% 94%;
+    --sidebar-accent-foreground: 30 15% 18%;
+    --sidebar-border: 35 18% 91%;
+    --sidebar-ring: 158 42% 58%;
 
-    --mint: 156 55% 72%;
-    --rose-soft: 20 90% 87%;
-    --indigo: 263 60% 76%;
+    --mint: 158 42% 58%;
+    --rose-soft: 16 75% 82%;
+    --indigo: 280 40% 72%;
 
-    --warm-peach: 20 90% 87%;
-    --warm-lavender: 263 45% 88%;
+    --warm-peach: 20 80% 88%;
+    --warm-lavender: 280 35% 88%;
 
-    --pink-glow: 263 50% 92%;
-    --sky-soft: 207 65% 90%;
+    --pink-glow: 280 40% 92%;
+    --sky-soft: 158 30% 88%;
+
+    --sand: 35 40% 86%;
+    --sage: 158 25% 78%;
+    --terracotta: 16 55% 68%;
   }
 }
 
@@ -65,26 +70,20 @@
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Lora', serif;
-    letter-spacing: -0.005em;
+    letter-spacing: -0.01em;
   }
-  /* Apply Lora to all interactive & section elements */
-  button, [role="tab"], [role="radio"], [data-state],
-  .font-display, .font-body {
+  .font-display {
     font-family: 'Lora', serif;
   }
-  /* Section labels (uppercase tracking) */
-  p, span, label, a {
-    font-family: 'Lora', serif;
-    font-size: 1.01em;
+  /* Use Outfit for body text — clean, modern, readable */
+  p, span, label, a, button, [role="tab"], [role="radio"], [data-state],
+  .font-body {
+    font-family: 'Outfit', sans-serif;
   }
 }
 
 @layer utilities {
   /* Smooth global transitions */
-  * {
-    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  
   a, button, [role="button"], input, select, textarea {
     transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
   }
@@ -127,64 +126,64 @@
   }
 
   .glass {
-    background: hsl(0 0% 100% / 0.75);
+    background: hsl(40 25% 99% / 0.78);
     backdrop-filter: blur(20px);
-    border: 1px solid hsl(var(--border) / 0.6);
-    box-shadow: 0 4px 30px hsl(220 40% 85% / 0.2);
+    border: 1px solid hsl(var(--border) / 0.5);
+    box-shadow: 0 4px 30px hsl(30 20% 85% / 0.15);
     border-radius: 20px;
     transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1);
   }
   .glass:hover {
     transform: translateY(-3px);
-    box-shadow: 0 12px 40px hsl(220 40% 82% / 0.3);
+    box-shadow: 0 12px 40px hsl(30 20% 82% / 0.22);
   }
   .glass-strong {
-    background: hsl(0 0% 100% / 0.92);
+    background: hsl(40 25% 99% / 0.92);
     backdrop-filter: blur(24px);
-    border: 1px solid hsl(var(--border) / 0.5);
-    box-shadow: 0 8px 40px hsl(220 40% 85% / 0.18);
+    border: 1px solid hsl(var(--border) / 0.4);
+    box-shadow: 0 8px 40px hsl(30 20% 85% / 0.12);
     border-radius: 20px;
     transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1);
   }
   .glass-strong:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 48px hsl(220 40% 82% / 0.25);
+    box-shadow: 0 12px 48px hsl(30 20% 82% / 0.18);
   }
   .glass-static {
-    background: hsl(0 0% 100% / 0.8);
+    background: hsl(40 25% 99% / 0.82);
     backdrop-filter: blur(16px);
-    border: 1px solid hsl(var(--border) / 0.5);
-    box-shadow: 0 2px 20px hsl(220 40% 88% / 0.2);
+    border: 1px solid hsl(var(--border) / 0.4);
+    box-shadow: 0 2px 20px hsl(30 20% 88% / 0.12);
     border-radius: 20px;
     transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s ease;
   }
   .glass-static:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 32px hsl(220 40% 85% / 0.25);
+    box-shadow: 0 8px 32px hsl(30 20% 85% / 0.18);
     border-color: hsl(var(--primary) / 0.2);
   }
   .neu {
-    background: hsl(0 0% 100%);
+    background: hsl(40 25% 99%);
     border-radius: 20px;
-    box-shadow: 0 1px 3px hsl(220 40% 90% / 0.3), 0 4px 20px hsl(220 40% 88% / 0.15);
-    border: 1px solid hsl(var(--border) / 0.6);
+    box-shadow: 0 1px 3px hsl(30 20% 90% / 0.2), 0 4px 20px hsl(30 20% 88% / 0.1);
+    border: 1px solid hsl(var(--border) / 0.5);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
   .neu:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 30px hsl(220 40% 85% / 0.25);
+    box-shadow: 0 8px 30px hsl(30 20% 85% / 0.18);
   }
   .neu-inset {
     background: hsl(var(--background));
     border-radius: 16px;
-    box-shadow: inset 1px 1px 4px hsl(220 30% 92% / 0.4);
-    border: 1px solid hsl(var(--border) / 0.4);
+    box-shadow: inset 1px 1px 4px hsl(30 20% 92% / 0.3);
+    border: 1px solid hsl(var(--border) / 0.35);
   }
   .neu-flat {
-    background: hsl(0 0% 100%);
+    background: hsl(40 25% 99%);
     border-radius: 16px;
-    box-shadow: 0 2px 12px hsl(220 40% 88% / 0.2);
-    border: 1px solid hsl(var(--border) / 0.5);
+    box-shadow: 0 2px 12px hsl(30 20% 88% / 0.12);
+    border: 1px solid hsl(var(--border) / 0.4);
   }
   .grain {
     position: relative;
@@ -195,24 +194,24 @@
     top: 0; left: 0; right: 0; bottom: 0;
     pointer-events: none;
     z-index: 9999;
-    opacity: 0.008;
+    opacity: 0.012;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
   }
   .gradient-mesh {
     background:
-      radial-gradient(ellipse at 15% 25%, hsl(207 90% 92% / 0.35) 0%, transparent 55%),
-      radial-gradient(ellipse at 85% 75%, hsl(263 55% 92% / 0.3) 0%, transparent 55%),
-      radial-gradient(ellipse at 50% 50%, hsl(156 55% 93% / 0.15) 0%, transparent 45%),
-      radial-gradient(ellipse at 50% 10%, hsl(0 0% 100% / 0.6) 0%, transparent 50%),
+      radial-gradient(ellipse at 20% 20%, hsl(158 42% 90% / 0.3) 0%, transparent 55%),
+      radial-gradient(ellipse at 80% 80%, hsl(280 35% 92% / 0.25) 0%, transparent 55%),
+      radial-gradient(ellipse at 50% 50%, hsl(35 40% 94% / 0.2) 0%, transparent 45%),
+      radial-gradient(ellipse at 50% 10%, hsl(40 25% 99% / 0.6) 0%, transparent 50%),
       hsl(var(--background));
   }
   .btn-primary {
     @apply px-6 py-3 rounded-2xl text-sm font-medium text-white transition-all;
-    background: linear-gradient(135deg, hsl(207 90% 72%), hsl(263 60% 76%));
-    box-shadow: 0 4px 20px hsl(207 80% 75% / 0.3);
+    background: linear-gradient(135deg, hsl(158 42% 52%), hsl(158 42% 62%), hsl(280 40% 72%));
+    box-shadow: 0 4px 20px hsl(158 42% 58% / 0.25);
   }
   .btn-primary:hover {
-    box-shadow: 0 8px 30px hsl(207 80% 72% / 0.4);
+    box-shadow: 0 8px 30px hsl(158 42% 52% / 0.35);
     transform: translateY(-1px);
     filter: brightness(1.04);
   }
@@ -225,7 +224,7 @@
     @apply px-6 py-3 rounded-2xl text-sm font-medium border transition-all;
     border-color: hsl(var(--border));
     color: hsl(var(--foreground));
-    background: hsl(0 0% 100% / 0.7);
+    background: hsl(40 25% 99% / 0.7);
   }
   .btn-secondary:hover {
     background: hsl(var(--primary) / 0.06);
