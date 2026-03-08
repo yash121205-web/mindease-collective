@@ -260,8 +260,9 @@ export default function Home() {
             </motion.div>
             <motion.div {...fadeUp(0.26)} className="flex items-center gap-6 mt-10 text-xs text-muted-foreground">
               <span className="flex items-center gap-1.5"><Lock className="w-3.5 h-3.5" /> 100% Private</span>
-              <span className="flex items-center gap-1.5"><Zap className="w-3.5 h-3.5" /> AI Powered</span>
+              <span className="flex items-center gap-1.5"><Zap className="w-3.5 h-3.5" /> AI-Powered</span>
               <span className="flex items-center gap-1.5"><Heart className="w-3.5 h-3.5" /> Free Forever</span>
+              <span className="flex items-center gap-1.5"><Users className="w-3.5 h-3.5" /> 90+ Languages</span>
             </motion.div>
           </div>
 
