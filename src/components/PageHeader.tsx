@@ -35,7 +35,7 @@ export default function PageHeader({ title, subtitle, emoji, icon: Icon, gradien
           </div>
         )}
         <div className="flex-1 min-w-0">
-          <h1 className="font-display text-2xl md:text-3xl text-foreground font-normal leading-tight italic">{title}</h1>
+          <h1 className="font-display text-2xl md:text-3xl text-foreground font-semibold leading-tight">{title}</h1>
           <p className="text-muted-foreground font-body mt-1 text-sm md:text-base">{subtitle}</p>
           {children && <div className="mt-3">{children}</div>}
         </div>

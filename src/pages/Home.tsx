@@ -39,7 +39,7 @@ function SectionHeading({ children, sub }: { children: React.ReactNode; sub?: st
   return (
     <motion.div {...fadeUp()} className="text-center mb-14">
       <SectionLabel>{typeof children === 'string' ? children : 'Feature'}</SectionLabel>
-      <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-normal text-foreground leading-tight italic">
+      <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-semibold text-foreground leading-tight">
         {children}
       </h2>
       {sub && <p className="text-muted-foreground max-w-2xl mx-auto mt-4 text-base md:text-lg leading-relaxed">{sub}</p>}
