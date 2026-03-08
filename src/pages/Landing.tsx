@@ -505,8 +505,8 @@ export default function Landing() {
 
         {/* ─── Explore Features ─── */}
         <motion.div
-          initial={{ opacity: 0, y: 30, filter: 'blur(6px)' }}
-          animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="mt-10"
         >
