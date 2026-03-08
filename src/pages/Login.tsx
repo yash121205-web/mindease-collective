@@ -192,9 +192,9 @@ export default function Login() {
       <motion.div
         className="hidden lg:flex lg:w-1/2 flex-col justify-between p-12 relative overflow-hidden"
         initial={{ x: -60, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ duration: 0.5 }}
-        style={{ background: 'linear-gradient(135deg, hsl(330,100%,90%) 0%, hsl(197,80%,85%) 60%, hsl(270,40%,90%) 100%)' }}
+        style={{ background: 'linear-gradient(135deg, hsl(207,90%,88%) 0%, hsl(263,55%,85%) 50%, hsl(156,50%,88%) 100%)' }}
       >
-        <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(circle at 30% 40%, hsla(330,100%,92%,0.4) 0%, transparent 60%)', animation: 'glowMove 8s ease-in-out infinite alternate' }} />
+        <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(circle at 30% 40%, hsla(207,90%,92%,0.4) 0%, transparent 60%)' }} />
         <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-white/15" />
         <div className="absolute -bottom-40 -left-24 w-[420px] h-[420px] rounded-full bg-white/10" />
 
