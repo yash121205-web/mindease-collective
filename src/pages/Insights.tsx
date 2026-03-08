@@ -347,7 +347,7 @@ export default function Insights() {
             </div>
           </div>
         )}
-      </motion.div>
+      
     </div>
   );
 }

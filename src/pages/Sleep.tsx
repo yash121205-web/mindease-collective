@@ -281,7 +281,6 @@ export default function Sleep() {
             "Sleep is the single most effective thing you can do to reset your brain and body health each day." — Dr. Matthew Walker
           </p>
         </div>
-      </motion.div>
     </div>
   );
 }

@@ -26,7 +26,6 @@ export default function Games() {
         {activeTab === 'Breathing Rhythm' && <BreathingRhythmGame />}
         {activeTab === 'Focus Bubbles' && <FocusBubblesGame />}
         {activeTab === 'Color Calm' && <ColorCalmGame />}
-      </motion.div>
     </div>
   );
 }

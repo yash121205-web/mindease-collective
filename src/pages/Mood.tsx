@@ -256,7 +256,6 @@ export default function Mood() {
             </p>
           </motion.div>
         )}
-      </motion.div>
     </div>
   );
 }

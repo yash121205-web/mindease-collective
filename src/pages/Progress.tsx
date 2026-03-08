@@ -330,7 +330,6 @@ export default function Progress() {
             ))}
           </div>
         </div>
-      </motion.div>
     </div>
   );
 }

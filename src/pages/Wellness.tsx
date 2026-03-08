@@ -331,7 +331,6 @@ export default function Wellness() {
             )}
           </div>
         )}
-      </motion.div>
     </div>
   );
 }

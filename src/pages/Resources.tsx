@@ -301,7 +301,6 @@ export default function Resources() {
             </div>
           </section>
         )}
-      </motion.div>
     </div>
   );
 }
