@@ -195,9 +195,7 @@ export default function Home() {
       <nav className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-background/85 backdrop-blur-md border-b border-border/50 shadow-sm">
         <div className="max-w-6xl mx-auto flex items-center justify-between px-5 md:px-10 py-4">
           <button type="button" onClick={() => handleNavClick('home')} className="flex items-center gap-3 text-left">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-md">
-              <Leaf className="w-5 h-5 text-primary-foreground" />
-            </div>
+            <img src={logo} alt="MindEase AI" className="w-10 h-10 rounded-2xl shadow-md" />
             <span className="font-display text-xl font-bold text-foreground tracking-tight">MindEase AI</span>
           </button>
 
