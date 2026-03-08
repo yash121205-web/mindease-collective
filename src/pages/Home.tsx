@@ -128,9 +128,9 @@ const benefits = [
 
 const chatMessages = [
   { role: 'user' as const, text: "I'm feeling really stressed about my finals 😰" },
-  { role: 'ai' as const, text: "Exam season can feel like a mountain — but you've climbed them before. What subject is weighing on you the most?" },
-  { role: 'user' as const, text: "Organic chemistry. I feel so behind." },
-  { role: 'ai' as const, text: "Falling behind doesn't mean failing. Let's make a small plan — even 25 focused minutes today counts." },
+  { role: 'ai' as const, text: "Exam season turns the brain into a pressure cooker — let's try a 60-second box breathing reset. Want to start?" },
+  { role: 'user' as const, text: "Yes please, I need that right now" },
+  { role: 'ai' as const, text: "Breathe in for 4 counts… hold 4… out 4… hold 4. Two more rounds and notice how your shoulders drop. 🧘" },
 ];
 
 const challengeCards = [
@@ -241,13 +241,14 @@ export default function Home() {
               </span>
             </motion.div>
             <motion.h1 {...fadeUp(0.08)} className="font-display text-4xl sm:text-5xl lg:text-6xl xl:text-[4.25rem] font-bold text-foreground leading-[1.08] mb-6">
-              Your AI Companion for{' '}
+              Your{' '}
               <span className="bg-gradient-to-r from-primary via-secondary to-mint bg-clip-text text-transparent">
-                Mental Wellness
-              </span>
+                AI-Powered
+              </span>{' '}
+              Mental Wellness Companion
             </motion.h1>
             <motion.p {...fadeUp(0.14)} className="text-muted-foreground text-lg md:text-xl leading-relaxed mb-10 max-w-xl">
-              Track emotions, reflect through journaling, and receive AI-powered emotional support — anytime, anywhere.
+              Meet SERA — an empathetic AI that tracks your emotions, guides you through exercises, and supports your mental health journey 24/7. Private. Free. Built for students.
             </motion.p>
             <motion.div {...fadeUp(0.2)} className="flex flex-wrap gap-4">
               <button onClick={() => navigate('/login')} className="btn-primary flex items-center gap-2.5 text-base px-8 py-3.5">
@@ -259,8 +260,9 @@ export default function Home() {
             </motion.div>
             <motion.div {...fadeUp(0.26)} className="flex items-center gap-6 mt-10 text-xs text-muted-foreground">
               <span className="flex items-center gap-1.5"><Lock className="w-3.5 h-3.5" /> 100% Private</span>
-              <span className="flex items-center gap-1.5"><Zap className="w-3.5 h-3.5" /> AI Powered</span>
+              <span className="flex items-center gap-1.5"><Zap className="w-3.5 h-3.5" /> AI-Powered</span>
               <span className="flex items-center gap-1.5"><Heart className="w-3.5 h-3.5" /> Free Forever</span>
+              <span className="flex items-center gap-1.5"><Users className="w-3.5 h-3.5" /> 90+ Languages</span>
             </motion.div>
           </div>
 
