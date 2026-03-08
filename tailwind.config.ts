@@ -12,8 +12,9 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ['"Fraunces"', 'serif'],
-        body: ['"DM Sans"', 'sans-serif'],
+        display: ['"Instrument Serif"', 'serif'],
+        body: ['"Plus Jakarta Sans"', 'sans-serif'],
+        accent: ['"Caveat"', 'cursive'],
         mono: ['"JetBrains Mono"', 'monospace'],
       },
       colors: {
