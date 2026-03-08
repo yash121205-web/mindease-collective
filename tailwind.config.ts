@@ -12,8 +12,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ['"Sora"', 'sans-serif'],
-        body: ['"Nunito"', 'sans-serif'],
+        display: ['"Fraunces"', 'serif'],
+        body: ['"DM Sans"', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'monospace'],
       },
       colors: {
