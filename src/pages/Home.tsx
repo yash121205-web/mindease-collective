@@ -954,12 +954,12 @@ export default function Home() {
       <Section id="about">
         <motion.div
           {...fadeUp()}
-          className="neu p-12 md:p-20 text-center bg-gradient-to-br from-primary/8 to-mint/8 relative overflow-hidden"
+          className="neu p-12 md:p-20 text-center bg-gradient-to-br from-primary/8 to-secondary/8 relative overflow-hidden"
         >
           <div className="absolute top-0 right-0 w-72 h-72 bg-gradient-to-bl from-primary/12 to-transparent rounded-bl-full" />
-          <div className="absolute bottom-0 left-0 w-56 h-56 bg-gradient-to-tr from-mint/12 to-transparent rounded-tr-full" />
+          <div className="absolute bottom-0 left-0 w-56 h-56 bg-gradient-to-tr from-secondary/12 to-transparent rounded-tr-full" />
           <div className="relative z-10">
-            <motion.div {...fadeUp(0.1)} className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-mint flex items-center justify-center mx-auto mb-8 shadow-lg">
+            <motion.div {...fadeUp(0.1)} className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center mx-auto mb-8 shadow-lg">
               <Heart className="w-8 h-8 text-primary-foreground" />
             </motion.div>
             <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-5">
