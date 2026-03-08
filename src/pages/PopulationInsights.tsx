@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { getMoods, getJournalEntries, getSessions } from '@/lib/storage';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, PieChart, Pie, Cell, LineChart, Line } from 'recharts';
 import { Users, TrendingUp, Heart, Brain, Shield } from 'lucide-react';
+import PageHeader from '@/components/PageHeader';
 
 export default function PopulationInsights() {
   const moods = getMoods();
