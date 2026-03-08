@@ -27,10 +27,12 @@ function QuickActions({ navigate, onSend }: { navigate: (path: string) => void; 
 const SUGGESTED = [
   "I'm anxious about my exams 😰",
   "I feel like no one understands me",
-  "Help me calm down right now",
+  "Guide me through a breathing exercise 🧘",
   "I can't stop overthinking",
-  "I need motivation today",
+  "Help me create a study plan 📚",
   "I'm feeling really lonely lately",
+  "I need a sleep story to calm down 💤",
+  "Help me set wellness goals 🎯",
 ];
 
 const LANGUAGES = [
