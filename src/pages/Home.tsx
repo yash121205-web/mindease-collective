@@ -712,7 +712,7 @@ export default function Home() {
           {/* Chat mockup */}
           <motion.div {...fadeUp(0.2)} className="neu p-6 max-w-md mx-auto w-full">
             <div className="flex items-center gap-3 mb-5 pb-4 border-b border-border">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-mint flex items-center justify-center shadow-md">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-md">
                 <Leaf className="w-5 h-5 text-primary-foreground" />
               </div>
               <div>
