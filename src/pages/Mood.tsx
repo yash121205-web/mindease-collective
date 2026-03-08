@@ -5,7 +5,6 @@ import { callAI } from '@/lib/ai';
 import { TrendingUp, Sparkles, Calendar } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip, BarChart, Bar, Cell } from 'recharts';
 import PageHeader from '@/components/PageHeader';
-import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip, BarChart, Bar, Cell } from 'recharts';
 
 const factors = ['Academics', 'Sleep', 'Social', 'Family', 'Health', 'Work', 'Relationships'];
 

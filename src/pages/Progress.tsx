@@ -8,7 +8,6 @@ import { callAI } from '@/lib/ai';
 import { Flame, BookOpen, Smile, Wind, Timer, Sparkles, Award, Copy } from 'lucide-react';
 import { toast } from 'sonner';
 import PageHeader from '@/components/PageHeader';
-import { toast } from 'sonner';
 
 const habitList: { key: keyof HabitDay; label: string; emoji: string }[] = [
   { key: 'meditated', label: 'Meditated', emoji: '🧘' },
