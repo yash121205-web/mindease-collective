@@ -11,7 +11,7 @@ function emojiToCodepoint(emoji: string): string {
 
 function replaceEmojisInNode(node: Text) {
   const parent = node.parentElement;
-  if (!parent || parent.classList.contains('_ae') || parent.tagName === 'SCRIPT' || parent.tagName === 'STYLE' || parent.tagName === 'TEXTAREA' || parent.tagName === 'INPUT') return;
+  if (!parent || parent.dataset.ae === '1' || parent.tagName === 'SCRIPT' || parent.tagName === 'STYLE' || parent.tagName === 'TEXTAREA' || parent.tagName === 'INPUT') return;
 
   const text = node.textContent || '';
   EMOJI_REGEX.lastIndex = 0;
@@ -35,21 +35,18 @@ function replaceEmojisInNode(node: Text) {
     img.className = 'apple-emoji';
     img.loading = 'lazy';
     img.draggable = false;
-    img.onerror = () => {
-      // Fallback: replace img with original emoji text
-      img.replaceWith(document.createTextNode(match![0]));
-    };
+    const emoji = match[0];
+    img.onerror = () => { img.replaceWith(document.createTextNode(emoji)); };
     fragment.appendChild(img);
     lastIndex = match.index + match[0].length;
   }
 
   if (!replaced) return;
-
   if (lastIndex < text.length) {
     fragment.appendChild(document.createTextNode(text.slice(lastIndex)));
   }
 
-  parent.classList.add('_ae');
+  parent.dataset.ae = '1';
   node.parentNode?.replaceChild(fragment, node);
 }
 
@@ -59,11 +56,12 @@ function processNode(node: Node) {
     return;
   }
   const el = node as Element;
-  if (!el.tagName) return;
-  if (el.tagName === 'SCRIPT' || el.tagName === 'STYLE' || el.tagName === 'IMG') return;
-  if (el.classList?.contains('_ae')) return;
+  if (!el.tagName || el.tagName === 'SCRIPT' || el.tagName === 'STYLE' || el.tagName === 'IMG') return;
+  if ((el as HTMLElement).dataset?.ae === '1') return;
   const children = Array.from(node.childNodes);
-  children.forEach(processNode);
+  for (let i = 0; i < children.length; i++) {
+    processNode(children[i]);
+  }
 }
 
 export default function AppleEmojiProvider({ children }: { children: React.ReactNode }) {
@@ -71,23 +69,36 @@ export default function AppleEmojiProvider({ children }: { children: React.React
     const root = document.getElementById('root');
     if (!root) return;
 
-    // Initial pass (slight delay to let React render)
-    const t = setTimeout(() => processNode(root), 100);
+    // Initial pass
+    requestIdleCallback(() => processNode(root));
+
+    let pending = false;
+    const queue: Node[] = [];
+
+    function flush() {
+      pending = false;
+      const nodes = queue.splice(0, queue.length);
+      for (const n of nodes) processNode(n);
+    }
 
     const observer = new MutationObserver((mutations) => {
-      for (const mutation of mutations) {
-        for (const node of Array.from(mutation.addedNodes)) {
-          processNode(node);
+      for (const m of mutations) {
+        for (let i = 0; i < m.addedNodes.length; i++) {
+          const n = m.addedNodes[i];
+          // Skip our own img insertions
+          if ((n as Element).classList?.contains('apple-emoji')) continue;
+          queue.push(n);
         }
+      }
+      if (queue.length > 0 && !pending) {
+        pending = true;
+        requestAnimationFrame(flush);
       }
     });
 
     observer.observe(root, { childList: true, subtree: true });
 
-    return () => {
-      clearTimeout(t);
-      observer.disconnect();
-    };
+    return () => observer.disconnect();
   }, []);
 
   return <>{children}</>;
