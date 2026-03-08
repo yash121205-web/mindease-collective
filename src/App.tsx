@@ -52,10 +52,11 @@ const App = () => {
   const [showSplash, setShowSplash] = useState(() => !sessionStorage.getItem('mindease_splash_shown'));
 
   return (
+    <ThemeProvider>
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
-        <Sonner />
+        <Son/>
         <AnimatePresence>
           {showSplash && (
             <SplashScreen onDone={() => {
