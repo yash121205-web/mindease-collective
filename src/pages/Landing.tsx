@@ -557,8 +557,8 @@ export default function Landing() {
         {/* ─── Weekly Mood Chart ─── */}
         {allMoods.length > 2 && (
           <motion.div
-            initial={{ opacity: 0, y: 30, filter: 'blur(6px)' }}
-            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.1, duration: 0.6 }}
             className="mt-10 rounded-3xl p-6 relative overflow-hidden border border-border/30"
             style={{ background: 'linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--primary) / 0.03) 100%)' }}
