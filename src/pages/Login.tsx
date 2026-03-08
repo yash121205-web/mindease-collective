@@ -249,7 +249,7 @@ export default function Login() {
           </motion.div>
 
           <motion.div {...stagger(0)} className="text-center mb-8">
-            <h1 className="font-display text-3xl font-bold text-foreground mb-1">{isSignUp ? 'Get Started 🌸' : 'Welcome back 💕'}</h1>
+            <h1 className="font-display text-3xl font-bold text-foreground mb-1">{isSignUp ? 'Get Started ✨' : 'Welcome back 💙'}</h1>
             <p className="text-muted-foreground font-body text-sm">{isSignUp ? 'Create your wellness space' : 'Continue your wellness journey'}</p>
           </motion.div>
 
