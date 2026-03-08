@@ -1,9 +1,18 @@
 import { motion } from 'framer-motion';
 
-/**
- * Floating decorative blobs that maintain the "Soft Organic" aesthetic
- * across all app pages. Renders fixed-position, pointer-event-free shapes.
- */
+const floatingStickers = [
+  { emoji: '🌿', top: '8%', left: '6%', size: 'text-lg', duration: 7, delay: 0 },
+  { emoji: '✨', top: '14%', right: '10%', size: 'text-base', duration: 5.5, delay: 1 },
+  { emoji: '🦋', top: '30%', left: '3%', size: 'text-base', duration: 8, delay: 2 },
+  { emoji: '💫', top: '22%', right: '5%', size: 'text-sm', duration: 6, delay: 0.5 },
+  { emoji: '🌸', top: '50%', left: '7%', size: 'text-lg', duration: 9, delay: 3 },
+  { emoji: '🍃', top: '65%', right: '6%', size: 'text-base', duration: 7.5, delay: 1.5 },
+  { emoji: '☁️', top: '40%', right: '3%', size: 'text-sm', duration: 10, delay: 4 },
+  { emoji: '🌙', top: '75%', left: '4%', size: 'text-sm', duration: 6.5, delay: 2.5 },
+  { emoji: '💜', top: '85%', right: '8%', size: 'text-xs', duration: 5, delay: 0.8 },
+  { emoji: '🧘', top: '55%', left: '50%', size: 'text-xs', duration: 8.5, delay: 3.5 },
+];
+
 export default function DecorativeBlobs() {
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden z-0" aria-hidden>
@@ -47,7 +56,7 @@ export default function DecorativeBlobs() {
         transition={{ duration: 21, repeat: Infinity, ease: 'easeInOut' }}
       />
 
-      {/* Floating small circles — decorative "stickers" */}
+      {/* Floating dot accents */}
       <motion.div
         className="absolute top-[15%] left-[10%] w-3 h-3 rounded-full bg-primary/10"
         animate={{ y: [0, -20, 0], opacity: [0.3, 0.6, 0.3] }}
@@ -68,11 +77,33 @@ export default function DecorativeBlobs() {
         animate={{ y: [0, -12, 0], opacity: [0.2, 0.45, 0.2] }}
         transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
       />
-      <motion.div
-        className="absolute top-[45%] left-[50%] w-1.5 h-1.5 rounded-full bg-primary/8"
-        animate={{ y: [0, -22, 0], opacity: [0.15, 0.4, 0.15] }}
-        transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut', delay: 3 }}
-      />
+
+      {/* Floating emoji stickers */}
+      {floatingStickers.map((s, i) => (
+        <motion.span
+          key={i}
+          className={`absolute ${s.size} select-none`}
+          style={{
+            top: s.top,
+            left: s.left,
+            right: s.right,
+            opacity: 0,
+          }}
+          animate={{
+            y: [0, -24, 0],
+            opacity: [0.15, 0.4, 0.15],
+            rotate: [0, s.delay > 2 ? 12 : -8, 0],
+          }}
+          transition={{
+            duration: s.duration,
+            repeat: Infinity,
+            ease: 'easeInOut',
+            delay: s.delay,
+          }}
+        >
+          {s.emoji}
+        </motion.span>
+      ))}
     </div>
   );
 }

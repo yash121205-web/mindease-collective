@@ -64,7 +64,7 @@
     min-height: 100vh;
   }
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Sora', sans-serif;
   }
 }
 
@@ -166,5 +166,13 @@
   }
   .font-number {
     font-family: 'JetBrains Mono', monospace;
+  }
+  .sticker {
+    @apply inline-block select-none;
+    animation: float 3s ease-in-out infinite;
+  }
+  .sticker-spin {
+    @apply inline-block select-none;
+    animation: float 3s ease-in-out infinite, glow-pulse 2s ease-in-out infinite;
   }
 }
