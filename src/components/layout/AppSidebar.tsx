@@ -53,22 +53,7 @@ export default function AppSidebar({ open, onClose }: { open: boolean; onClose: 
   const [anon, setAnon] = useState(false);
   const streak = calculateStreak();
   const todayMood = getTodayMood();
-  const [dark, setDark] = useState(() => document.documentElement.classList.contains('dark'));
-
-  const toggleDark = () => {
-    const next = !dark;
-    setDark(next);
-    document.documentElement.classList.toggle('dark', next);
-    localStorage.setItem('mindease_theme', next ? 'dark' : 'light');
-  };
-
-  useEffect(() => {
-    const saved = localStorage.getItem('mindease_theme');
-    if (saved === 'dark') {
-      setDark(true);
-      document.documentElement.classList.add('dark');
-    }
-  }, []);
+  const { isDark, toggle: toggleDark } = useTheme();
 
   const handleLogout = () => {
     onClose();
