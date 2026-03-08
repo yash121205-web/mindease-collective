@@ -4,7 +4,13 @@ import { Menu, ArrowLeft, Home } from 'lucide-react';
 import AppSidebar from './AppSidebar';
 import FloatingActionButton from '../FloatingActionButton';
 import StreakBanner from '../StreakBanner';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+
+const pageVariants = {
+  initial: { opacity: 0, y: 12 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -8 },
+};
 
 export default function AppLayout({ children }: { children?: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -53,15 +59,19 @@ export default function AppLayout({ children }: { children?: React.ReactNode }) 
 
         <main className="flex-1">
           {children || (
-            <motion.div
-              key={location.pathname}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, ease: 'easeOut' }}
-              className="h-full"
-            >
-              <Outlet />
-            </motion.div>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={location.pathname}
+                variants={pageVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                className="h-full"
+              >
+                <Outlet />
+              </motion.div>
+            </AnimatePresence>
           )}
         </main>
 
