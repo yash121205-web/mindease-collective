@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { getUser, saveUser, clearAllData, exportData, logoutUser } from '@/lib/storage';
-import { User, Shield, Database, Info, Download, Trash2, Key, Bell, Mic } from 'lucide-react';
+import { User, Shield, Database, Info, Download, Trash2, Key, Bell, Mic, Globe } from 'lucide-react';
 import { toast } from 'sonner';
 
 function Toggle({ enabled, onToggle, label }: { enabled: boolean; onToggle: () => void; label: string }) {
