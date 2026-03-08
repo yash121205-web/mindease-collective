@@ -163,7 +163,7 @@ export default function Meditation() {
                 <button
                   key={s.id}
                   onClick={() => setSelectedSound(s.id)}
-                  className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-body font-medium transition-all ${selectedSound === s.id ? 'bg-primary/10 text-primary border border-primary/30' : 'text-muted-foreground hover:bg-muted/40 border border-transparent'}`}
+                  className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-body font-medium transition-all ${selectedSound === s.id ? 'bg-primary/10 text-primary border border-primary/30' : 'text-muted-foreground hover:bg-muted/40 border border-transparent'}`}
                 >
                   <s.icon className="w-3.5 h-3.5" />{s.label}
                 </button>

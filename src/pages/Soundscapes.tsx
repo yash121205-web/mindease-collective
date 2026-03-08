@@ -72,7 +72,7 @@ export default function Soundscapes() {
           <button
             key={m}
             onClick={() => setFilter(m)}
-            className={`px-5 py-2.5 rounded-full text-sm font-display font-medium transition-all ${filter === m ? 'bg-primary text-primary-foreground shadow-md' : 'bg-muted/50 text-muted-foreground hover:bg-muted'}`}
+            className={`px-5 py-2.5 rounded-full text-base font-display font-medium transition-all ${filter === m ? 'bg-primary text-primary-foreground shadow-md' : 'bg-muted/50 text-muted-foreground hover:bg-muted'}`}
           >
             {m}
           </button>

@@ -15,7 +15,7 @@ export default function Games() {
         <div className="flex gap-1 mb-8 overflow-x-auto">
           {tabs.map(t => (
             <button key={t} onClick={() => setActiveTab(t)}
-              className={`px-4 py-2 rounded-xl text-sm font-body font-medium whitespace-nowrap transition-all ${
+              className={`px-5 py-2.5 rounded-xl text-base font-body font-medium whitespace-nowrap transition-all ${
                 activeTab === t ? 'btn-primary' : 'bg-muted text-muted-foreground hover:text-foreground'
               }`}>
               {t}

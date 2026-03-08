@@ -153,7 +153,7 @@ export default function SettingsPage() {
                 <button
                   key={lang.code}
                   onClick={() => handleLanguageChange(lang.code)}
-                  className={`px-3 py-2 rounded-xl text-sm font-body font-medium transition-all ${
+                  className={`px-4 py-2.5 rounded-xl text-base font-body font-medium transition-all ${
                     language === lang.code
                       ? 'bg-primary text-primary-foreground shadow-md'
                       : 'bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground'
