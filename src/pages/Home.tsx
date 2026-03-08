@@ -147,9 +147,9 @@ const features = [
 
 const quickActions = [
   { icon: MessageCircle, label: 'Talk to SERA', path: '/app/chat', color: 'from-primary to-primary/80' },
-  { icon: Smile, label: 'Log Mood', path: '/app/mood', color: 'from-mint to-mint/80' },
-  { icon: PenLine, label: 'Write Journal', path: '/app/journal', color: 'from-secondary to-secondary/80' },
-  { icon: Wind, label: 'Start Breathing', path: '/app/wellness', color: 'from-rose-soft to-rose-soft/80' },
+  { icon: Smile, label: 'Log Mood', path: '/app/mood', color: 'from-secondary to-secondary/80' },
+  { icon: PenLine, label: 'Write Journal', path: '/app/journal', color: 'from-mint to-mint/80' },
+  { icon: Wind, label: 'Start Breathing', path: '/app/wellness', color: 'from-sky-soft to-primary/60' },
 ];
 
 const benefits = [
