@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Pause, RotateCcw, Volume2, VolumeX, Leaf, Wind, Waves, TreePine, CloudRain, Timer } from 'lucide-react';
+import PageHeader from '@/components/PageHeader';
 import { toast } from 'sonner';
 
 const presets = [
