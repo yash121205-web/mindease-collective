@@ -221,7 +221,7 @@ async function callGoogleGemini(
           contents: geminiMessages,
           generationConfig: {
             temperature: 0.85,
-            maxOutputTokens: 1024,
+            maxOutputTokens: 300,
           },
         }),
       }
