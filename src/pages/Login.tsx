@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Leaf, Eye, EyeOff, Check } from 'lucide-react';
+import { Leaf, Eye, EyeOff, Check, Globe, ChevronDown } from 'lucide-react';
 import { toast } from 'sonner';
 import { lovable } from '@/integrations/lovable/index';
 import { supabase } from '@/integrations/supabase/client';
