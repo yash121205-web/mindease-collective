@@ -303,7 +303,7 @@ export default function Landing() {
             { label: 'Talk to SERA', desc: 'Your AI wellness companion', icon: Leaf, path: '/app/chat', gradient: 'from-primary/12 to-sky-soft/8', iconBg: 'bg-primary/15 text-primary' },
             { label: 'Write in Journal', desc: 'Reflect, release & grow', icon: BookOpen, path: '/app/journal', gradient: 'from-secondary/10 to-warm-lavender/8', iconBg: 'bg-secondary/15 text-secondary' },
             { label: 'Breathing Exercise', desc: 'Find your inner calm', icon: Wind, path: '/app/wellness', gradient: 'from-mint/10 to-primary/6', iconBg: 'bg-mint/15 text-foreground' },
-          ].map((item, i) => (
+          ].map((item) => (
             <motion.button
               key={item.path} variants={stagger.item}
               onClick={() => navigate(item.path)}
