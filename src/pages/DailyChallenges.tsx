@@ -205,7 +205,7 @@ export default function DailyChallenges() {
               <p className="text-sm text-muted-foreground font-body mt-2">{showBadgeUnlock.description}</p>
               <button onClick={() => setShowBadgeUnlock(null)}
                 className="mt-6 px-6 py-2.5 rounded-2xl text-sm font-body font-medium text-primary-foreground"
-                style={{ background: 'linear-gradient(135deg, hsl(330,100%,85%), hsl(197,88%,66%))' }}>
+                style={{ background: 'linear-gradient(135deg, hsl(207,90%,72%), hsl(260,60%,78%))' }}>
                 Awesome!
               </button>
             </motion.div>
