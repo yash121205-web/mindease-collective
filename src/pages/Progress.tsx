@@ -5,7 +5,7 @@ import {
   calculateStreak, calculateEHS, MOOD_MAP, type HabitDay, getChatHistory
 } from '@/lib/storage';
 import { callAI } from '@/lib/ai';
-import { Flame, BookOpen, Smile, Wind, Timer, Sparkles, Award, Copy } from 'lucide-react';
+import { Flame, BookOpen, Smile, Wind, Sparkles, Award, Copy, Check, TrendingUp, Calendar } from 'lucide-react';
 import { toast } from 'sonner';
 import PageHeader from '@/components/PageHeader';
 
@@ -29,6 +29,22 @@ const badgeDefs = [
   { id: 'mood-7', emoji: '📊', label: 'Self-Aware', desc: 'Log mood 7 days', check: () => { const dates = new Set(getMoods().map(m => m.date)); return dates.size >= 7; } },
 ];
 
+const fadeUp = {
+  initial: { opacity: 0, y: 16 },
+  animate: { opacity: 1, y: 0 },
+};
+
+function SectionLabel({ icon: Icon, label }: { icon: any; label: string }) {
+  return (
+    <div className="flex items-center gap-2 mb-4">
+      <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-primary/15 to-secondary/10 flex items-center justify-center">
+        <Icon className="w-3.5 h-3.5 text-primary" />
+      </div>
+      <h3 className="font-display text-base text-foreground font-semibold">{label}</h3>
+    </div>
+  );
+}
+
 export default function Progress() {
   const streak = calculateStreak();
   const moods = getMoods();
@@ -48,17 +64,16 @@ export default function Progress() {
     const next = { ...habits, [key]: !habits[key] };
     setHabits(next);
     saveTodayHabits(next);
-    // Check badge
     if (Object.values(next).every(Boolean)) {
       toast.success('🌟 Badge unlocked: Wellness Warrior!');
     }
   };
 
-  const thisWeekMoods = moods.filter(m => (Date.now() - m.timestamp) < 7 * 86400000);
   const habitCompletionPct = Math.round((Object.values(habits).filter(Boolean).length / 7) * 100);
   const ehsColor = ehs >= 70 ? 'text-secondary' : ehs >= 40 ? 'text-primary' : 'text-rose-soft';
+  const ehsStroke = ehs >= 70 ? 'hsl(var(--secondary))' : ehs >= 40 ? 'hsl(var(--primary))' : 'hsl(var(--rose-soft))';
 
-  // Week days for habit tracker
+  const todayStr = new Date().toISOString().split('T')[0];
   const weekDays: string[] = [];
   const allHabits = getHabits();
   for (let i = 6; i >= 0; i--) {
@@ -123,212 +138,331 @@ export default function Progress() {
     <div className="p-4 lg:p-8 max-w-5xl mx-auto overflow-y-auto">
       <PageHeader title="Progress" subtitle="Track your wellness journey" emoji="🏆" gradient="from-warm-peach/10 to-mint/8" />
 
-        {/* Top Stats */}
-        <div className="grid gap-4 grid-cols-2 md:grid-cols-4 mb-6">
-          {[
-            { label: 'Current Streak', value: streak, icon: Flame, emoji: '🔥' },
-            { label: 'Journal Entries', value: journal.length, icon: BookOpen, emoji: '📓' },
-            { label: 'Moods Logged', value: moods.length, icon: Smile, emoji: '😊' },
-            { label: 'Wellness Sessions', value: sessions.breathing + sessions.pomodoro, icon: Wind, emoji: '🧘' },
-          ].map((s, i) => (
-            <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
-              className="glass-static rounded-2xl p-4">
-              <p className="text-2xl font-bold text-foreground font-number">{s.value}</p>
-              <p className="text-xs text-muted-foreground font-body flex items-center gap-1">{s.emoji} {s.label}</p>
-            </motion.div>
-          ))}
-        </div>
+      {/* ─── Hero Stats ─── */}
+      <motion.div {...fadeUp} transition={{ duration: 0.4 }} className="grid gap-3 grid-cols-2 md:grid-cols-4 mb-6">
+        {[
+          { label: 'Current Streak', value: streak, emoji: '🔥', suffix: 'd' },
+          { label: 'Journal Entries', value: journal.length, emoji: '📓', suffix: '' },
+          { label: 'Moods Logged', value: moods.length, emoji: '😊', suffix: '' },
+          { label: 'Sessions', value: sessions.breathing + sessions.pomodoro, emoji: '🧘', suffix: '' },
+        ].map((s, i) => (
+          <motion.div key={i} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
+            className="bg-card/90 backdrop-blur-sm border border-border/40 rounded-2xl p-4">
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="text-lg">{s.emoji}</span>
+              <p className="text-[11px] text-muted-foreground font-body uppercase tracking-wider">{s.label}</p>
+            </div>
+            <p className="text-2xl font-bold text-foreground font-number">{s.value}<span className="text-sm font-normal text-muted-foreground">{s.suffix}</span></p>
+          </motion.div>
+        ))}
+      </motion.div>
 
+      {/* ─── EHS + Today's Habits Row ─── */}
+      <div className="grid gap-5 md:grid-cols-5 mb-6">
         {/* EHS Card */}
-        <div className="glass-static rounded-3xl p-6 mb-6 flex flex-col md:flex-row items-center gap-6">
-          <div className="relative w-32 h-32 shrink-0">
+        <motion.div {...fadeUp} transition={{ duration: 0.4, delay: 0.05 }}
+          className="md:col-span-2 bg-card/90 backdrop-blur-sm border border-border/40 rounded-2xl p-5 flex items-center gap-5">
+          <div className="relative w-24 h-24 shrink-0">
             <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
               <circle cx="50" cy="50" r="42" fill="none" stroke="hsl(var(--muted))" strokeWidth="8" />
-              <motion.circle cx="50" cy="50" r="42" fill="none"
-                stroke={ehs >= 70 ? 'hsl(var(--secondary))' : ehs >= 40 ? 'hsl(var(--primary))' : 'hsl(var(--rose-soft))'}
-                strokeWidth="8" strokeLinecap="round"
+              <motion.circle cx="50" cy="50" r="42" fill="none" stroke={ehsStroke} strokeWidth="8" strokeLinecap="round"
                 strokeDasharray={`${2 * Math.PI * 42}`}
                 initial={{ strokeDashoffset: 2 * Math.PI * 42 }}
                 animate={{ strokeDashoffset: 2 * Math.PI * 42 * (1 - ehs / 100) }}
-                transition={{ duration: 1.5 }}
+                transition={{ duration: 1.2, ease: 'easeOut' }}
               />
             </svg>
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className={`text-3xl font-bold font-number ${ehsColor}`}>{ehs}</span>
+              <span className={`text-2xl font-bold font-number ${ehsColor}`}>{ehs}</span>
             </div>
           </div>
           <div>
-            <h3 className="font-display text-xl text-foreground font-semibold mb-1">Emotional Health Score</h3>
-            <p className="text-sm text-muted-foreground font-body">
-              Based on mood ({Math.round(ehs * 0.6)}%), habits ({habitCompletionPct}%), journaling, and breathing sessions.
+            <p className="text-[11px] text-muted-foreground font-body uppercase tracking-wider">Emotional Health</p>
+            <p className="font-display text-sm font-semibold text-foreground mt-0.5">
+              {ehs >= 70 ? 'Thriving 🌟' : ehs >= 40 ? 'Steady progress 💙' : 'Needs attention 🫂'}
+            </p>
+            <p className="text-[11px] text-muted-foreground font-body mt-1 leading-relaxed">
+              Today's habits: {habitCompletionPct}% complete
             </p>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Habit Tracker - 7-day grid */}
-        <div className="glass-static rounded-3xl p-6 mb-6">
-          <h3 className="font-display text-lg text-foreground mb-4 font-semibold">Weekly Habit Tracker</h3>
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[500px]">
-              <thead>
-                <tr>
-                  <th className="text-left text-xs text-muted-foreground font-body pb-2 w-28">Habit</th>
-                  {weekDays.map(d => (
-                    <th key={d} className="text-center text-xs text-muted-foreground font-body pb-2">
-                      {new Date(d + 'T12:00:00').toLocaleDateString([], { weekday: 'short' })}
-                    </th>
-                  ))}
-                  <th className="text-center text-xs text-muted-foreground font-body pb-2">%</th>
-                </tr>
-              </thead>
-              <tbody>
-                {habitList.map(h => {
-                  const completed = weekDays.filter(d => allHabits[d]?.[h.key]).length;
-                  return (
-                    <tr key={h.key}>
-                      <td className="text-xs text-foreground font-body py-1">{h.emoji} {h.label}</td>
-                      {weekDays.map(d => {
-                        const isToday = d === new Date().toISOString().split('T')[0];
-                        const checked = isToday ? habits[h.key] : allHabits[d]?.[h.key];
-                        return (
-                          <td key={d} className="text-center py-1">
-                            <button
-                              onClick={() => isToday && toggleHabit(h.key)}
-                              disabled={!isToday}
-                              className={`w-6 h-6 rounded-full border-2 mx-auto flex items-center justify-center text-[10px] transition-all ${
-                                checked ? 'border-primary bg-primary text-primary-foreground' : 'border-border'
-                              } ${isToday ? 'hover:border-primary cursor-pointer' : 'opacity-60 cursor-default'}`}
-                            >
-                              {checked && '✓'}
-                            </button>
-                          </td>
-                        );
-                      })}
-                      <td className="text-center text-xs font-number text-muted-foreground">{Math.round(completed / 7 * 100)}%</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-              <tfoot>
-                <tr>
-                  <td className="text-xs text-muted-foreground font-body pt-2">Daily %</td>
-                  {weekDays.map(d => {
-                    const dayHabits = d === new Date().toISOString().split('T')[0] ? habits : allHabits[d];
-                    const pct = dayHabits ? Math.round(Object.values(dayHabits).filter(Boolean).length / 7 * 100) : 0;
-                    return <td key={d} className="text-center text-xs font-number text-muted-foreground pt-2">{pct}%</td>;
-                  })}
-                  <td></td>
-                </tr>
-              </tfoot>
-            </table>
+        {/* Today's Quick Habits */}
+        <motion.div {...fadeUp} transition={{ duration: 0.4, delay: 0.1 }}
+          className="md:col-span-3 bg-card/90 backdrop-blur-sm border border-border/40 rounded-2xl p-5">
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-[11px] text-muted-foreground font-body uppercase tracking-wider font-semibold">Today's Habits</p>
+            <span className="text-xs font-number text-primary font-bold">{Object.values(habits).filter(Boolean).length}/7</span>
           </div>
-        </div>
-
-        {/* Badges */}
-        <div className="glass-static rounded-3xl p-6 mb-6">
-          <h3 className="font-display text-lg text-foreground mb-4 font-semibold flex items-center gap-2"><Award className="w-5 h-5 text-primary" /> Badges</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {badgeDefs.map(b => {
-              const earned = b.check();
+          <div className="flex flex-wrap gap-2">
+            {habitList.map(h => {
+              const done = habits[h.key];
               return (
-                <div key={b.id} className={`rounded-xl p-3 text-center border transition-all ${
-                  earned ? 'border-primary bg-primary/5 animate-glow-pulse' : 'border-border opacity-40'
-                }`}>
-                  <span className="text-2xl block mb-1">{b.emoji}</span>
-                  <p className="text-xs font-body font-medium text-foreground">{b.label}</p>
-                  <p className="text-[10px] text-muted-foreground font-body">{b.desc}</p>
-                </div>
+                <button
+                  key={h.key}
+                  onClick={() => toggleHabit(h.key)}
+                  className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-body font-medium transition-all border ${
+                    done
+                      ? 'bg-primary/10 border-primary/20 text-primary'
+                      : 'bg-card border-border/40 text-muted-foreground hover:border-primary/15 hover:text-foreground'
+                  }`}
+                >
+                  {done ? <Check className="w-3 h-3" /> : <span>{h.emoji}</span>}
+                  {h.label}
+                </button>
               );
             })}
           </div>
-        </div>
+          {/* Completion bar */}
+          <div className="mt-3 h-1.5 bg-muted/40 rounded-full overflow-hidden">
+            <motion.div
+              className="h-full rounded-full bg-gradient-to-r from-primary to-secondary"
+              initial={{ width: 0 }}
+              animate={{ width: `${habitCompletionPct}%` }}
+              transition={{ duration: 0.5 }}
+            />
+          </div>
+        </motion.div>
+      </div>
 
-        <div className="grid gap-6 md:grid-cols-2 mb-6">
-          {/* Self-care plan */}
-          <div className="glass-static rounded-3xl p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <Sparkles className="w-4 h-4 text-primary" />
-              <h3 className="font-display text-lg text-foreground font-semibold">AI Self-Care Plan</h3>
+      {/* ─── Weekly Habit Tracker ─── */}
+      <motion.div {...fadeUp} transition={{ duration: 0.4, delay: 0.15 }}
+        className="bg-card/90 backdrop-blur-sm border border-border/40 rounded-2xl p-5 mb-6">
+        <SectionLabel icon={TrendingUp} label="Weekly Habit Tracker" />
+        <div className="overflow-x-auto -mx-2 px-2">
+          <table className="w-full min-w-[560px]">
+            <thead>
+              <tr>
+                <th className="text-left text-[11px] text-muted-foreground font-body font-semibold pb-3 w-28 uppercase tracking-wider">Habit</th>
+                {weekDays.map(d => {
+                  const isToday = d === todayStr;
+                  return (
+                    <th key={d} className={`text-center text-[11px] font-body pb-3 ${isToday ? 'text-primary font-bold' : 'text-muted-foreground'}`}>
+                      <div>{new Date(d + 'T12:00:00').toLocaleDateString([], { weekday: 'short' })}</div>
+                      <div className={`text-[9px] mt-0.5 ${isToday ? 'text-primary' : 'text-muted-foreground/60'}`}>
+                        {new Date(d + 'T12:00:00').getDate()}
+                      </div>
+                    </th>
+                  );
+                })}
+                <th className="text-center text-[11px] text-muted-foreground font-body font-semibold pb-3 uppercase tracking-wider">%</th>
+              </tr>
+            </thead>
+            <tbody>
+              {habitList.map((h, hi) => {
+                const completed = weekDays.filter(d => {
+                  if (d === todayStr) return habits[h.key];
+                  return allHabits[d]?.[h.key];
+                }).length;
+                const pct = Math.round(completed / 7 * 100);
+                return (
+                  <motion.tr key={h.key} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 + hi * 0.03 }}>
+                    <td className="py-2">
+                      <div className="flex items-center gap-2">
+                        <span className="text-base">{h.emoji}</span>
+                        <span className="text-xs text-foreground font-body font-medium">{h.label}</span>
+                      </div>
+                    </td>
+                    {weekDays.map(d => {
+                      const isToday = d === todayStr;
+                      const checked = isToday ? habits[h.key] : allHabits[d]?.[h.key];
+                      return (
+                        <td key={d} className="text-center py-2">
+                          <button
+                            onClick={() => isToday && toggleHabit(h.key)}
+                            disabled={!isToday}
+                            className={`w-7 h-7 rounded-lg mx-auto flex items-center justify-center text-[10px] transition-all border ${
+                              checked
+                                ? 'bg-primary border-primary/30 text-primary-foreground shadow-sm'
+                                : isToday
+                                  ? 'border-primary/25 bg-primary/5 hover:bg-primary/10 cursor-pointer'
+                                  : 'border-border/30 bg-muted/20'
+                            } ${!isToday && !checked ? 'opacity-50' : ''}`}
+                          >
+                            {checked && <Check className="w-3.5 h-3.5" />}
+                          </button>
+                        </td>
+                      );
+                    })}
+                    <td className="text-center py-2">
+                      <span className={`text-xs font-number font-bold px-2 py-0.5 rounded-md ${
+                        pct >= 70 ? 'text-secondary bg-secondary/10' : pct >= 40 ? 'text-primary bg-primary/10' : 'text-muted-foreground bg-muted/30'
+                      }`}>{pct}%</span>
+                    </td>
+                  </motion.tr>
+                );
+              })}
+            </tbody>
+            <tfoot>
+              <tr className="border-t border-border/30">
+                <td className="text-[11px] text-muted-foreground font-body font-semibold pt-3 uppercase tracking-wider">Daily</td>
+                {weekDays.map(d => {
+                  const isToday = d === todayStr;
+                  const dayHabits = isToday ? habits : allHabits[d];
+                  const pct = dayHabits ? Math.round(Object.values(dayHabits).filter(Boolean).length / 7 * 100) : 0;
+                  return (
+                    <td key={d} className="text-center pt-3">
+                      <span className={`text-[10px] font-number font-bold ${isToday ? 'text-primary' : 'text-muted-foreground'}`}>{pct}%</span>
+                    </td>
+                  );
+                })}
+                <td />
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </motion.div>
+
+      {/* ─── Badges ─── */}
+      <motion.div {...fadeUp} transition={{ duration: 0.4, delay: 0.2 }}
+        className="bg-card/90 backdrop-blur-sm border border-border/40 rounded-2xl p-5 mb-6">
+        <SectionLabel icon={Award} label="Badges" />
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
+          {badgeDefs.map((b, i) => {
+            const earned = b.check();
+            return (
+              <motion.div
+                key={b.id}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.25 + i * 0.04 }}
+                className={`rounded-xl p-3.5 text-center border transition-all ${
+                  earned
+                    ? 'border-primary/25 bg-gradient-to-br from-primary/8 to-secondary/5 shadow-sm'
+                    : 'border-border/30 bg-muted/10 opacity-45 grayscale'
+                }`}
+              >
+                <span className="text-2xl block mb-1.5">{b.emoji}</span>
+                <p className="text-xs font-body font-semibold text-foreground">{b.label}</p>
+                <p className="text-[10px] text-muted-foreground font-body mt-0.5">{b.desc}</p>
+                {earned && <span className="text-[9px] text-primary font-body font-semibold mt-1 inline-block">✓ Earned</span>}
+              </motion.div>
+            );
+          })}
+        </div>
+      </motion.div>
+
+      {/* ─── Self-Care Plan + Affirmation ─── */}
+      <div className="grid gap-5 md:grid-cols-2 mb-6">
+        {/* Self-care plan */}
+        <motion.div {...fadeUp} transition={{ duration: 0.4, delay: 0.25 }}
+          className="relative bg-card/90 backdrop-blur-sm border border-border/40 rounded-2xl overflow-hidden">
+          <div className="h-1 bg-gradient-to-r from-primary via-secondary to-mint" />
+          <div className="p-5">
+            <div className="flex items-center gap-2.5 mb-4">
+              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-primary/20 to-secondary/15 flex items-center justify-center">
+                <Sparkles className="w-3.5 h-3.5 text-primary" />
+              </div>
+              <h3 className="font-display text-base text-foreground font-semibold">AI Self-Care Plan</h3>
             </div>
             {selfCarePlan.length > 0 ? (
-              <div className="space-y-3">
+              <div className="space-y-2.5">
                 {selfCarePlan.map((p: any, i: number) => (
-                  <motion.div key={i} initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}
-                    className="p-3 rounded-xl bg-muted/30">
-                    <p className="text-xs text-primary font-body font-medium">{p.day}</p>
-                    <p className="text-xs text-foreground font-body mt-1">☀️ {p.morning}</p>
-                    <p className="text-xs text-foreground font-body">🌿 {p.activity}</p>
-                    <p className="text-xs text-foreground font-body">🌙 {p.evening}</p>
+                  <motion.div key={i} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}
+                    className="p-3 rounded-xl bg-muted/20 border border-border/20">
+                    <p className="text-[11px] text-primary font-body font-bold uppercase tracking-wider mb-1.5">{p.day}</p>
+                    <div className="space-y-1">
+                      <p className="text-xs text-foreground font-body">☀️ {p.morning}</p>
+                      <p className="text-xs text-foreground font-body">🌿 {p.activity}</p>
+                      <p className="text-xs text-foreground font-body">🌙 {p.evening}</p>
+                    </div>
                   </motion.div>
                 ))}
-                <button onClick={generatePlan} disabled={loadingPlan} className="btn-secondary w-full text-xs disabled:opacity-40">
-                  {loadingPlan ? 'Regenerating...' : 'Regenerate Plan'}
+                <button onClick={generatePlan} disabled={loadingPlan} className="w-full py-2 rounded-xl border border-border bg-card text-xs font-body font-medium text-foreground hover:bg-muted/50 transition-colors disabled:opacity-40">
+                  {loadingPlan ? 'Regenerating...' : '↻ Regenerate Plan'}
                 </button>
               </div>
             ) : (
               <button onClick={generatePlan} disabled={loadingPlan} className="w-full btn-primary disabled:opacity-40">
-                {loadingPlan ? 'Generating...' : 'Generate My Self-Care Plan'}
+                {loadingPlan ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <div className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" /> Generating...
+                  </span>
+                ) : '✨ Generate My Self-Care Plan'}
               </button>
             )}
           </div>
+        </motion.div>
 
-          {/* Affirmation */}
-          <div className="glass-static rounded-3xl p-6">
-            <h3 className="font-display text-lg text-foreground mb-4 font-semibold">✨ Daily Affirmation</h3>
+        {/* Affirmation */}
+        <motion.div {...fadeUp} transition={{ duration: 0.4, delay: 0.3 }}
+          className="relative bg-card/90 backdrop-blur-sm border border-border/40 rounded-2xl overflow-hidden">
+          <div className="h-1 bg-gradient-to-r from-secondary via-mint to-primary" />
+          <div className="p-5">
+            <div className="flex items-center gap-2.5 mb-4">
+              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-secondary/20 to-mint/15 flex items-center justify-center">
+                <span className="text-sm">✨</span>
+              </div>
+              <h3 className="font-display text-base text-foreground font-semibold">Daily Affirmation</h3>
+            </div>
             {affirmation ? (
               <div>
-                <p className="font-display text-lg text-foreground italic leading-relaxed font-semibold">"{affirmation}"</p>
-                <div className="flex gap-2 mt-3">
-                  <button onClick={() => { navigator.clipboard.writeText(affirmation); toast.success('Copied!'); }} className="p-1.5 rounded-lg hover:bg-muted text-muted-foreground">
+                <p className="font-display text-base text-foreground italic leading-relaxed font-semibold">"{affirmation}"</p>
+                <div className="flex items-center gap-3 mt-3">
+                  <button onClick={() => { navigator.clipboard.writeText(affirmation); toast.success('Copied!'); }} className="p-1.5 rounded-lg hover:bg-muted/50 text-muted-foreground hover:text-foreground transition-colors">
                     <Copy className="w-3.5 h-3.5" />
                   </button>
-                  <button onClick={generateAffirmation} disabled={loadingAff} className="text-xs text-primary font-body hover:underline disabled:opacity-40">
+                  <button onClick={generateAffirmation} disabled={loadingAff} className="text-xs text-primary font-body font-medium hover:underline disabled:opacity-40">
                     Generate new
                   </button>
                 </div>
               </div>
             ) : (
               <button onClick={generateAffirmation} disabled={loadingAff} className="w-full btn-primary disabled:opacity-40">
-                {loadingAff ? 'Generating...' : "Generate Today's Affirmation"}
+                {loadingAff ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <div className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" /> Generating...
+                  </span>
+                ) : "✨ Generate Today's Affirmation"}
               </button>
             )}
-            {/* Past affirmations */}
             {pastAffirmations.length > 0 && (
-              <div className="mt-4 border-t border-border pt-3">
-                <p className="text-xs text-muted-foreground font-body mb-2">Recent affirmations:</p>
-                <div className="space-y-2 max-h-40 overflow-y-auto">
-                  {pastAffirmations.slice(-5).reverse().map((a, i) => (
-                    <p key={i} className="text-xs text-foreground italic font-body">"{a}"</p>
+              <div className="mt-4 border-t border-border/30 pt-3">
+                <p className="text-[11px] text-muted-foreground font-body font-semibold uppercase tracking-wider mb-2">Recent</p>
+                <div className="space-y-1.5 max-h-32 overflow-y-auto">
+                  {pastAffirmations.slice(-4).reverse().map((a, i) => (
+                    <p key={i} className="text-[11px] text-muted-foreground italic font-body leading-relaxed">"{a}"</p>
                   ))}
                 </div>
               </div>
             )}
           </div>
-        </div>
+        </motion.div>
+      </div>
 
-        {/* Monthly Calendar */}
-        <div className="glass-static rounded-3xl p-6">
-          <h3 className="font-display text-lg text-foreground mb-4 font-semibold">
-            {new Date(year, month).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })} — Mood Calendar
-          </h3>
-          <div className="grid grid-cols-7 gap-1.5">
-            {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => <span key={i} className="text-[10px] text-muted-foreground text-center font-body">{d}</span>)}
-            {Array.from({ length: firstDay }).map((_, i) => <div key={`empty-${i}`} />)}
-            {calendarDays.map(d => (
+      {/* ─── Monthly Mood Calendar ─── */}
+      <motion.div {...fadeUp} transition={{ duration: 0.4, delay: 0.35 }}
+        className="bg-card/90 backdrop-blur-sm border border-border/40 rounded-2xl p-5">
+        <SectionLabel icon={Calendar} label={`${new Date(year, month).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })} — Mood Calendar`} />
+        <div className="grid grid-cols-7 gap-1.5">
+          {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => (
+            <span key={i} className="text-[10px] text-muted-foreground text-center font-body font-semibold">{d}</span>
+          ))}
+          {Array.from({ length: firstDay }).map((_, i) => <div key={`empty-${i}`} />)}
+          {calendarDays.map(d => {
+            const isToday = d.date === todayStr;
+            return (
               <div
                 key={d.day}
                 className={`aspect-square rounded-lg flex items-center justify-center text-[10px] transition-colors cursor-default ${
                   d.mood
                     ? d.mood.moodScore >= 75 ? 'bg-secondary/40' : d.mood.moodScore >= 50 ? 'bg-primary/20' : 'bg-rose-soft/30'
-                    : 'bg-muted/30'
-                }`}
+                    : 'bg-muted/20'
+                } ${isToday ? 'ring-1.5 ring-primary/40' : ''}`}
                 title={d.mood ? `${d.date}: ${MOOD_MAP[d.mood.mood]?.label} — ${d.mood.note || 'No note'}` : `${d.date}: No log`}
               >
-                {d.mood ? MOOD_MAP[d.mood.mood]?.emoji : <span className="font-number">{d.day}</span>}
+                {d.mood ? MOOD_MAP[d.mood.mood]?.emoji : <span className="font-number text-muted-foreground/60">{d.day}</span>}
               </div>
-            ))}
-          </div>
+            );
+          })}
         </div>
+        <div className="flex items-center justify-center gap-3 mt-3 text-[10px] text-muted-foreground font-body">
+          <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-muted/20" /> No data</span>
+          <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-rose-soft/30" /> Low</span>
+          <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-primary/20" /> Okay</span>
+          <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-secondary/40" /> Great</span>
+        </div>
+      </motion.div>
     </div>
   );
 }
