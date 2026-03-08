@@ -9,6 +9,7 @@ import {
   Menu, X, Headphones, Timer
 } from 'lucide-react';
 import meditationHero from '@/assets/meditation-hero.png';
+import logo from '@/assets/logo.png';
 
 /* ─── Lightweight animation helpers (no scroll observers) ─── */
 const fadeUp = (delay = 0) => ({
