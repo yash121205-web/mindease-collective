@@ -57,6 +57,13 @@ export default function Journal() {
       timestamp: Date.now(),
     };
     saveJournalEntry(entry);
+    // Auto-mark journaling habit
+    const todayHabits = getTodayHabits();
+    if (!todayHabits.journaled) {
+      todayHabits.journaled = true;
+      if (gratitude.filter(Boolean).length > 0) todayHabits.gratitude = true;
+      saveTodayHabits(todayHabits);
+    }
     setEntries(getJournalEntries());
     setTitle('');
     setContent('');
