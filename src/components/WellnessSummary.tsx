@@ -3,6 +3,31 @@ import { X, Share2, Heart, Sparkles, Flame, BookOpen, Smile, Wind, Timer, Copy, 
 import { getMoods, getJournalEntries, getSessions, calculateStreak, calculateEHS, MOOD_MAP, getHabits } from '@/lib/storage';
 import { toast } from 'sonner';
 
+/* Floating sparkle dots */
+function FloatingDots() {
+  const dots = Array.from({ length: 8 }, (_, i) => ({
+    id: i,
+    x: 15 + Math.random() * 70,
+    y: 10 + Math.random() * 80,
+    delay: Math.random() * 3,
+    size: 3 + Math.random() * 3,
+    color: ['hsl(var(--primary))', 'hsl(var(--accent))', 'hsl(var(--secondary))'][i % 3],
+  }));
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+      {dots.map(d => (
+        <motion.div
+          key={d.id}
+          className="absolute rounded-full"
+          style={{ left: `${d.x}%`, top: `${d.y}%`, width: d.size, height: d.size, backgroundColor: d.color }}
+          animate={{ opacity: [0, 0.5, 0], scale: [0.5, 1.3, 0.5] }}
+          transition={{ duration: 3.5, delay: d.delay, repeat: Infinity, ease: 'easeInOut' }}
+        />
+      ))}
+    </div>
+  );
+}
+
 export default function WellnessSummary({ onClose }: { onClose: () => void }) {
   const streak = calculateStreak();
   const ehs = calculateEHS();
@@ -41,15 +66,7 @@ export default function WellnessSummary({ onClose }: { onClose: () => void }) {
   }, 0);
   const habitPct = Math.round((totalHabitChecks / (7 * 7)) * 100);
 
-  const shareText = `🧘 My Weekly Wellness Report — MindEase AI\n\n` +
-    `💙 EHS: ${ehs}/100\n` +
-    `🔥 Streak: ${streak} days\n` +
-    `😊 Avg mood: ${avgScore}/100 (${MOOD_MAP[dominantMood]?.label})\n` +
-    `📓 ${weekJournals.length} journal entries\n` +
-    `🧘 ${meditationCount} meditation sessions\n` +
-    `🌸 ${gratitudeCount} gratitude notes\n` +
-    `✅ ${habitPct}% habits completed\n\n` +
-    `#MindEaseAI #MentalWellness`;
+  const shareText = `🧘 My Weekly Wellness Report — MindEase AI\n\n💙 EHS: ${ehs}/100\n🔥 Streak: ${streak} days\n😊 Avg mood: ${avgScore}/100 (${MOOD_MAP[dominantMood]?.label})\n📓 ${weekJournals.length} journal entries\n🧘 ${meditationCount} meditation sessions\n🌸 ${gratitudeCount} gratitude notes\n✅ ${habitPct}% habits completed\n\n#MindEaseAI #MentalWellness`;
 
   const handleShare = () => {
     if (navigator.share) {
@@ -60,9 +77,9 @@ export default function WellnessSummary({ onClose }: { onClose: () => void }) {
     }
   };
 
-  const ehsColor = ehs >= 70 ? 'text-secondary' : ehs >= 40 ? 'text-primary' : 'text-rose-soft';
-  const ehsStroke = ehs >= 70 ? 'hsl(var(--secondary))' : ehs >= 40 ? 'hsl(var(--primary))' : 'hsl(var(--rose-soft))';
-  const ehsBg = ehs >= 70 ? 'from-secondary/10 to-secondary/5' : ehs >= 40 ? 'from-primary/10 to-primary/5' : 'from-rose-soft/15 to-rose-soft/5';
+  const ehsColor = ehs >= 70 ? 'text-accent' : ehs >= 40 ? 'text-primary' : 'text-rose-soft';
+  const ehsStroke = ehs >= 70 ? 'hsl(var(--accent))' : ehs >= 40 ? 'hsl(var(--primary))' : 'hsl(var(--rose-soft))';
+  const ehsBg = ehs >= 70 ? 'from-accent/10 to-accent/5' : ehs >= 40 ? 'from-primary/10 to-primary/5' : 'from-rose-soft/15 to-rose-soft/5';
 
   const stats = [
     { label: 'Streak', value: `${streak}d`, emoji: '🔥', icon: Flame },
@@ -75,15 +92,17 @@ export default function WellnessSummary({ onClose }: { onClose: () => void }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.92, y: 20 }}
+      initial={{ opacity: 0, scale: 0.9, y: 24 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.95, y: 10 }}
+      exit={{ opacity: 0, scale: 0.92, y: 12 }}
       transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-      className="relative bg-card/98 backdrop-blur-2xl border border-border/30 rounded-[1.75rem] overflow-hidden shadow-2xl shadow-foreground/5"
+      className="relative bg-card/98 backdrop-blur-2xl border border-border/30 rounded-[2rem] overflow-hidden shadow-2xl shadow-primary/10"
     >
-      {/* Top gradient accent with shimmer */}
+      <FloatingDots />
+
+      {/* Top gradient bar with shimmer */}
       <div className="relative h-1.5 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-primary via-secondary to-mint" />
+        <div className="absolute inset-0 bg-gradient-to-r from-primary via-accent to-secondary" />
         <motion.div
           animate={{ x: ['-100%', '200%'] }}
           transition={{ duration: 2.5, repeat: Infinity, ease: 'linear' }}
@@ -92,46 +111,46 @@ export default function WellnessSummary({ onClose }: { onClose: () => void }) {
       </div>
 
       {/* Decorative blobs */}
-      <div className="absolute top-16 -right-16 w-48 h-48 rounded-full bg-primary/4 blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-12 -left-12 w-44 h-44 rounded-full bg-secondary/4 blur-3xl pointer-events-none" />
+      <div className="absolute top-16 -right-16 w-48 h-48 rounded-full bg-primary/5 blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-12 -left-12 w-44 h-44 rounded-full bg-accent/5 blur-3xl pointer-events-none" />
 
       <div className="relative z-10 p-7">
         {/* Header */}
         <div className="flex items-center justify-between mb-1">
           <motion.div
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1 }}
             className="flex items-center gap-3"
           >
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary/12 to-secondary/8 border border-primary/10 flex items-center justify-center shadow-sm">
+            <motion.div
+              animate={{ rotate: [0, 5, -5, 0] }}
+              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+              className="w-11 h-11 rounded-2xl bg-gradient-to-br from-primary/15 to-accent/10 border border-primary/15 flex items-center justify-center shadow-sm"
+            >
               <Sparkles className="w-5 h-5 text-primary" />
-            </div>
+            </motion.div>
             <div>
-              <h2 className="font-display text-lg font-bold text-foreground">Weekly Wellness</h2>
+              <h2 className="font-display text-xl text-foreground">Weekly Wellness</h2>
               <p className="text-[11px] text-muted-foreground font-body -mt-0.5">
                 {new Date(Date.now() - 6 * 86400000).toLocaleDateString([], { month: 'short', day: 'numeric' })} — {new Date().toLocaleDateString([], { month: 'short', day: 'numeric' })}
               </p>
             </div>
           </motion.div>
-          <button
-            onClick={onClose}
-            className="p-2 rounded-xl bg-muted/40 hover:bg-muted text-muted-foreground hover:text-foreground transition-all duration-200 hover:scale-105"
-          >
+          <button onClick={onClose}
+            className="p-2 rounded-xl bg-muted/40 hover:bg-muted text-muted-foreground hover:text-foreground hover:scale-110 hover:rotate-90 transition-all duration-300">
             <X className="w-3.5 h-3.5" />
           </button>
         </div>
 
         {/* EHS Score Hero */}
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15, duration: 0.4 }}
           className={`flex items-center gap-5 my-6 p-5 rounded-2xl bg-gradient-to-br ${ehsBg} border border-border/20`}
         >
-          <div className="relative w-[84px] h-[84px] shrink-0">
+          <div className="relative w-[88px] h-[88px] shrink-0">
             <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
-              <circle cx="50" cy="50" r="42" fill="none" stroke="hsl(var(--muted))" strokeWidth="6" />
+              <circle cx="50" cy="50" r="42" fill="none" stroke="hsl(var(--muted) / 0.4)" strokeWidth="6" />
               <motion.circle cx="50" cy="50" r="42" fill="none" stroke={ehsStroke} strokeWidth="6" strokeLinecap="round"
                 strokeDasharray={`${2 * Math.PI * 42}`}
                 initial={{ strokeDashoffset: 2 * Math.PI * 42 }}
@@ -139,6 +158,13 @@ export default function WellnessSummary({ onClose }: { onClose: () => void }) {
                 transition={{ duration: 1.4, ease: 'easeOut', delay: 0.3 }}
               />
             </svg>
+            {/* Pulsing glow behind score */}
+            <motion.div
+              animate={{ scale: [1, 1.2, 1], opacity: [0.15, 0.3, 0.15] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="absolute inset-2 rounded-full"
+              style={{ backgroundColor: ehsStroke }}
+            />
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <motion.span
                 initial={{ opacity: 0, scale: 0.5 }}
@@ -153,7 +179,7 @@ export default function WellnessSummary({ onClose }: { onClose: () => void }) {
           </div>
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <p className="font-display text-base font-semibold text-foreground">Emotional Health</p>
+              <p className="font-display text-lg text-foreground">Emotional Health</p>
               <TrendingUp className="w-3.5 h-3.5 text-muted-foreground" />
             </div>
             <p className="text-xs text-muted-foreground font-body leading-relaxed">
@@ -167,12 +193,19 @@ export default function WellnessSummary({ onClose }: { onClose: () => void }) {
           {stats.map((s, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 14, scale: 0.9 }}
+              initial={{ opacity: 0, y: 16, scale: 0.85 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ delay: 0.2 + i * 0.06, type: 'spring', stiffness: 200, damping: 18 }}
-              className="rounded-2xl bg-muted/20 border border-border/15 p-3.5 text-center hover:bg-muted/35 hover:border-border/30 transition-all duration-200 group cursor-default"
+              transition={{ delay: 0.2 + i * 0.07, type: 'spring', stiffness: 200, damping: 18 }}
+              whileHover={{ scale: 1.05, y: -2 }}
+              className="rounded-2xl bg-muted/20 border border-border/15 p-3.5 text-center hover:bg-muted/35 hover:border-primary/15 transition-all duration-200 group cursor-default"
             >
-              <span className="text-xl block mb-1 group-hover:scale-110 transition-transform duration-200">{s.emoji}</span>
+              <motion.span
+                className="text-xl block mb-1"
+                whileHover={{ scale: 1.2, rotate: [0, -10, 10, 0] }}
+                transition={{ duration: 0.4 }}
+              >
+                {s.emoji}
+              </motion.span>
               <p className="font-number text-lg font-bold text-foreground leading-tight">{s.value}</p>
               <p className="text-[10px] text-muted-foreground font-body mt-0.5">{s.label}</p>
             </motion.div>
@@ -182,8 +215,7 @@ export default function WellnessSummary({ onClose }: { onClose: () => void }) {
         {/* Mood Trend */}
         {weekMoods.length > 0 && (
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
             className="mb-5 p-4 rounded-2xl bg-muted/12 border border-border/15"
           >
@@ -192,18 +224,21 @@ export default function WellnessSummary({ onClose }: { onClose: () => void }) {
               {weekMoods.slice(-7).map((m, i) => (
                 <motion.div
                   key={i}
-                  className="flex-1 rounded-lg relative group"
+                  className="flex-1 rounded-lg relative overflow-hidden"
                   style={{
-                    background: m.moodScore >= 75
-                      ? 'hsl(var(--secondary))'
-                      : m.moodScore >= 50
-                        ? 'hsl(var(--primary))'
-                        : 'hsl(var(--rose-soft))',
+                    background: m.moodScore >= 75 ? 'hsl(var(--accent))' : m.moodScore >= 50 ? 'hsl(var(--primary))' : 'hsl(var(--rose-soft))',
                   }}
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: `${Math.max(m.moodScore, 15)}%`, opacity: 1 }}
                   transition={{ delay: 0.55 + i * 0.06, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                />
+                >
+                  {/* Shimmer on each bar */}
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-t from-transparent via-white/20 to-transparent"
+                    animate={{ y: ['100%', '-100%'] }}
+                    transition={{ duration: 2, delay: 0.6 + i * 0.1, repeat: Infinity, repeatDelay: 3 }}
+                  />
+                </motion.div>
               ))}
             </div>
           </motion.div>
@@ -211,24 +246,23 @@ export default function WellnessSummary({ onClose }: { onClose: () => void }) {
 
         {/* Actions */}
         <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
           className="flex gap-2.5"
         >
           <motion.button
-            whileHover={{ scale: 1.02 }}
+            whileHover={{ scale: 1.03, boxShadow: '0 0 30px hsl(var(--primary) / 0.3)' }}
             whileTap={{ scale: 0.97 }}
             onClick={handleShare}
-            className="btn-primary flex-1 flex items-center justify-center gap-2 text-sm py-3 rounded-2xl shadow-lg shadow-primary/20"
+            className="btn-primary flex-1 flex items-center justify-center gap-2 text-sm py-3.5 rounded-2xl shadow-lg shadow-primary/25"
           >
             <Share2 className="w-4 h-4" /> Share Report
           </motion.button>
           <motion.button
-            whileHover={{ scale: 1.05 }}
+            whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => { navigator.clipboard.writeText(shareText); toast.success('Copied!'); }}
-            className="p-3 rounded-2xl border border-border/40 bg-card hover:bg-muted/40 text-muted-foreground hover:text-foreground transition-all duration-200"
+            className="p-3.5 rounded-2xl border border-border/40 bg-card hover:bg-muted/40 text-muted-foreground hover:text-foreground transition-all duration-200"
           >
             <Copy className="w-4 h-4" />
           </motion.button>
