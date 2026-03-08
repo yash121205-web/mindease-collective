@@ -4,18 +4,17 @@ import { motion } from 'framer-motion';
 import {
   Leaf, ArrowRight, MessageCircle, Smile, BookOpen, Wind,
   Brain, Sparkles, Github, Heart, Shield, Star, TrendingUp,
-  ChevronRight, Activity, Zap, Users, Lock, BarChart3,
-  Flame, PenLine, Clock, Target, CheckCircle2,
+  ChevronRight, Activity, Zap, Users, Lock,
+  Flame, PenLine, Clock, CheckCircle2,
   Menu, X, Headphones, Timer
 } from 'lucide-react';
 import meditationHero from '@/assets/meditation-hero.png';
 
-/* ─── Lightweight animation helpers ─── */
+/* ─── Lightweight animation helpers (no scroll observers) ─── */
 const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 20 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: '-60px' },
-  transition: { duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
+  initial: { opacity: 0, y: 16 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.45, delay, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
 });
 
 function Section({ children, className = '', id }: { children: React.ReactNode; className?: string; id?: string }) {
@@ -151,7 +150,6 @@ const progressStats = [
 export default function Home() {
   const location = useLocation();
   const navigate = useNavigate();
-  const [scrolled, setScrolled] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
 
   // Stable heatmap values so they don't re-randomize on re-render
@@ -181,11 +179,6 @@ export default function Home() {
     scrollToSection(sectionId);
   };
 
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   useEffect(() => {
     if (!location.hash) return;
@@ -198,9 +191,7 @@ export default function Home() {
     <div className="min-h-screen bg-background font-body text-foreground overflow-x-hidden">
 
       {/* ━━━ NAVBAR ━━━ */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? 'bg-background/80 backdrop-blur-xl border-b border-border/50 shadow-sm' : 'bg-transparent'
-      }`}>
+      <nav className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-background/85 backdrop-blur-md border-b border-border/50 shadow-sm">
         <div className="max-w-6xl mx-auto flex items-center justify-between px-5 md:px-10 py-4">
           <button type="button" onClick={() => handleNavClick('home')} className="flex items-center gap-3 text-left">
             <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-md">
