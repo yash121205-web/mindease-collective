@@ -54,7 +54,7 @@ function MoodChartCard() {
     { h: 70, color: 'hsl(var(--primary))' },
   ];
   return (
-    <motion.div className="bg-white rounded-2xl p-5 w-56 shadow-lg border border-border" animate={{ y: [0, -12, 0] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}>
+    <motion.div className="bg-card rounded-2xl p-5 w-56 shadow-lg border border-border" animate={{ y: [0, -12, 0] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}>
       <p className="text-[11px] font-body font-semibold text-muted-foreground uppercase tracking-widest mb-3">This Week's Mood</p>
       <div className="flex items-end gap-2 h-20">
         {bars.map((b, i) => (
