@@ -7,28 +7,28 @@ import { Wind, Play, Pause, RotateCcw, Timer, Sparkles, ChevronDown, ChevronUp }
 const exercises = [
   { title: 'Box Breathing', category: 'Breathwork', duration: '4 min', difficulty: 'Beginner',
     description: 'Box breathing is a powerful technique used by Navy SEALs and therapists alike. It works by slowing your nervous system, reducing cortisol, and bringing your focus back to the present moment. Breathe in for 4 counts, hold for 4, out for 4, hold for 4 — repeat 4 cycles.',
-    video: 'https://www.youtube.com/embed/tEmt1Znux58' },
+    videoId: 'tEmt1Znux58' },
   { title: 'Body Scan Meditation', category: 'Mindfulness', duration: '10 min', difficulty: 'Beginner',
     description: 'A body scan gently directs attention from your toes to your head, helping you release tension you didn\'t even know you were holding. Research shows it reduces anxiety and improves sleep quality significantly. Find a comfortable position, close your eyes, and follow the guided audio.',
-    video: 'https://www.youtube.com/embed/ihwcw_ofuME' },
+    videoId: 'ihwcw_ofuME' },
   { title: 'Progressive Muscle Relaxation', category: 'Movement', duration: '8 min', difficulty: 'Beginner',
     description: 'PMR involves tensing and then releasing each muscle group systematically, teaching your body the difference between tension and relaxation. It\'s clinically proven to reduce stress hormones and ease physical symptoms of anxiety. Start from your feet and work upward.',
-    video: 'https://www.youtube.com/embed/86HUcX8ZtAk' },
+    videoId: '86HUcX8ZtAk' },
   { title: '5-4-3-2-1 Grounding', category: 'Cognitive', duration: '3 min', difficulty: 'Beginner',
     description: 'This sensory grounding technique interrupts anxiety spirals by pulling your brain into the present moment. Name 5 things you see, 4 you can touch, 3 you hear, 2 you smell, 1 you taste. It works because anxiety lives in the future — grounding brings you back to now.',
-    video: 'https://www.youtube.com/embed/30VMIEmA114' },
+    videoId: '30VMIEmA114' },
   { title: 'Desk Yoga Stretch', category: 'Movement', duration: '7 min', difficulty: 'Beginner',
     description: 'Sitting for hours compresses the spine and tightens hip flexors, which directly increases cortisol levels. These gentle desk-friendly stretches release physical tension, improve blood flow to the brain, and can be done between study sessions without leaving your chair.',
-    video: 'https://www.youtube.com/embed/tAUf7aajBWE' },
+    videoId: 'tAUf7aajBWE' },
   { title: 'Guided Visualization', category: 'Mindfulness', duration: '6 min', difficulty: 'Intermediate',
     description: 'Mental imagery activates the same neural pathways as real experiences. This guided visualization takes you to a peaceful place in your mind, reducing heart rate, lowering blood pressure, and creating genuine feelings of safety and calm within minutes.',
-    video: 'https://www.youtube.com/embed/t1rRo6cgM_E' },
+    videoId: 't1rRo6cgM_E' },
   { title: 'EFT Tapping', category: 'Cognitive', duration: '5 min', difficulty: 'Intermediate',
     description: 'Emotional Freedom Technique involves tapping specific acupressure points while voicing your emotions. Multiple studies show it reduces cortisol by up to 24% in a single session. It sounds unusual but works rapidly for anxiety, exam stress, and emotional overwhelm.',
-    video: 'https://www.youtube.com/embed/pAclBdj20ZU' },
+    videoId: 'pAclBdj20ZU' },
   { title: 'Gratitude Reflection', category: 'Creative', duration: '4 min', difficulty: 'Beginner',
     description: 'Neuroscience shows that consciously noting three specific things you\'re grateful for rewires the brain\'s negativity bias over time. This guided practice helps you go deeper than surface-level gratitude to create genuine emotional shifts and increased resilience.',
-    video: 'https://www.youtube.com/embed/ZToicYcHIqU' },
+    videoId: 'ZToicYcHIqU' },
 ];
 
 const categoryColors: Record<string, string> = {
@@ -197,15 +197,25 @@ export default function Wellness() {
                   {expandedEx === i && (
                     <motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} className="overflow-hidden">
                       <div className="px-5 pb-5">
-                        <div className="aspect-video rounded-xl overflow-hidden">
+                        <div className="aspect-video rounded-xl overflow-hidden bg-muted">
                           <iframe
-                            src={ex.video}
+                            src={`https://www.youtube-nocookie.com/embed/${ex.videoId}?rel=0&modestbranding=1&playsinline=1`}
                             className="w-full h-full"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            referrerPolicy="strict-origin-when-cross-origin"
                             allowFullScreen
                             title={ex.title}
+                            loading="lazy"
                           />
                         </div>
+                        <a
+                          href={`https://www.youtube.com/watch?v=${ex.videoId}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="mt-2 inline-flex text-xs font-body font-medium text-primary hover:underline"
+                        >
+                          Video not loading? Open on YouTube
+                        </a>
                       </div>
                     </motion.div>
                   )}
