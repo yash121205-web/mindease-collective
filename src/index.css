@@ -4,23 +4,23 @@
 
 @layer base {
   :root {
-    --background: 210 40% 98%;
-    --foreground: 220 20% 18%;
+    --background: 210 33% 98%;
+    --foreground: 220 20% 16%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 20% 18%;
+    --card-foreground: 220 20% 16%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 20% 18%;
+    --popover-foreground: 220 20% 16%;
 
     --primary: 207 90% 72%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 260 60% 78%;
-    --secondary-foreground: 220 20% 18%;
+    --secondary: 263 60% 76%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 210 30% 95%;
-    --muted-foreground: 220 10% 45%;
+    --muted: 210 25% 95%;
+    --muted-foreground: 220 10% 46%;
 
     --accent: 207 90% 72%;
     --accent-foreground: 0 0% 100%;
@@ -28,33 +28,31 @@
     --destructive: 0 60% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 20% 90%;
-    --input: 210 30% 96%;
+    --border: 220 18% 91%;
+    --input: 210 25% 96%;
     --ring: 207 90% 72%;
 
     --radius: 1rem;
 
-    --sidebar-background: 210 35% 98%;
-    --sidebar-foreground: 220 20% 18%;
+    --sidebar-background: 210 30% 98%;
+    --sidebar-foreground: 220 20% 16%;
     --sidebar-primary: 207 90% 72%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 30% 96%;
-    --sidebar-accent-foreground: 220 20% 18%;
-    --sidebar-border: 220 20% 92%;
+    --sidebar-accent: 210 25% 96%;
+    --sidebar-accent-foreground: 220 20% 16%;
+    --sidebar-border: 220 18% 93%;
     --sidebar-ring: 207 90% 72%;
 
-    --mint: 156 60% 76%;
-    --rose-soft: 260 60% 78%;
-    --indigo: 260 60% 78%;
+    --mint: 156 55% 72%;
+    --rose-soft: 20 90% 87%;
+    --indigo: 263 60% 76%;
 
-    --warm-peach: 260 50% 82%;
-    --warm-lavender: 260 50% 85%;
+    --warm-peach: 20 90% 87%;
+    --warm-lavender: 263 45% 88%;
 
-    --pink-glow: 260 55% 90%;
-    --sky-soft: 207 70% 88%;
+    --pink-glow: 263 50% 92%;
+    --sky-soft: 207 65% 90%;
   }
-
-  /* Dark mode removed — light-only wellness theme */
 }
 
 @layer base {
@@ -72,53 +70,53 @@
 
 @layer utilities {
   .glass {
-    background: hsl(0 0% 100% / 0.88);
-    backdrop-filter: blur(16px);
-    border: 1px solid hsl(var(--border));
-    box-shadow: 0 4px 24px hsl(220 40% 85% / 0.35);
-    border-radius: 16px;
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    background: hsl(0 0% 100% / 0.75);
+    backdrop-filter: blur(20px);
+    border: 1px solid hsl(var(--border) / 0.6);
+    box-shadow: 0 4px 30px hsl(220 40% 85% / 0.2);
+    border-radius: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
   .glass:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 32px hsl(220 40% 82% / 0.4);
+    box-shadow: 0 8px 40px hsl(220 40% 82% / 0.3);
   }
   .glass-strong {
-    background: hsl(0 0% 100% / 0.94);
+    background: hsl(0 0% 100% / 0.92);
     backdrop-filter: blur(24px);
-    border: 1px solid hsl(var(--border));
-    box-shadow: 0 8px 32px hsl(220 40% 85% / 0.3);
-    border-radius: 16px;
+    border: 1px solid hsl(var(--border) / 0.5);
+    box-shadow: 0 8px 40px hsl(220 40% 85% / 0.18);
+    border-radius: 20px;
   }
   .glass-static {
-    background: hsl(0 0% 100% / 0.88);
+    background: hsl(0 0% 100% / 0.8);
     backdrop-filter: blur(16px);
-    border: 1px solid hsl(var(--border));
-    box-shadow: 0 4px 24px hsl(220 40% 85% / 0.3);
-    border-radius: 16px;
+    border: 1px solid hsl(var(--border) / 0.5);
+    box-shadow: 0 2px 20px hsl(220 40% 88% / 0.2);
+    border-radius: 20px;
   }
   .neu {
     background: hsl(0 0% 100%);
-    border-radius: 16px;
-    box-shadow: 0 4px 24px hsl(220 40% 85% / 0.3);
-    border: 1px solid hsl(var(--border));
+    border-radius: 20px;
+    box-shadow: 0 1px 3px hsl(220 40% 90% / 0.3), 0 4px 20px hsl(220 40% 88% / 0.15);
+    border: 1px solid hsl(var(--border) / 0.6);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
   .neu:hover {
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 8px 32px hsl(220 40% 82% / 0.4);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px hsl(220 40% 85% / 0.25);
   }
   .neu-inset {
     background: hsl(var(--background));
     border-radius: 16px;
-    box-shadow: inset 2px 2px 8px hsl(220 30% 90% / 0.3);
-    border: 1px solid hsl(var(--border));
+    box-shadow: inset 1px 1px 4px hsl(220 30% 92% / 0.4);
+    border: 1px solid hsl(var(--border) / 0.4);
   }
   .neu-flat {
     background: hsl(0 0% 100%);
     border-radius: 16px;
-    box-shadow: 0 4px 16px hsl(220 40% 85% / 0.25);
-    border: 1px solid hsl(var(--border));
+    box-shadow: 0 2px 12px hsl(220 40% 88% / 0.2);
+    border: 1px solid hsl(var(--border) / 0.5);
   }
   .grain {
     position: relative;
@@ -129,41 +127,26 @@
     top: 0; left: 0; right: 0; bottom: 0;
     pointer-events: none;
     z-index: 9999;
-    opacity: 0.012;
+    opacity: 0.008;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
   }
   .gradient-mesh {
     background:
-      radial-gradient(ellipse at 15% 25%, hsl(207 90% 88% / 0.3) 0%, transparent 55%),
-      radial-gradient(ellipse at 85% 75%, hsl(260 55% 88% / 0.25) 0%, transparent 55%),
-      radial-gradient(ellipse at 50% 50%, hsl(156 60% 90% / 0.15) 0%, transparent 45%),
+      radial-gradient(ellipse at 15% 25%, hsl(207 90% 92% / 0.35) 0%, transparent 55%),
+      radial-gradient(ellipse at 85% 75%, hsl(263 55% 92% / 0.3) 0%, transparent 55%),
+      radial-gradient(ellipse at 50% 50%, hsl(156 55% 93% / 0.15) 0%, transparent 45%),
       radial-gradient(ellipse at 50% 10%, hsl(0 0% 100% / 0.6) 0%, transparent 50%),
       hsl(var(--background));
-    animation: bgShift 20s ease-in-out infinite alternate;
-  }
-  @keyframes bgShift {
-    0% {
-      background-position: 0% 0%, 100% 100%, 50% 50%, 50% 0%;
-    }
-    33% {
-      background-position: 20% 10%, 80% 90%, 55% 45%, 60% 5%;
-    }
-    66% {
-      background-position: 10% 20%, 90% 80%, 45% 55%, 40% 10%;
-    }
-    100% {
-      background-position: 0% 0%, 100% 100%, 50% 50%, 50% 0%;
-    }
   }
   .btn-primary {
-    @apply px-5 py-2.5 rounded-2xl text-sm font-medium text-white transition-all;
-    background: linear-gradient(135deg, hsl(207 90% 72%), hsl(260 60% 78%));
-    box-shadow: 0 4px 16px hsl(207 80% 75% / 0.35);
+    @apply px-6 py-3 rounded-2xl text-sm font-medium text-white transition-all;
+    background: linear-gradient(135deg, hsl(207 90% 72%), hsl(263 60% 76%));
+    box-shadow: 0 4px 20px hsl(207 80% 75% / 0.3);
   }
   .btn-primary:hover {
-    box-shadow: 0 6px 24px hsl(207 80% 72% / 0.45);
-    transform: translateY(-1px) scale(1.02);
-    filter: brightness(1.03);
+    box-shadow: 0 8px 30px hsl(207 80% 72% / 0.4);
+    transform: translateY(-1px);
+    filter: brightness(1.04);
   }
   .btn-primary:disabled {
     opacity: 0.4;
@@ -171,13 +154,15 @@
     box-shadow: none;
   }
   .btn-secondary {
-    @apply px-5 py-2.5 rounded-2xl text-sm font-medium border transition-all;
+    @apply px-6 py-3 rounded-2xl text-sm font-medium border transition-all;
     border-color: hsl(var(--border));
-    color: hsl(var(--primary));
+    color: hsl(var(--foreground));
+    background: hsl(0 0% 100% / 0.7);
   }
   .btn-secondary:hover {
     background: hsl(var(--primary) / 0.06);
-    transform: scale(1.02);
+    border-color: hsl(var(--primary) / 0.3);
+    transform: translateY(-1px);
   }
   .font-number {
     font-family: 'JetBrains Mono', monospace;
