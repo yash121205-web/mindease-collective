@@ -245,6 +245,17 @@
   }
 }
 
+/* Apple Emoji image styling */
+img.apple-emoji {
+  display: inline-block;
+  width: 1.2em;
+  height: 1.2em;
+  vertical-align: -0.2em;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+}
+
 /* Force Apple/iPhone-style emoji rendering on all platforms */
 @font-face {
   font-family: "EmojiFont";
