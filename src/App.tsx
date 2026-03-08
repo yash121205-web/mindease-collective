@@ -22,6 +22,10 @@ import Games from "./pages/Games";
 import PopulationInsights from "./pages/PopulationInsights";
 import Sleep from "./pages/Sleep";
 import Diet from "./pages/Diet";
+import Meditation from "./pages/Meditation";
+import GratitudeWall from "./pages/GratitudeWall";
+import Soundscapes from "./pages/Soundscapes";
+import Affirmations from "./pages/Affirmations";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -69,6 +73,10 @@ const App = () => {
                 <Route path="/app/community" element={<PopulationInsights />} />
                 <Route path="/app/sleep" element={<Sleep />} />
                 <Route path="/app/diet" element={<Diet />} />
+                <Route path="/app/meditation" element={<Meditation />} />
+                <Route path="/app/gratitude" element={<GratitudeWall />} />
+                <Route path="/app/soundscapes" element={<Soundscapes />} />
+                <Route path="/app/affirmations" element={<Affirmations />} />
                 <Route path="/app/settings" element={<SettingsPage />} />
               </Route>
               <Route path="*" element={<NotFound />} />
