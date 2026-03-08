@@ -200,7 +200,7 @@ export default function Login() {
     return `w-full rounded-2xl px-4 py-3 text-sm font-body transition-all border focus:outline-none focus:ring-2 ${
       hasError ? 'border-destructive bg-destructive/5 focus:ring-destructive/30 text-foreground'
       : ok ? 'border-primary bg-primary/5 focus:ring-primary/30 text-foreground'
-      : 'border-border bg-white focus:ring-primary/20 text-foreground placeholder:text-muted-foreground'
+      : 'border-border bg-background focus:ring-primary/20 text-foreground placeholder:text-muted-foreground'
     }`;
   };
 
