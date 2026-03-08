@@ -153,9 +153,9 @@ export default function Landing() {
             className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-foreground/20 backdrop-blur-md"
           >
             <motion.div
-              initial={{ scale: 0.85, opacity: 0, y: 30, filter: 'blur(10px)' }}
-              animate={{ scale: 1, opacity: 1, y: 0, filter: 'blur(0px)' }}
-              exit={{ scale: 0.85, opacity: 0, y: 20, filter: 'blur(10px)' }}
+              initial={{ scale: 0.85, opacity: 0, y: 30 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.85, opacity: 0, y: 20 }}
               transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
               className="glass-strong rounded-3xl p-8 max-w-md w-full text-center"
             >
