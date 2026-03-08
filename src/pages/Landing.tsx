@@ -51,6 +51,7 @@ export default function Landing() {
   const [affirmation, setAffirmation] = useState('');
   const [loadingAff, setLoadingAff] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
   const user = getUser();
   const todayMood = getTodayMood();
 
