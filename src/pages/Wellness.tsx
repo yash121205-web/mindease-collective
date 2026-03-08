@@ -28,7 +28,7 @@ const exercises = [
     videoId: 'pAclBdj20ZU' },
   { title: 'Gratitude Reflection', category: 'Creative', duration: '4 min', difficulty: 'Beginner',
     description: 'Neuroscience shows that consciously noting three specific things you\'re grateful for rewires the brain\'s negativity bias over time. This guided practice helps you go deeper than surface-level gratitude to create genuine emotional shifts and increased resilience.',
-    videoId: 'ZToicYcHIqU' },
+    videoId: 'Pn5xH3zu0Sc' },
 ];
 
 const categoryColors: Record<string, string> = {
