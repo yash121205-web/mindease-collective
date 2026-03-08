@@ -192,9 +192,9 @@ export default function Login() {
       <motion.div
         className="hidden lg:flex lg:w-1/2 flex-col justify-between p-12 relative overflow-hidden"
         initial={{ x: -60, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ duration: 0.5 }}
-        style={{ background: 'linear-gradient(135deg, hsl(330,100%,90%) 0%, hsl(197,80%,85%) 60%, hsl(270,40%,90%) 100%)' }}
+        style={{ background: 'linear-gradient(135deg, hsl(207,90%,88%) 0%, hsl(263,55%,85%) 50%, hsl(156,50%,88%) 100%)' }}
       >
-        <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(circle at 30% 40%, hsla(330,100%,92%,0.4) 0%, transparent 60%)', animation: 'glowMove 8s ease-in-out infinite alternate' }} />
+        <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(circle at 30% 40%, hsla(207,90%,92%,0.4) 0%, transparent 60%)' }} />
         <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-white/15" />
         <div className="absolute -bottom-40 -left-24 w-[420px] h-[420px] rounded-full bg-white/10" />
 
@@ -236,10 +236,10 @@ export default function Login() {
 
       {/* RIGHT PANEL */}
       <div className="flex-1 flex items-center justify-center p-6 lg:p-12 relative bg-background">
-        <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 30%, hsl(330,100%,95%,0.3) 0%, transparent 70%)' }} />
+        <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 30%, hsl(207,90%,95%,0.3) 0%, transparent 70%)' }} />
         <motion.div className="w-full max-w-md relative z-10" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4 }}>
           <motion.div className="flex items-center justify-center gap-3 mb-10" initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.4, ease: 'easeOut' }}>
-            <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, hsl(330,100%,90%), hsl(197,88%,80%))' }}>
+            <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, hsl(207,90%,72%), hsl(263,60%,76%))' }}>
               <Leaf className="w-5 h-5 text-white" />
             </div>
             <div>
@@ -249,7 +249,7 @@ export default function Login() {
           </motion.div>
 
           <motion.div {...stagger(0)} className="text-center mb-8">
-            <h1 className="font-display text-3xl font-bold text-foreground mb-1">{isSignUp ? 'Get Started 🌸' : 'Welcome back 💕'}</h1>
+            <h1 className="font-display text-3xl font-bold text-foreground mb-1">{isSignUp ? 'Get Started ✨' : 'Welcome back 💙'}</h1>
             <p className="text-muted-foreground font-body text-sm">{isSignUp ? 'Create your wellness space' : 'Continue your wellness journey'}</p>
           </motion.div>
 
