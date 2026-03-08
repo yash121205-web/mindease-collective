@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, Plus, Sparkles, X, Send } from 'lucide-react';
+import PageHeader from '@/components/PageHeader';
 import { genId } from '@/lib/storage';
 
 interface GratitudeNote {
