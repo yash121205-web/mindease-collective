@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { saveMood, getMoods, genId, MOOD_MAP } from '@/lib/storage';
+import { saveMood, getMoods, genId, MOOD_MAP, getTodayHabits, saveTodayHabits } from '@/lib/storage';
 import { callAI } from '@/lib/ai';
 import { TrendingUp, Sparkles, Calendar } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip, BarChart, Bar, Cell } from 'recharts';
