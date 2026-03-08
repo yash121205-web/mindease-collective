@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Leaf, ArrowRight, BookOpen, Smile, Wind, Sparkles, Copy } from 'lucide-react';
-import { getTodayMood, saveMood, calculateEHS, getUser, saveUser, genId, MOOD_MAP } from '@/lib/storage';
+import { Leaf, ArrowRight, BookOpen, Smile, Wind, Sparkles, Copy, Timer, Heart, Headphones, Star, BarChart3, TrendingUp, Calendar } from 'lucide-react';
+import { getTodayMood, saveMood, calculateEHS, getUser, saveUser, genId, MOOD_MAP, getMoods, getJournalEntries, getSessions, calculateStreak } from '@/lib/storage';
 import { callAI } from '@/lib/ai';
 import { toast } from 'sonner';
+import WellnessSummary from '@/components/WellnessSummary';
 
 const moods = [
   { key: 'great', emoji: '😄', label: 'Great', message: "That's amazing! Keep riding that positive wave. 🌟" },
@@ -34,6 +35,12 @@ const gradients = [
   'from-mint/15 to-primary/5',
 ];
 
+const fadeUp = (delay: number) => ({
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  transition: { delay, duration: 0.5, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
+});
+
 export default function Landing() {
   const navigate = useNavigate();
   const [showCheckIn, setShowCheckIn] = useState(false);
@@ -42,11 +49,16 @@ export default function Landing() {
   const [ehs, setEhs] = useState(0);
   const [affirmation, setAffirmation] = useState('');
   const [loadingAff, setLoadingAff] = useState(false);
+  const [showSummary, setShowSummary] = useState(false);
   const user = getUser();
   const todayMood = getTodayMood();
 
   const dayOfWeek = new Date().getDay();
   const gradientClass = gradients[dayOfWeek];
+  const streak = calculateStreak();
+  const allMoods = getMoods();
+  const journalCount = getJournalEntries().length;
+  const sessions = getSessions();
 
   useEffect(() => {
     setEhs(calculateEHS());
@@ -54,7 +66,6 @@ export default function Landing() {
     if (!todayMood && user.lastCheckIn !== today) {
       setTimeout(() => setShowCheckIn(true), 800);
     }
-    // Load daily affirmation
     const stored = localStorage.getItem('mindease_daily_affirmation');
     if (stored) {
       const parsed = JSON.parse(stored);
@@ -95,9 +106,7 @@ export default function Landing() {
     u.lastCheckIn = new Date().toISOString().split('T')[0];
     saveUser(u);
     setEhs(calculateEHS());
-    setTimeout(() => {
-      setShowCheckIn(false);
-    }, 2500);
+    setTimeout(() => setShowCheckIn(false), 2500);
   };
 
   const greeting = () => {
@@ -110,20 +119,16 @@ export default function Landing() {
   const ehsColor = ehs >= 70 ? 'text-secondary' : ehs >= 40 ? 'text-primary' : 'text-rose-soft';
 
   return (
-    <div className="p-4 lg:p-8 max-w-4xl mx-auto">
+    <div className="p-4 lg:p-8 max-w-5xl mx-auto">
       {/* Check-in Modal */}
       <AnimatePresence>
         {showCheckIn && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-foreground/20 backdrop-blur-md"
           >
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
+              initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
               className="glass-strong rounded-3xl p-8 max-w-md w-full text-center"
             >
               {!selectedMood ? (
@@ -162,32 +167,59 @@ export default function Landing() {
         )}
       </AnimatePresence>
 
-      {/* Main landing content */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+      {/* Wellness Summary Modal */}
+      <AnimatePresence>
+        {showSummary && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-foreground/20 backdrop-blur-md overflow-y-auto"
+            onClick={() => setShowSummary(false)}>
+            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
+              className="w-full max-w-lg my-8"
+              onClick={e => e.stopPropagation()}>
+              <WellnessSummary onClose={() => setShowSummary(false)} />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Greeting */}
+      <motion.div {...fadeUp(0.1)}>
         <h1 className="font-display text-3xl lg:text-4xl text-foreground mb-2 font-semibold">
           {greeting()}{user.name ? `, ${user.name}` : ''} 👋
         </h1>
-        <p className="text-muted-foreground text-lg mb-8 font-body">Your calm in the chaos</p>
+        <p className="text-muted-foreground text-lg mb-6 font-body">Your calm in the chaos</p>
+      </motion.div>
+
+      {/* Quick Stats Row */}
+      <motion.div {...fadeUp(0.15)} className="flex gap-3 mb-6 overflow-x-auto pb-1">
+        {[
+          { label: 'Streak', value: `${streak}d`, icon: '🔥' },
+          { label: 'Moods', value: allMoods.length, icon: '😊' },
+          { label: 'Journals', value: journalCount, icon: '📓' },
+          { label: 'Sessions', value: sessions.breathing + sessions.pomodoro, icon: '🧘' },
+        ].map((s, i) => (
+          <div key={i} className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-muted/40 border border-border/50 shrink-0">
+            <span className="text-base">{s.icon}</span>
+            <div>
+              <p className="font-number text-sm font-bold text-foreground leading-tight">{s.value}</p>
+              <p className="text-[10px] text-muted-foreground font-body">{s.label}</p>
+            </div>
+          </div>
+        ))}
+        <button onClick={() => setShowSummary(true)} className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-primary/8 border border-primary/20 text-primary shrink-0 hover:bg-primary/12 transition-colors">
+          <BarChart3 className="w-4 h-4" />
+          <span className="text-xs font-body font-medium">Weekly Report</span>
+        </button>
       </motion.div>
 
       <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         {/* EHS Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="glass-static rounded-3xl p-6 md:col-span-2 lg:col-span-1 flex flex-col items-center justify-center"
-        >
+        <motion.div {...fadeUp(0.2)} className="glass-static rounded-3xl p-6 md:col-span-2 lg:col-span-1 flex flex-col items-center justify-center">
           <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3 font-body">Emotional Health Score</p>
           <div className="relative w-32 h-32 mb-3">
             <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
               <circle cx="50" cy="50" r="42" fill="none" stroke="hsl(var(--muted))" strokeWidth="8" />
-              <motion.circle
-                cx="50" cy="50" r="42"
-                fill="none"
-                stroke="hsl(var(--primary))"
-                strokeWidth="8"
-                strokeLinecap="round"
+              <motion.circle cx="50" cy="50" r="42" fill="none" stroke="hsl(var(--primary))" strokeWidth="8" strokeLinecap="round"
                 strokeDasharray={`${2 * Math.PI * 42}`}
                 initial={{ strokeDashoffset: 2 * Math.PI * 42 }}
                 animate={{ strokeDashoffset: 2 * Math.PI * 42 * (1 - ehs / 100) }}
@@ -202,12 +234,7 @@ export default function Landing() {
         </motion.div>
 
         {/* Affirmation Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className={`glass-static rounded-3xl p-6 flex flex-col justify-between bg-gradient-to-br ${gradientClass}`}
-        >
+        <motion.div {...fadeUp(0.3)} className={`glass-static rounded-3xl p-6 flex flex-col justify-between bg-gradient-to-br ${gradientClass}`}>
           <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3 font-body">Today's Affirmation</p>
           <p className="font-display text-xl text-foreground italic leading-relaxed font-semibold">"{affirmation}"</p>
           <div className="flex items-center gap-2 mt-4">
@@ -221,12 +248,7 @@ export default function Landing() {
         </motion.div>
 
         {/* Today's Mood / Check-in Widget */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="glass-static rounded-3xl p-6"
-        >
+        <motion.div {...fadeUp(0.4)} className="glass-static rounded-3xl p-6">
           <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3 font-body">How are you feeling?</p>
           {todayMood || selectedMood ? (
             <div>
@@ -237,18 +259,13 @@ export default function Landing() {
                   <p className="text-xs text-muted-foreground font-body">You checked in today 😊</p>
                 </div>
               </div>
-              <button onClick={() => setShowCheckIn(true)} className="mt-3 text-xs text-primary font-body hover:underline">
-                Update mood
-              </button>
+              <button onClick={() => setShowCheckIn(true)} className="mt-3 text-xs text-primary font-body hover:underline">Update mood</button>
             </div>
           ) : (
             <div className="flex justify-center gap-2 flex-wrap">
               {moods.map(mood => (
-                <button
-                  key={mood.key}
-                  onClick={() => { setShowCheckIn(true); }}
-                  className="flex flex-col items-center gap-1 p-2 rounded-xl hover:bg-muted/50 transition-all hover:scale-110"
-                >
+                <button key={mood.key} onClick={() => setShowCheckIn(true)}
+                  className="flex flex-col items-center gap-1 p-2 rounded-xl hover:bg-muted/50 transition-all hover:scale-110">
                   <span className="text-2xl">{mood.emoji}</span>
                   <span className="text-[10px] text-muted-foreground font-body">{mood.label}</span>
                 </button>
@@ -257,19 +274,16 @@ export default function Landing() {
           )}
         </motion.div>
 
-        {/* Quick Links */}
+        {/* Quick Links — Primary Actions */}
         {[
           { label: 'Talk to SERA', desc: 'AI companion', icon: Leaf, path: '/app/chat', color: 'bg-primary/10 text-primary' },
           { label: 'Write in Journal', desc: 'Reflect & grow', icon: BookOpen, path: '/app/journal', color: 'bg-secondary/30 text-foreground' },
           { label: 'Breathing Exercise', desc: 'Find your calm', icon: Wind, path: '/app/wellness', color: 'bg-rose-soft/20 text-foreground' },
         ].map((item, i) => (
           <motion.button
-            key={item.path}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 + i * 0.1 }}
+            key={item.path} {...fadeUp(0.5 + i * 0.08)}
             onClick={() => navigate(item.path)}
-            className="glass-static rounded-3xl p-5 text-left group"
+            className="glass-static rounded-3xl p-5 text-left group hover:shadow-lg transition-all"
           >
             <div className={`w-10 h-10 rounded-xl ${item.color} flex items-center justify-center mb-3`}>
               <item.icon className="w-5 h-5" />
@@ -280,6 +294,69 @@ export default function Landing() {
           </motion.button>
         ))}
       </div>
+
+      {/* New Features Section */}
+      <motion.div {...fadeUp(0.7)} className="mt-8">
+        <div className="flex items-center gap-2 mb-4">
+          <Star className="w-4 h-4 text-primary" />
+          <h2 className="font-display text-xl text-foreground font-semibold">Explore Features</h2>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            { label: 'Guided Meditation', desc: 'Breathe, focus, find peace', icon: Timer, path: '/app/meditation', emoji: '🧘', gradient: 'from-primary/8 to-sky-soft/10' },
+            { label: 'Gratitude Wall', desc: 'Grow your garden of joy', icon: Heart, path: '/app/gratitude', emoji: '🌸', gradient: 'from-secondary/8 to-rose-soft/10' },
+            { label: 'Mood Soundscapes', desc: 'Ambient sounds for calm', icon: Headphones, path: '/app/soundscapes', emoji: '🎧', gradient: 'from-mint/8 to-primary/10' },
+            { label: 'Affirmations', desc: 'Nurture your inner world', icon: Sparkles, path: '/app/affirmations', emoji: '✨', gradient: 'from-warm-lavender/10 to-secondary/8' },
+          ].map((feat, i) => (
+            <motion.button
+              key={feat.path}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8 + i * 0.08, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              whileHover={{ y: -4, scale: 1.02 }}
+              onClick={() => navigate(feat.path)}
+              className={`rounded-2xl p-5 text-left bg-gradient-to-br ${feat.gradient} border border-border/50 group hover:shadow-lg transition-shadow relative overflow-hidden`}
+            >
+              <div className="absolute -top-6 -right-6 w-20 h-20 rounded-full bg-primary/5 blur-2xl" />
+              <span className="text-2xl block mb-2">{feat.emoji}</span>
+              <p className="font-body text-sm font-semibold text-foreground">{feat.label}</p>
+              <p className="text-[11px] text-muted-foreground font-body mt-0.5">{feat.desc}</p>
+              <ArrowRight className="w-3.5 h-3.5 text-muted-foreground mt-3 group-hover:translate-x-1 transition-transform" />
+            </motion.button>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* Mini weekly mood chart */}
+      {allMoods.length > 2 && (
+        <motion.div {...fadeUp(0.9)} className="mt-8 glass-static rounded-3xl p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <TrendingUp className="w-4 h-4 text-primary" />
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider font-body">This Week's Mood</p>
+            </div>
+            <button onClick={() => navigate('/app/mood')} className="text-xs text-primary font-body hover:underline">See all →</button>
+          </div>
+          <div className="flex items-end gap-2 h-20">
+            {allMoods.slice(-7).map((m, i) => {
+              const height = `${Math.max(m.moodScore, 10)}%`;
+              return (
+                <motion.div key={i} className="flex-1 flex flex-col items-center gap-1">
+                  <motion.div
+                    className="w-full rounded-t-lg"
+                    style={{ background: m.moodScore >= 75 ? 'hsl(var(--secondary))' : m.moodScore >= 50 ? 'hsl(var(--primary))' : 'hsl(var(--rose-soft))' }}
+                    initial={{ height: 0 }} animate={{ height }}
+                    transition={{ delay: 1 + i * 0.08, duration: 0.5 }}
+                  />
+                  <span className="text-[10px] text-muted-foreground font-body">
+                    {new Date(m.timestamp).toLocaleDateString([], { weekday: 'narrow' })}
+                  </span>
+                </motion.div>
+              );
+            })}
+          </div>
+        </motion.div>
+      )}
     </div>
   );
 }

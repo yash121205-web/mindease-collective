@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, BookmarkPlus, AlertTriangle, Mic, MicOff, Globe, Shield, Smile, BookOpen, Wind, Gamepad2 } from 'lucide-react';
+import { Send, BookmarkPlus, AlertTriangle, Mic, MicOff, Globe, Shield, Smile, BookOpen, Wind, Gamepad2, ChevronDown } from 'lucide-react';
 import { callAIChat, detectEmotion, detectCrisis, analyzeVoiceTone } from '@/lib/ai';
 import { getChatHistory, saveChatHistory, genId, type ChatMessage } from '@/lib/storage';
 
@@ -40,11 +40,38 @@ const LANGUAGES = [
   { code: 'mr', label: 'मराठी', flag: '🇮🇳' },
   { code: 'te', label: 'తెలుగు', flag: '🇮🇳' },
   { code: 'bn', label: 'বাংলা', flag: '🇮🇳' },
+  { code: 'gu', label: 'ગુજરાતી', flag: '🇮🇳' },
+  { code: 'kn', label: 'ಕನ್ನಡ', flag: '🇮🇳' },
+  { code: 'ml', label: 'മലയാളം', flag: '🇮🇳' },
+  { code: 'pa', label: 'ਪੰਜਾਬੀ', flag: '🇮🇳' },
+  { code: 'ur', label: 'اردو', flag: '🇵🇰' },
+  { code: 'es', label: 'Español', flag: '🇪🇸' },
+  { code: 'fr', label: 'Français', flag: '🇫🇷' },
+  { code: 'de', label: 'Deutsch', flag: '🇩🇪' },
+  { code: 'it', label: 'Italiano', flag: '🇮🇹' },
+  { code: 'pt', label: 'Português', flag: '🇧🇷' },
+  { code: 'nl', label: 'Nederlands', flag: '🇳🇱' },
+  { code: 'zh', label: '中文', flag: '🇨🇳' },
+  { code: 'ja', label: '日本語', flag: '🇯🇵' },
+  { code: 'ko', label: '한국어', flag: '🇰🇷' },
+  { code: 'th', label: 'ภาษาไทย', flag: '🇹🇭' },
+  { code: 'vi', label: 'Tiếng Việt', flag: '🇻🇳' },
+  { code: 'id', label: 'Bahasa Indonesia', flag: '🇮🇩' },
+  { code: 'ms', label: 'Bahasa Melayu', flag: '🇲🇾' },
+  { code: 'tl', label: 'Filipino', flag: '🇵🇭' },
+  { code: 'ar', label: 'العربية', flag: '🇸🇦' },
+  { code: 'tr', label: 'Türkçe', flag: '🇹🇷' },
+  { code: 'fa', label: 'فارسی', flag: '🇮🇷' },
+  { code: 'he', label: 'עברית', flag: '🇮🇱' },
+  { code: 'ru', label: 'Русский', flag: '🇷🇺' },
+  { code: 'pl', label: 'Polski', flag: '🇵🇱' },
+  { code: 'uk', label: 'Українська', flag: '🇺🇦' },
+  { code: 'sw', label: 'Kiswahili', flag: '🇰🇪' },
+  { code: 'am', label: 'አማርኛ', flag: '🇪🇹' },
 ];
 
-const LANG_NAMES: Record<string, string> = {
-  en: 'English', hi: 'Hindi', ta: 'Tamil', mr: 'Marathi', te: 'Telugu', bn: 'Bengali',
-};
+const LANG_NAMES: Record<string, string> = {};
+LANGUAGES.forEach(l => { LANG_NAMES[l.code] = l.label; });
 
 function SeraAvatar({ emotion }: { emotion?: string }) {
   const tilt = emotion === 'Sadness' || emotion === 'Loneliness' ? 'rotate-[-8deg]' : '';
@@ -75,8 +102,13 @@ export default function Chat() {
   const [voiceFeedback, setVoiceFeedback] = useState('');
   const [showLangPicker, setShowLangPicker] = useState(false);
   const [selectedLang, setSelectedLang] = useState('en');
+  const [langSearch, setLangSearch] = useState('');
   const scrollRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
+
+  const filteredLangs = LANGUAGES.filter(l =>
+    l.label.toLowerCase().includes(langSearch.toLowerCase()) || l.code.includes(langSearch.toLowerCase())
+  );
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
@@ -92,14 +124,11 @@ export default function Chat() {
     const recognition = new SpeechRecognition();
     recognition.continuous = false;
     recognition.interimResults = true;
-    const langMap: Record<string, string> = { en: 'en-US', hi: 'hi-IN', ta: 'ta-IN', mr: 'mr-IN', te: 'te-IN', bn: 'bn-IN' };
-    recognition.lang = langMap[selectedLang] || 'en-US';
+    recognition.lang = selectedLang === 'en' ? 'en-US' : selectedLang;
 
     recognition.onstart = () => setIsListening(true);
     recognition.onresult = (event: any) => {
-      const transcript = Array.from(event.results)
-        .map((result: any) => result[0].transcript)
-        .join('');
+      const transcript = Array.from(event.results).map((result: any) => result[0].transcript).join('');
       setInput(transcript);
     };
     recognition.onend = () => {
@@ -133,11 +162,8 @@ export default function Chat() {
     if (crisis) setShowCrisis(true);
 
     const userMsg: ChatMessage = {
-      id: genId(),
-      role: 'user',
-      content: text.trim(),
-      emotion: emotion ? `${emotion.emoji} ${emotion.label}` : undefined,
-      timestamp: Date.now(),
+      id: genId(), role: 'user', content: text.trim(),
+      emotion: emotion ? `${emotion.emoji} ${emotion.label}` : undefined, timestamp: Date.now(),
     };
 
     const newMsgs = [...messages, userMsg];
@@ -146,13 +172,11 @@ export default function Chat() {
     setVoiceFeedback('');
     setLoading(true);
 
-    // Create placeholder assistant message for streaming
     const assistantId = genId();
     let assistantContent = '';
 
     try {
       const apiMsgs = newMsgs.slice(-10).map(m => ({ role: m.role, content: m.content }));
-
       const reply = await callAIChat(apiMsgs, selectedLang, (chunk) => {
         assistantContent += chunk;
         setMessages(prev => {
@@ -164,48 +188,29 @@ export default function Chat() {
         });
       });
 
-      // Ensure final message is set
       const finalContent = assistantContent || reply;
       setMessages(prev => {
         const hasAssistant = prev.some(m => m.id === assistantId);
-        if (hasAssistant) {
-          return prev.map(m => m.id === assistantId ? { ...m, content: finalContent } : m);
-        }
+        if (hasAssistant) return prev.map(m => m.id === assistantId ? { ...m, content: finalContent } : m);
         return [...prev, { id: assistantId, role: 'assistant' as const, content: finalContent, timestamp: Date.now() }];
       });
 
-      // Save after settling
-      setTimeout(() => {
-        setMessages(prev => {
-          saveChatHistory(prev);
-          return prev;
-        });
-      }, 100);
+      setTimeout(() => { setMessages(prev => { saveChatHistory(prev); return prev; }); }, 100);
     } catch {
-      const errMsg: ChatMessage = {
-        id: assistantId,
-        role: 'assistant',
-        content: "SERA is taking a moment to gather her thoughts... Please try again. 💙",
-        timestamp: Date.now(),
-      };
+      const errMsg: ChatMessage = { id: assistantId, role: 'assistant', content: "SERA is taking a moment to gather her thoughts... Please try again. 💙", timestamp: Date.now() };
       setMessages(prev => {
         const hasAssistant = prev.some(m => m.id === assistantId);
         if (hasAssistant) return prev.map(m => m.id === assistantId ? errMsg : m);
         return [...prev, errMsg];
       });
-      setTimeout(() => {
-        setMessages(prev => { saveChatHistory(prev); return prev; });
-      }, 100);
+      setTimeout(() => { setMessages(prev => { saveChatHistory(prev); return prev; }); }, 100);
     } finally {
       setLoading(false);
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage(input);
-    }
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(input); }
   };
 
   const formatTime = (ts: number) => new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -216,7 +221,7 @@ export default function Chat() {
       <div className="bg-primary/5 border-b border-border px-4 py-2 flex items-center gap-2">
         <Shield className="w-3.5 h-3.5 text-primary" />
         <p className="text-[11px] text-muted-foreground font-body">
-          🔒 This is a <strong>safe, anonymous, judgment-free</strong> space. Your conversations are private and confidential.
+          🔒 This is a <strong>safe, anonymous, judgment-free</strong> space. Your conversations are private.
         </p>
       </div>
 
@@ -263,16 +268,16 @@ export default function Chat() {
             <div className="mx-auto mt-4 mb-2">
               <h2 className="font-display text-2xl text-foreground font-semibold">Hi, I'm SERA 💙</h2>
               <p className="text-muted-foreground text-sm mt-1 max-w-sm mx-auto font-body">
-                Your Supportive Emotional Response Assistant. I'm here to listen without judgment, support your feelings, and help you navigate whatever you're going through.
+                Your Supportive Emotional Response Assistant. I'm here to listen without judgment and help you navigate whatever you're going through.
               </p>
               <p className="text-muted-foreground text-xs mt-2 max-w-xs mx-auto font-body opacity-70">
-                🔒 Everything you share here is anonymous and confidential.
+                🔒 Anonymous and confidential · 🌍 Speaks 30+ languages
               </p>
             </div>
             <div className="flex flex-wrap justify-center gap-2 mt-6 max-w-lg mx-auto">
               {SUGGESTED.map(s => (
                 <button key={s} onClick={() => sendMessage(s)}
-                  className="px-4 py-2 rounded-2xl glass-static text-sm text-foreground font-body transition-all hover:scale-[1.02]">
+                  className="px-4 py-2 rounded-2xl glass-static text-sm text-foreground font-body transition-all hover:scale-[1.02] hover:shadow-md">
                   {s}
                 </button>
               ))}
@@ -341,16 +346,21 @@ export default function Chat() {
               <AnimatePresence>
                 {showLangPicker && (
                   <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }}
-                    className="absolute bottom-14 left-0 bg-card border border-border rounded-xl shadow-lg p-2 min-w-[140px] z-10">
-                    {LANGUAGES.map(lang => (
-                      <button key={lang.code}
-                        onClick={() => { setSelectedLang(lang.code); setShowLangPicker(false); }}
-                        className={`w-full px-3 py-1.5 rounded-lg text-xs font-body text-left flex items-center gap-2 ${
-                          selectedLang === lang.code ? 'bg-primary/10 text-primary font-medium' : 'text-foreground hover:bg-muted'
-                        }`}>
-                        <span>{lang.flag}</span> {lang.label}
-                      </button>
-                    ))}
+                    className="absolute bottom-14 left-0 bg-card border border-border rounded-xl shadow-lg p-2 min-w-[180px] max-h-[320px] z-10 overflow-hidden flex flex-col">
+                    <input value={langSearch} onChange={e => setLangSearch(e.target.value)}
+                      placeholder="Search language..."
+                      className="w-full px-3 py-1.5 text-xs font-body border-b border-border mb-1 bg-transparent focus:outline-none placeholder:text-muted-foreground" />
+                    <div className="overflow-y-auto flex-1">
+                      {filteredLangs.map(lang => (
+                        <button key={lang.code}
+                          onClick={() => { setSelectedLang(lang.code); setShowLangPicker(false); setLangSearch(''); }}
+                          className={`w-full px-3 py-1.5 rounded-lg text-xs font-body text-left flex items-center gap-2 ${
+                            selectedLang === lang.code ? 'bg-primary/10 text-primary font-medium' : 'text-foreground hover:bg-muted'
+                          }`}>
+                          <span>{lang.flag}</span> {lang.label}
+                        </button>
+                      ))}
+                    </div>
                   </motion.div>
                 )}
               </AnimatePresence>
