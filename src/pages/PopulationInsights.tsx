@@ -176,7 +176,6 @@ export default function PopulationInsights() {
           </p>
           <p className="text-xs text-muted-foreground font-body mt-2">You're not alone in this journey.</p>
         </div>
-      </motion.div>
     </div>
   );
 }

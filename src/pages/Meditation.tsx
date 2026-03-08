@@ -109,14 +109,7 @@ export default function Meditation() {
 
   return (
     <div className="p-4 lg:p-8 max-w-5xl mx-auto">
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center">
-            <Leaf className="w-5 h-5 text-primary" />
-          </div>
-          <h1 className="font-display text-3xl text-foreground font-semibold">Guided Meditation</h1>
-        </div>
-        <p className="text-muted-foreground font-body mb-8 ml-[52px]">Find stillness. Follow your breath.</p>
+      <PageHeader title="Guided Meditation" subtitle="Find stillness. Follow your breath." emoji="🧘" gradient="from-primary/10 to-mint/8" />
       </motion.div>
 
       <div className="grid gap-6 lg:grid-cols-[1fr_1.2fr]">

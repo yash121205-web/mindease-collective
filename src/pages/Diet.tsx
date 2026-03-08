@@ -291,7 +291,6 @@ export default function Diet() {
             </div>
           </div>
         )}
-      </motion.div>
     </div>
   );
 }
