@@ -207,8 +207,8 @@ async function callGoogleGemini(
           system_instruction: { parts: [{ text: systemContent }] },
           contents: geminiMessages,
           generationConfig: {
-            temperature: 0.85,
-            maxOutputTokens: 300,
+            temperature: 0.8,
+            maxOutputTokens: 180,
           },
         }),
       }
