@@ -56,7 +56,7 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
-        <Son/>
+        <Sonner />
         <AnimatePresence>
           {showSplash && (
             <SplashScreen onDone={() => {
