@@ -87,6 +87,24 @@ function ChatBubbleCard() {
   );
 }
 
+const APP_LANGUAGES = [
+  { code: 'en', label: 'English', flag: '🇬🇧' },
+  { code: 'hi', label: 'हिंदी', flag: '🇮🇳' },
+  { code: 'ta', label: 'தமிழ்', flag: '🇮🇳' },
+  { code: 'te', label: 'తెలుగు', flag: '🇮🇳' },
+  { code: 'bn', label: 'বাংলা', flag: '🇮🇳' },
+  { code: 'es', label: 'Español', flag: '🇪🇸' },
+  { code: 'fr', label: 'Français', flag: '🇫🇷' },
+  { code: 'de', label: 'Deutsch', flag: '🇩🇪' },
+  { code: 'ja', label: '日本語', flag: '🇯🇵' },
+  { code: 'ko', label: '한국어', flag: '🇰🇷' },
+  { code: 'zh', label: '中文', flag: '🇨🇳' },
+  { code: 'ar', label: 'العربية', flag: '🇸🇦' },
+  { code: 'pt', label: 'Português', flag: '🇧🇷' },
+  { code: 'ru', label: 'Русский', flag: '🇷🇺' },
+  { code: 'sw', label: 'Kiswahili', flag: '🇰🇪' },
+];
+
 /* ─── Main ─── */
 export default function Login() {
   const navigate = useNavigate();
@@ -99,6 +117,8 @@ export default function Login() {
   const [errors, setErrors] = useState<FieldErrors>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [loading, setLoading] = useState(false);
+  const [selectedLang, setSelectedLang] = useState(() => localStorage.getItem('mindease_lang') || 'en');
+  const [showLangDropdown, setShowLangDropdown] = useState(false);
 
   useEffect(() => {
     if (sessionStorage.getItem('mindease_logged_in') === 'true') navigate('/dashboard', { replace: true });
