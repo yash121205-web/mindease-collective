@@ -126,6 +126,20 @@ export default function Landing() {
 
   return (
     <div className="p-4 lg:p-8 max-w-5xl mx-auto">
+      {/* Onboarding Tour */}
+      <AnimatePresence>
+        {showOnboarding && (
+          <OnboardingTour onComplete={() => {
+            setShowOnboarding(false);
+            localStorage.setItem('mindease_onboarding_seen', 'true');
+            const today = new Date().toISOString().split('T')[0];
+            if (!todayMood && user.lastCheckIn !== today) {
+              setTimeout(() => setShowCheckIn(true), 500);
+            }
+          }} />
+        )}
+      </AnimatePresence>
+
       {/* Check-in Modal */}
       <AnimatePresence>
         {showCheckIn && (
