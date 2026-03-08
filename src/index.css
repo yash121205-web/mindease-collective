@@ -67,6 +67,12 @@
     font-family: 'Lora', serif;
     letter-spacing: -0.005em;
   }
+  button, [role="tab"], [role="radio"], [data-state] {
+    font-family: 'Lora', serif;
+  }
+  p, span, label, a {
+    font-size: 1.01em;
+  }
 }
 
 @layer utilities {
