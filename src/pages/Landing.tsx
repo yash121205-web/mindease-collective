@@ -389,9 +389,9 @@ export default function Landing() {
             <AnimatePresence mode="wait">
               <motion.p
                 key={affirmation}
-                initial={{ opacity: 0, y: 12, filter: 'blur(4px)' }}
-                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                exit={{ opacity: 0, y: -8, filter: 'blur(4px)' }}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.4 }}
                 className="font-display text-xl lg:text-2xl text-foreground italic leading-relaxed font-semibold tracking-wide relative z-10 pl-2"
               >
