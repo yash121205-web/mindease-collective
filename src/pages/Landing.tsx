@@ -349,7 +349,7 @@ export default function Landing() {
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <TrendingUp className="w-4 h-4 text-primary" />
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider font-body">This Week's Mood</p>
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider font-display">This Week's Mood</p>
             </div>
             <button onClick={() => navigate('/app/mood')} className="text-xs text-primary font-body hover:underline">See all →</button>
           </div>
