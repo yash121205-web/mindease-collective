@@ -516,7 +516,7 @@ export default function Home() {
           <motion.div {...stagger(3)} className="neu p-7 bg-gradient-to-br from-primary/6 to-mint/6">
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest mb-4">SERA's Insight</p>
             <div className="flex items-start gap-3">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-mint flex items-center justify-center flex-shrink-0">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center flex-shrink-0">
                 <Leaf className="w-4 h-4 text-primary-foreground" />
               </div>
               <div>
