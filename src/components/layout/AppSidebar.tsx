@@ -20,6 +20,7 @@ const navItems = [
   { path: '/app/gratitude', label: 'Gratitude Wall', icon: Heart },
   { path: '/app/soundscapes', label: 'Soundscapes', icon: Headphones },
   { path: '/app/affirmations', label: 'Affirmations', icon: Sparkles },
+  { path: '/app/challenges', label: 'Daily Challenges', icon: Target },
   { path: '/app/games', label: 'Stress Games', icon: Gamepad2 },
   { path: '/app/community', label: 'Community', icon: Users },
   { path: '/app/settings', label: 'Settings', icon: Settings },
