@@ -249,7 +249,7 @@ export default function DailyChallenges() {
           )}
         </div>
         <div className="h-2 rounded-full bg-muted overflow-hidden">
-          <motion.div className="h-full rounded-full" style={{ background: 'linear-gradient(90deg, hsl(330,100%,85%), hsl(197,88%,66%))' }}
+          <motion.div className="h-full rounded-full" style={{ background: 'linear-gradient(90deg, hsl(207,90%,72%), hsl(260,60%,78%))' }}
             initial={{ width: 0 }} animate={{ width: `${Math.min(streakProgress, 100)}%` }}
             transition={{ duration: 1, ease: 'easeOut' }} />
         </div>
