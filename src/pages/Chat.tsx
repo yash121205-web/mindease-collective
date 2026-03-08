@@ -167,7 +167,7 @@ export default function Chat() {
   const [isListening, setIsListening] = useState(false);
   const [voiceFeedback, setVoiceFeedback] = useState('');
   const [showLangPicker, setShowLangPicker] = useState(false);
-  const [selectedLang, setSelectedLang] = useState('en');
+  const [selectedLang, setSelectedLang] = useState(() => localStorage.getItem('mindease_lang') || 'en');
   const [langSearch, setLangSearch] = useState('');
   const scrollRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
