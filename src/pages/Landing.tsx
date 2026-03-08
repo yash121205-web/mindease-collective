@@ -42,24 +42,9 @@ const scaleIn = {
   animate: { opacity: 1, scale: 1, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } },
 };
 
-// Parallax floating orb component
-function FloatingOrb({ className, delay = 0 }: { className: string; delay?: number }) {
-  return (
-    <motion.div
-      className={className}
-      animate={{
-        y: [0, -12, 0, 8, 0],
-        x: [0, 6, 0, -6, 0],
-        scale: [1, 1.05, 1, 0.97, 1],
-      }}
-      transition={{
-        duration: 8 + delay * 2,
-        repeat: Infinity,
-        ease: 'easeInOut',
-        delay,
-      }}
-    />
-  );
+// Static decorative orb (no animation for performance)
+function FloatingOrb({ className }: { className: string; delay?: number }) {
+  return <div className={className} />;
 }
 
 // Animated counter for EHS
