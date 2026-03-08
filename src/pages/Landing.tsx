@@ -309,21 +309,16 @@ export default function Landing() {
             { label: 'Mood Soundscapes', desc: 'Ambient sounds for calm', icon: Headphones, path: '/app/soundscapes', emoji: '🎧', gradient: 'from-mint/8 to-primary/10' },
             { label: 'Affirmations', desc: 'Nurture your inner world', icon: Sparkles, path: '/app/affirmations', emoji: '✨', gradient: 'from-warm-lavender/10 to-secondary/8' },
           ].map((feat, i) => (
-            <motion.button
+            <button
               key={feat.path}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8 + i * 0.08, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              whileHover={{ y: -4, scale: 1.02 }}
               onClick={() => navigate(feat.path)}
-              className={`rounded-2xl p-5 text-left bg-gradient-to-br ${feat.gradient} border border-border/50 group hover:shadow-lg transition-shadow relative overflow-hidden`}
+              className={`rounded-2xl p-5 text-left bg-gradient-to-br ${feat.gradient} border border-border/50 group hover:shadow-lg hover:-translate-y-1 transition-all relative overflow-hidden`}
             >
-              <div className="absolute -top-6 -right-6 w-20 h-20 rounded-full bg-primary/5 blur-2xl" />
               <span className="text-2xl block mb-2">{feat.emoji}</span>
               <p className="font-body text-sm font-semibold text-foreground">{feat.label}</p>
               <p className="text-[11px] text-muted-foreground font-body mt-0.5">{feat.desc}</p>
               <ArrowRight className="w-3.5 h-3.5 text-muted-foreground mt-3 group-hover:translate-x-1 transition-transform" />
-            </motion.button>
+            </button>
           ))}
         </div>
       </motion.div>
