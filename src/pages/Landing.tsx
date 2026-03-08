@@ -33,13 +33,13 @@ const container = {
 };
 
 const fadeSlide = {
-  initial: { opacity: 0, y: 28, filter: 'blur(8px)' },
-  animate: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } },
+  initial: { opacity: 0, y: 28 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } },
 };
 
 const scaleIn = {
-  initial: { opacity: 0, scale: 0.92, filter: 'blur(6px)' },
-  animate: { opacity: 1, scale: 1, filter: 'blur(0px)', transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } },
+  initial: { opacity: 0, scale: 0.92 },
+  animate: { opacity: 1, scale: 1, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } },
 };
 
 // Parallax floating orb component
