@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { saveMood, getMoods, genId, MOOD_MAP } from '@/lib/storage';
+import { saveMood, getMoods, genId, MOOD_MAP, getTodayHabits, saveTodayHabits } from '@/lib/storage';
 import { callAI } from '@/lib/ai';
 import { TrendingUp, Sparkles, Calendar } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip, BarChart, Bar, Cell } from 'recharts';
@@ -74,6 +74,12 @@ export default function Mood() {
       timestamp: Date.now(),
     });
     setSubmitted(true);
+
+    // Auto-update habits when sleep quality is good
+    if (MOOD_MAP[selected].score >= 75) {
+      const h = getTodayHabits();
+      if (selectedFactors.includes('Sleep')) { h.sleep = true; saveTodayHabits(h); }
+    }
     setLoading(true);
     try {
       const msg = await callAI(`User logged their mood as "${selected}" with factors: ${selectedFactors.join(', ') || 'none'}. Note: "${note || 'none'}". Give a warm, personalized 2-sentence response. Don't start with "I understand" or "I'm sorry".`);

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getJournalEntries, saveJournalEntry, genId, getTodayMood, MOOD_MAP } from '@/lib/storage';
+import { getJournalEntries, saveJournalEntry, genId, getTodayMood, MOOD_MAP, getTodayHabits, saveTodayHabits } from '@/lib/storage';
 import { callAI } from '@/lib/ai';
 import { Search, Sparkles, Calendar, X, Tag, ChevronDown, ChevronUp, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -57,6 +57,13 @@ export default function Journal() {
       timestamp: Date.now(),
     };
     saveJournalEntry(entry);
+    // Auto-mark journaling habit
+    const todayHabits = getTodayHabits();
+    if (!todayHabits.journaled) {
+      todayHabits.journaled = true;
+      if (gratitude.filter(Boolean).length > 0) todayHabits.gratitude = true;
+      saveTodayHabits(todayHabits);
+    }
     setEntries(getJournalEntries());
     setTitle('');
     setContent('');

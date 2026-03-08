@@ -16,13 +16,17 @@ interface SleepLog {
   timestamp: number;
 }
 
+function getSleepStorageKey(): string {
+  const userId = sessionStorage.getItem('mindease_user_id') || 'anonymous';
+  return `mindease_${userId}_sleep`;
+}
 function getSleepLogs(): SleepLog[] {
-  try { return JSON.parse(localStorage.getItem('mindease_sleep') || '[]'); } catch { return []; }
+  try { return JSON.parse(localStorage.getItem(getSleepStorageKey()) || '[]'); } catch { return []; }
 }
 function saveSleepLog(log: SleepLog) {
   const logs = getSleepLogs();
   logs.push(log);
-  localStorage.setItem('mindease_sleep', JSON.stringify(logs));
+  localStorage.setItem(getSleepStorageKey(), JSON.stringify(logs));
 }
 
 const qualityLabels = ['', 'Very Poor', 'Poor', 'Fair', 'Good', 'Excellent'];

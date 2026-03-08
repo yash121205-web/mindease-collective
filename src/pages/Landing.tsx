@@ -6,6 +6,7 @@ import { getTodayMood, saveMood, calculateEHS, getUser, saveUser, genId, MOOD_MA
 import { callAI } from '@/lib/ai';
 import { toast } from 'sonner';
 import WellnessSummary from '@/components/WellnessSummary';
+import OnboardingTour from '@/components/OnboardingTour';
 
 const moods = [
   { key: 'great', emoji: '😄', label: 'Great', message: "That's amazing! Keep riding that positive wave. 🌟" },
@@ -50,6 +51,7 @@ export default function Landing() {
   const [affirmation, setAffirmation] = useState('');
   const [loadingAff, setLoadingAff] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
   const user = getUser();
   const todayMood = getTodayMood();
 
@@ -63,7 +65,11 @@ export default function Landing() {
   useEffect(() => {
     setEhs(calculateEHS());
     const today = new Date().toISOString().split('T')[0];
-    if (!todayMood && user.lastCheckIn !== today) {
+    // Show onboarding for first-time users
+    const onboardingSeen = localStorage.getItem('mindease_onboarding_seen');
+    if (!onboardingSeen) {
+      setTimeout(() => setShowOnboarding(true), 500);
+    } else if (!todayMood && user.lastCheckIn !== today) {
       setTimeout(() => setShowCheckIn(true), 800);
     }
     const stored = localStorage.getItem('mindease_daily_affirmation');
@@ -120,6 +126,20 @@ export default function Landing() {
 
   return (
     <div className="p-4 lg:p-8 max-w-5xl mx-auto">
+      {/* Onboarding Tour */}
+      <AnimatePresence>
+        {showOnboarding && (
+          <OnboardingTour onComplete={() => {
+            setShowOnboarding(false);
+            localStorage.setItem('mindease_onboarding_seen', 'true');
+            const today = new Date().toISOString().split('T')[0];
+            if (!todayMood && user.lastCheckIn !== today) {
+              setTimeout(() => setShowCheckIn(true), 500);
+            }
+          }} />
+        )}
+      </AnimatePresence>
+
       {/* Check-in Modal */}
       <AnimatePresence>
         {showCheckIn && (

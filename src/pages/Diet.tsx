@@ -16,13 +16,17 @@ interface MealLog {
   timestamp: number;
 }
 
+function getMealStorageKey(): string {
+  const userId = sessionStorage.getItem('mindease_user_id') || 'anonymous';
+  return `mindease_${userId}_meals`;
+}
 function getMealLogs(): MealLog[] {
-  try { return JSON.parse(localStorage.getItem('mindease_meals') || '[]'); } catch { return []; }
+  try { return JSON.parse(localStorage.getItem(getMealStorageKey()) || '[]'); } catch { return []; }
 }
 function saveMealLog(log: MealLog) {
   const logs = getMealLogs();
   logs.push(log);
-  localStorage.setItem('mindease_meals', JSON.stringify(logs));
+  localStorage.setItem(getMealStorageKey(), JSON.stringify(logs));
 }
 
 const mealTypes = [
