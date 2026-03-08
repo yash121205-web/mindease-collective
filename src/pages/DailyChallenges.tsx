@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Target, CheckCircle2, Flame, Trophy, Gift, RefreshCw, Sparkles, Lock, Star } from 'lucide-react';
+import PageHeader from '@/components/PageHeader';
 import { toast } from 'sonner';
 
 // ─── Challenge Data ───
