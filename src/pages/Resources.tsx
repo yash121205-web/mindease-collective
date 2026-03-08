@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { callAI } from '@/lib/ai';
-import { Phone, Sparkles, BookOpen, Heart, ExternalLink, ChevronDown, ChevronUp, Search } from 'lucide-react';
+import { Phone, Sparkles, BookOpen, Heart, ExternalLink, ChevronDown, ChevronUp, Search, Shield, Clock, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import PageHeader from '@/components/PageHeader';
@@ -61,6 +61,11 @@ const articles = [
     content: 'Not all stress is bad. The Yerkes-Dodson law, discovered over a century ago, describes an inverted-U relationship between stress and performance: too little stress leads to boredom and poor performance, while too much leads to anxiety and poor performance. The sweet spot is in the middle — what psychologists call "eustress" or positive stress.\n\nThe challenge is that this sweet spot is different for everyone and varies by task. Simple or well-practiced tasks benefit from higher arousal, while complex or new tasks require lower stress levels to perform well.\n\nTo find your sweet spot: notice when you\'re performing best. What\'s your stress level? That\'s your target. Use breathing exercises to lower stress when you\'re too activated, and set small challenges to increase engagement when you\'re under-stimulated. Managing your stress curve is a skill that will serve you for life.' },
 ];
 
+const fadeUp = {
+  initial: { opacity: 0, y: 16 },
+  animate: { opacity: 1, y: 0 },
+};
+
 export default function Resources() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
@@ -91,63 +96,69 @@ export default function Resources() {
     setLoading(false);
   };
 
-  // Filter guides and articles based on search
   const lowerSearch = searchQuery.toLowerCase();
   const filteredGuides = searchQuery
-    ? copingGuides.filter(g =>
-        g.title.toLowerCase().includes(lowerSearch) ||
-        g.tags.some(t => t.includes(lowerSearch)) ||
-        g.content.toLowerCase().includes(lowerSearch)
-      )
+    ? copingGuides.filter(g => g.title.toLowerCase().includes(lowerSearch) || g.tags.some(t => t.includes(lowerSearch)) || g.content.toLowerCase().includes(lowerSearch))
     : copingGuides;
-
   const filteredArticles = searchQuery
-    ? articles.filter(a =>
-        a.title.toLowerCase().includes(lowerSearch) ||
-        a.tags.some(t => t.includes(lowerSearch)) ||
-        a.preview.toLowerCase().includes(lowerSearch)
-      )
+    ? articles.filter(a => a.title.toLowerCase().includes(lowerSearch) || a.tags.some(t => t.includes(lowerSearch)) || a.preview.toLowerCase().includes(lowerSearch))
     : articles;
 
   return (
     <div className="p-4 lg:p-8 max-w-4xl mx-auto overflow-y-auto">
       <PageHeader title="Resources" subtitle="Support when you need it most" emoji="📚" gradient="from-rose-soft/10 to-secondary/8" />
 
-        {/* Search Bar */}
-        <div className="relative mb-8">
-          <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
-          <input
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder='Search topics like "anxiety", "sleep", "exam stress"...'
-            className="w-full bg-muted rounded-2xl pl-11 pr-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 font-body"
-          />
-          {searchQuery && (
-            <button onClick={() => setSearchQuery('')} className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-muted-foreground hover:text-foreground">✕</button>
-          )}
-        </div>
-
-        {searchQuery && filteredGuides.length === 0 && filteredArticles.length === 0 && (
-          <div className="text-center py-8 mb-8 glass-static rounded-2xl">
-            <p className="text-muted-foreground font-body">No results for "{searchQuery}". Try a different keyword or ask SERA below.</p>
-          </div>
+      {/* Search Bar */}
+      <motion.div {...fadeUp} transition={{ duration: 0.4 }} className="relative mb-6">
+        <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
+        <input
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder='Search topics like "anxiety", "sleep", "exam stress"...'
+          className="w-full bg-card/90 backdrop-blur-sm border border-border/40 rounded-2xl pl-11 pr-10 py-3.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/20 font-body transition-all"
+        />
+        {searchQuery && (
+          <button onClick={() => setSearchQuery('')} className="absolute right-4 top-1/2 -translate-y-1/2 p-1 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors text-xs">✕</button>
         )}
+      </motion.div>
 
-        {/* Crisis Support Banner */}
-        <section className="mb-8">
-          <div className="rounded-2xl p-5 border-2 border-rose-soft/30 bg-rose-soft/5">
-            <p className="text-sm text-foreground font-body font-medium mb-3">If you're in crisis, you're not alone. Reach out anytime:</p>
-            <div className="grid gap-3 md:grid-cols-2">
+      {searchQuery && filteredGuides.length === 0 && filteredArticles.length === 0 && (
+        <div className="text-center py-8 mb-6 bg-card/80 border border-border/40 rounded-2xl">
+          <p className="text-muted-foreground font-body">No results for "{searchQuery}". Try a different keyword or ask SERA below.</p>
+        </div>
+      )}
+
+      {/* ─── Crisis Support Banner ─── */}
+      <motion.section {...fadeUp} transition={{ duration: 0.4, delay: 0.05 }} className="mb-8">
+        <div className="relative rounded-2xl overflow-hidden border border-rose-soft/25">
+          {/* Top accent */}
+          <div className="h-1 bg-gradient-to-r from-rose-soft via-secondary to-primary" />
+          <div className="p-5 bg-gradient-to-br from-rose-soft/5 to-card/80">
+            <div className="flex items-center gap-2.5 mb-4">
+              <div className="w-8 h-8 rounded-xl bg-rose-soft/15 border border-rose-soft/15 flex items-center justify-center">
+                <Shield className="w-4 h-4 text-rose-soft" />
+              </div>
+              <div>
+                <p className="text-sm text-foreground font-display font-semibold">Crisis Support</p>
+                <p className="text-[11px] text-muted-foreground font-body">You're not alone. Reach out anytime.</p>
+              </div>
+            </div>
+            <div className="grid gap-2.5 md:grid-cols-2">
               {helplines.map(h => (
-                <div key={h.name} className="flex items-start gap-3 p-3 rounded-xl bg-background/50">
-                  <Phone className="w-4 h-4 text-rose-soft mt-0.5 shrink-0" />
-                  <div>
-                    <p className="font-body font-semibold text-foreground text-sm">{h.name}</p>
-                    <p className="text-xs text-muted-foreground font-body">{h.desc} · {h.hours}</p>
+                <div key={h.name} className="flex items-start gap-3 p-3 rounded-xl bg-card/70 border border-border/30 hover:border-rose-soft/20 transition-colors">
+                  <div className="w-8 h-8 rounded-lg bg-rose-soft/10 flex items-center justify-center shrink-0 mt-0.5">
+                    <Phone className="w-3.5 h-3.5 text-rose-soft" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <p className="font-body font-semibold text-foreground text-sm">{h.name}</p>
+                      <span className="text-[9px] font-body text-muted-foreground bg-muted/50 px-1.5 py-0.5 rounded-md shrink-0">{h.hours}</span>
+                    </div>
+                    <p className="text-[11px] text-muted-foreground font-body mt-0.5">{h.desc}</p>
                     {h.number ? (
-                      <a href={`tel:${h.number}`} className="text-sm font-bold text-foreground hover:text-primary transition-colors font-number">{h.number}</a>
+                      <a href={`tel:${h.number}`} className="text-sm font-bold text-foreground hover:text-primary transition-colors font-number mt-1 inline-block">{h.number}</a>
                     ) : (
-                      <a href={h.link} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline font-body flex items-center gap-1">
+                      <a href={h.link} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline font-body flex items-center gap-1 mt-1">
                         Visit website <ExternalLink className="w-3 h-3" />
                       </a>
                     )}
@@ -156,86 +167,48 @@ export default function Resources() {
               ))}
             </div>
           </div>
-        </section>
+        </div>
+      </motion.section>
 
-        {/* Coping Guides */}
-        {filteredGuides.length > 0 && (
-          <section className="mb-8">
-            <h2 className="font-display text-xl text-foreground mb-4 font-semibold flex items-center gap-2">
-              <BookOpen className="w-5 h-5 text-primary" /> Coping Guides {searchQuery && <span className="text-xs text-muted-foreground font-body">({filteredGuides.length} results)</span>}
-            </h2>
-            <div className="grid gap-3 md:grid-cols-2">
-              {filteredGuides.map((g, i) => {
-                const realIdx = copingGuides.indexOf(g);
-                return (
-                  <motion.div key={realIdx} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}>
-                    <button
-                      onClick={() => setExpandedGuide(expandedGuide === realIdx ? null : realIdx)}
-                      className="w-full text-left glass-static rounded-2xl p-4 hover:ring-1 hover:ring-primary/20 transition-all"
-                    >
-                      <div className="flex items-start gap-3">
-                        <span className="text-2xl">{g.icon}</span>
-                        <div className="flex-1">
-                          <h3 className="font-display text-base text-foreground font-semibold">{g.title}</h3>
-                          <p className="text-xs text-muted-foreground font-body mt-0.5 line-clamp-2">{g.content.split('\n')[0]}</p>
-                        </div>
-                        {expandedGuide === realIdx ? <ChevronUp className="w-4 h-4 text-muted-foreground shrink-0" /> : <ChevronDown className="w-4 h-4 text-muted-foreground shrink-0" />}
-                      </div>
-                    </button>
-                    <AnimatePresence>
-                      {expandedGuide === realIdx && (
-                        <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                          <div className="glass-static rounded-2xl p-5 mt-2">
-                            <p className="text-sm text-foreground leading-relaxed font-body whitespace-pre-line mb-4">{g.content}</p>
-                            <div className="border-t border-border pt-3 mb-3">
-                              <p className="text-xs font-body font-medium text-muted-foreground mb-2">Quick Tips:</p>
-                              {g.tips.map((t, j) => (
-                                <p key={j} className="text-sm text-foreground font-body mb-1">• {t}</p>
-                              ))}
-                            </div>
-                            <div className="flex gap-2">
-                              <button onClick={() => navigate('/app/chat')} className="btn-secondary text-xs flex items-center gap-1">
-                                <Sparkles className="w-3 h-3" /> Talk to SERA about this
-                              </button>
-                              <button onClick={() => navigate('/app/wellness')} className="text-xs text-primary font-body hover:underline">
-                                Try wellness exercises →
-                              </button>
-                            </div>
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </motion.div>
-                );
-              })}
+      {/* ─── SERA AI Recommender ─── */}
+      <motion.section {...fadeUp} transition={{ duration: 0.4, delay: 0.1 }} className="mb-8">
+        <div className="relative rounded-2xl overflow-hidden border border-primary/15"
+          style={{ background: 'linear-gradient(135deg, hsl(var(--primary) / 0.05), hsl(var(--card)), hsl(var(--mint) / 0.05))' }}
+        >
+          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-primary/5 to-transparent rounded-bl-full" />
+          <div className="relative z-10 p-5">
+            <div className="flex items-center gap-2.5 mb-4">
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary/20 to-secondary/15 flex items-center justify-center">
+                <Sparkles className="w-4 h-4 text-primary" />
+              </div>
+              <div>
+                <p className="text-sm font-display font-semibold text-foreground">Ask SERA</p>
+                <p className="text-[11px] text-muted-foreground font-body">AI-powered wellness recommendations</p>
+              </div>
             </div>
-          </section>
-        )}
-
-        {/* SERA Resource Recommender */}
-        <section className="mb-8">
-          <h2 className="font-display text-xl text-foreground mb-4 font-semibold flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-primary" /> Ask SERA
-          </h2>
-          <div className="glass-static rounded-2xl p-5">
             <div className="flex gap-2">
               <input
                 value={aiQuery}
                 onChange={(e) => setAiQuery(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleAsk()}
                 placeholder="What are you struggling with right now?"
-                className="flex-1 bg-muted rounded-xl px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/30 font-body"
+                className="flex-1 bg-card/80 border border-border/40 rounded-xl px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 font-body"
               />
-              <button onClick={handleAsk} disabled={!aiQuery.trim() || loading} className="btn-primary disabled:opacity-40">
-                {loading ? '...' : 'Ask'}
+              <button onClick={handleAsk} disabled={!aiQuery.trim() || loading} className="btn-primary disabled:opacity-40 px-5">
+                {loading ? (
+                  <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                ) : 'Ask'}
               </button>
             </div>
             {aiResults.length > 0 && (
-              <div className="grid gap-3 mt-4 md:grid-cols-3">
+              <div className="grid gap-2.5 mt-4 md:grid-cols-3">
                 {aiResults.map((r: any, i: number) => (
-                  <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}
-                    className="glass-static rounded-xl p-4">
-                    <h4 className="font-display text-sm text-foreground font-semibold mb-1">{r.title}</h4>
+                  <motion.div key={i} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}
+                    className="bg-card/80 border border-border/30 rounded-xl p-4 hover:border-primary/15 transition-colors">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-base">{i === 0 ? '🎯' : i === 1 ? '💡' : '✨'}</span>
+                      <h4 className="font-display text-sm text-foreground font-semibold">{r.title}</h4>
+                    </div>
                     <p className="text-xs text-muted-foreground font-body leading-relaxed">{r.explanation}</p>
                     {r.action && (
                       <button
@@ -248,9 +221,9 @@ export default function Resources() {
                             toast.info(r.action);
                           }
                         }}
-                        className="text-xs text-primary font-body mt-2 font-medium hover:underline block"
+                        className="text-xs text-primary font-body mt-2.5 font-medium hover:underline flex items-center gap-1"
                       >
-                        → {r.action}
+                        {r.action} <ArrowRight className="w-3 h-3" />
                       </button>
                     )}
                   </motion.div>
@@ -258,49 +231,132 @@ export default function Resources() {
               </div>
             )}
           </div>
-        </section>
+        </div>
+      </motion.section>
 
-        {/* Wellness Articles */}
-        {filteredArticles.length > 0 && (
-          <section className="mb-8">
-            <h2 className="font-display text-xl text-foreground mb-4 font-semibold flex items-center gap-2">
-              <Heart className="w-5 h-5 text-primary" /> Wellness Articles {searchQuery && <span className="text-xs text-muted-foreground font-body">({filteredArticles.length} results)</span>}
-            </h2>
-            <div className="grid gap-3 md:grid-cols-2">
-              {filteredArticles.map((a, i) => {
-                const realIdx = articles.indexOf(a);
-                return (
-                  <div key={realIdx} className="glass-static rounded-2xl p-5">
-                    <h3 className="font-display text-base text-foreground font-semibold mb-1">{a.title}</h3>
-                    <p className="text-[10px] text-muted-foreground font-body mb-2">{a.author} · {a.readTime}</p>
-                    <p className="text-sm text-muted-foreground font-body leading-relaxed">{a.preview}</p>
-                    <button
-                      onClick={() => setExpandedArticle(expandedArticle === realIdx ? null : realIdx)}
-                      className="mt-2 text-xs text-primary font-body font-medium hover:underline"
-                    >
-                      {expandedArticle === realIdx ? 'Show less' : 'Read more →'}
-                    </button>
-                    <AnimatePresence>
-                      {expandedArticle === realIdx && (
-                        <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                          <p className="text-sm text-foreground leading-relaxed font-body mt-3 whitespace-pre-line">{a.content}</p>
-                          <div className="flex gap-2 mt-3">
-                            <button onClick={() => navigate('/app/journal')} className="text-xs text-primary font-body hover:underline">
-                              Write about this in journal →
+      {/* ─── Coping Guides ─── */}
+      {filteredGuides.length > 0 && (
+        <motion.section {...fadeUp} transition={{ duration: 0.4, delay: 0.15 }} className="mb-8">
+          <div className="flex items-center gap-2.5 mb-4">
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-primary/15 to-secondary/10 flex items-center justify-center">
+              <BookOpen className="w-3.5 h-3.5 text-primary" />
+            </div>
+            <h2 className="font-display text-lg text-foreground font-semibold">Coping Guides</h2>
+            {searchQuery && <span className="text-xs text-muted-foreground font-body bg-muted/50 px-2 py-0.5 rounded-md">{filteredGuides.length} results</span>}
+          </div>
+          <div className="grid gap-3 md:grid-cols-2">
+            {filteredGuides.map((g, i) => {
+              const realIdx = copingGuides.indexOf(g);
+              const isOpen = expandedGuide === realIdx;
+              return (
+                <motion.div key={realIdx} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}>
+                  <button
+                    onClick={() => setExpandedGuide(isOpen ? null : realIdx)}
+                    className={`w-full text-left bg-card/90 backdrop-blur-sm border rounded-2xl p-4 transition-all ${isOpen ? 'border-primary/20 shadow-md' : 'border-border/40 hover:border-primary/15'}`}
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/10 to-secondary/5 flex items-center justify-center shrink-0">
+                        <span className="text-xl">{g.icon}</span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-display text-sm text-foreground font-semibold">{g.title}</h3>
+                        <p className="text-[11px] text-muted-foreground font-body mt-0.5 line-clamp-2 leading-relaxed">{g.content.split('\n')[0]}</p>
+                      </div>
+                      <motion.div animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
+                        <ChevronDown className="w-4 h-4 text-muted-foreground shrink-0" />
+                      </motion.div>
+                    </div>
+                  </button>
+                  <AnimatePresence>
+                    {isOpen && (
+                      <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25 }} className="overflow-hidden">
+                        <div className="bg-card/80 border border-border/30 border-t-0 rounded-b-2xl p-5 -mt-2 pt-6">
+                          <p className="text-sm text-foreground leading-relaxed font-body whitespace-pre-line mb-4">{g.content}</p>
+                          <div className="border-t border-border/30 pt-3 mb-4">
+                            <p className="text-[11px] font-body font-semibold text-muted-foreground uppercase tracking-wider mb-2.5">Quick Tips</p>
+                            <div className="space-y-2">
+                              {g.tips.map((t, j) => (
+                                <div key={j} className="flex items-start gap-2">
+                                  <span className="text-primary text-xs mt-0.5">●</span>
+                                  <p className="text-sm text-foreground font-body leading-relaxed">{t}</p>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                          <div className="flex gap-2">
+                            <button onClick={() => navigate('/app/chat')} className="btn-primary text-xs py-2 px-4 flex items-center gap-1.5">
+                              <Sparkles className="w-3 h-3" /> Talk to SERA
                             </button>
-                            <button onClick={() => { navigator.clipboard.writeText(a.content); toast.success('Article copied!'); }} className="text-xs text-muted-foreground font-body hover:underline">
+                            <button onClick={() => navigate('/app/wellness')} className="text-xs text-primary font-body font-medium hover:underline flex items-center gap-1">
+                              Wellness exercises <ArrowRight className="w-3 h-3" />
+                            </button>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              );
+            })}
+          </div>
+        </motion.section>
+      )}
+
+      {/* ─── Wellness Articles ─── */}
+      {filteredArticles.length > 0 && (
+        <motion.section {...fadeUp} transition={{ duration: 0.4, delay: 0.2 }} className="mb-8">
+          <div className="flex items-center gap-2.5 mb-4">
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-secondary/15 to-mint/10 flex items-center justify-center">
+              <Heart className="w-3.5 h-3.5 text-secondary" />
+            </div>
+            <h2 className="font-display text-lg text-foreground font-semibold">Wellness Articles</h2>
+            {searchQuery && <span className="text-xs text-muted-foreground font-body bg-muted/50 px-2 py-0.5 rounded-md">{filteredArticles.length} results</span>}
+          </div>
+          <div className="grid gap-3 md:grid-cols-2">
+            {filteredArticles.map((a, i) => {
+              const realIdx = articles.indexOf(a);
+              const isOpen = expandedArticle === realIdx;
+              return (
+                <motion.div key={realIdx} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}
+                  className={`bg-card/90 backdrop-blur-sm border rounded-2xl overflow-hidden transition-all ${isOpen ? 'border-secondary/20 shadow-md' : 'border-border/40 hover:border-secondary/15'}`}
+                >
+                  <div className="p-5">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Clock className="w-3 h-3 text-muted-foreground" />
+                      <span className="text-[10px] text-muted-foreground font-body">{a.readTime} read</span>
+                    </div>
+                    <h3 className="font-display text-sm text-foreground font-semibold mb-1.5 leading-snug">{a.title}</h3>
+                    <p className="text-xs text-muted-foreground font-body leading-relaxed">{a.preview}</p>
+                    <button
+                      onClick={() => setExpandedArticle(isOpen ? null : realIdx)}
+                      className="mt-3 text-xs text-primary font-body font-medium hover:underline flex items-center gap-1"
+                    >
+                      {isOpen ? 'Show less' : <>Read more <ArrowRight className="w-3 h-3" /></>}
+                    </button>
+                  </div>
+                  <AnimatePresence>
+                    {isOpen && (
+                      <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25 }} className="overflow-hidden">
+                        <div className="px-5 pb-5 border-t border-border/20 pt-4">
+                          <p className="text-sm text-foreground leading-relaxed font-body whitespace-pre-line">{a.content}</p>
+                          <div className="flex gap-3 mt-4 pt-3 border-t border-border/20">
+                            <button onClick={() => navigate('/app/journal')} className="text-xs text-primary font-body font-medium hover:underline flex items-center gap-1">
+                              Write about this <ArrowRight className="w-3 h-3" />
+                            </button>
+                            <button onClick={() => { navigator.clipboard.writeText(a.content); toast.success('Article copied!'); }} className="text-xs text-muted-foreground font-body hover:text-foreground transition-colors">
                               Copy article
                             </button>
                           </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                );
-              })}
-            </div>
-          </section>
-        )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              );
+            })}
+          </div>
+        </motion.section>
+      )}
     </div>
   );
 }
