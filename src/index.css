@@ -76,17 +76,63 @@
 }
 
 @layer utilities {
+  /* Smooth global transitions */
+  * {
+    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  
+  a, button, [role="button"], input, select, textarea {
+    transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* Hover scale utility */
+  .hover-scale {
+    transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .hover-scale:hover {
+    transform: scale(1.04);
+  }
+
+  /* Staggered children animation */
+  .stagger-children > * {
+    opacity: 0;
+    animation: fade-in 0.4s ease-out forwards;
+  }
+  .stagger-children > *:nth-child(1) { animation-delay: 0.05s; }
+  .stagger-children > *:nth-child(2) { animation-delay: 0.1s; }
+  .stagger-children > *:nth-child(3) { animation-delay: 0.15s; }
+  .stagger-children > *:nth-child(4) { animation-delay: 0.2s; }
+  .stagger-children > *:nth-child(5) { animation-delay: 0.25s; }
+  .stagger-children > *:nth-child(6) { animation-delay: 0.3s; }
+  .stagger-children > *:nth-child(7) { animation-delay: 0.35s; }
+  .stagger-children > *:nth-child(8) { animation-delay: 0.4s; }
+
+  /* Link underline animation */
+  .story-link {
+    @apply relative inline-block;
+  }
+  .story-link::after {
+    content: '';
+    @apply absolute w-full h-0.5 bottom-0 left-0 bg-primary origin-bottom-right;
+    transform: scaleX(0);
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .story-link:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+  }
+
   .glass {
     background: hsl(0 0% 100% / 0.75);
     backdrop-filter: blur(20px);
     border: 1px solid hsl(var(--border) / 0.6);
     box-shadow: 0 4px 30px hsl(220 40% 85% / 0.2);
     border-radius: 20px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1);
   }
   .glass:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 40px hsl(220 40% 82% / 0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px hsl(220 40% 82% / 0.3);
   }
   .glass-strong {
     background: hsl(0 0% 100% / 0.92);
@@ -94,6 +140,11 @@
     border: 1px solid hsl(var(--border) / 0.5);
     box-shadow: 0 8px 40px hsl(220 40% 85% / 0.18);
     border-radius: 20px;
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .glass-strong:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 48px hsl(220 40% 82% / 0.25);
   }
   .glass-static {
     background: hsl(0 0% 100% / 0.8);
@@ -101,6 +152,12 @@
     border: 1px solid hsl(var(--border) / 0.5);
     box-shadow: 0 2px 20px hsl(220 40% 88% / 0.2);
     border-radius: 20px;
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s ease;
+  }
+  .glass-static:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px hsl(220 40% 85% / 0.25);
+    border-color: hsl(var(--primary) / 0.2);
   }
   .neu {
     background: hsl(0 0% 100%);
