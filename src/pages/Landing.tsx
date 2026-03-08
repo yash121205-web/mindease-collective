@@ -235,7 +235,7 @@ export default function Landing() {
       <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         {/* EHS Card */}
         <motion.div {...fadeUp(0.2)} className="glass-static rounded-3xl p-6 md:col-span-2 lg:col-span-1 flex flex-col items-center justify-center">
-          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3 font-body">Emotional Health Score</p>
+          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3 font-display">Emotional Health Score</p>
           <div className="relative w-32 h-32 mb-3">
             <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
               <circle cx="50" cy="50" r="42" fill="none" stroke="hsl(var(--muted))" strokeWidth="8" />
