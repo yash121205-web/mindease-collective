@@ -7,7 +7,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AnimatePresence } from 'framer-motion';
 import AppLayout from "@/components/layout/AppLayout";
 import SplashScreen from "@/components/SplashScreen";
-import AppleEmojiProvider from "@/components/AppleEmojiProvider";
+import { useAppleEmoji } from "@/components/AppleEmojiProvider";
 
 // Lazy-loaded pages for faster initial load
 const Home = lazy(() => import("./pages/Home"));
@@ -48,11 +48,45 @@ function PageLoader() {
   );
 }
 
+// Inner component that uses router-dependent hooks
+function AppRoutes() {
+  useAppleEmoji();
+
+  return (
+    <Suspense fallback={<PageLoader />}>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/dashboard" element={<AuthGuard><AppLayout><Landing /></AppLayout></AuthGuard>} />
+        <Route element={<AuthGuard><AppLayout /></AuthGuard>}>
+          <Route path="/app/chat" element={<Chat />} />
+          <Route path="/app/mood" element={<Mood />} />
+          <Route path="/app/journal" element={<Journal />} />
+          <Route path="/app/wellness" element={<Wellness />} />
+          <Route path="/app/insights" element={<Insights />} />
+          <Route path="/app/resources" element={<Resources />} />
+          <Route path="/app/progress" element={<Progress />} />
+          <Route path="/app/games" element={<Games />} />
+          <Route path="/app/community" element={<PopulationInsights />} />
+          <Route path="/app/sleep" element={<Sleep />} />
+          <Route path="/app/diet" element={<Diet />} />
+          <Route path="/app/meditation" element={<Meditation />} />
+          <Route path="/app/gratitude" element={<GratitudeWall />} />
+          <Route path="/app/soundscapes" element={<Soundscapes />} />
+          <Route path="/app/affirmations" element={<Affirmations />} />
+          <Route path="/app/challenges" element={<DailyChallenges />} />
+          <Route path="/app/settings" element={<SettingsPage />} />
+        </Route>
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Suspense>
+  );
+}
+
 const App = () => {
   const [showSplash, setShowSplash] = useState(() => !sessionStorage.getItem('mindease_splash_shown'));
 
   return (
-    <AppleEmojiProvider>
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
@@ -67,38 +101,11 @@ const App = () => {
         </AnimatePresence>
         {!showSplash && (
           <BrowserRouter>
-            <Suspense fallback={<PageLoader />}>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/dashboard" element={<AuthGuard><AppLayout><Landing /></AppLayout></AuthGuard>} />
-                <Route element={<AuthGuard><AppLayout /></AuthGuard>}>
-                  <Route path="/app/chat" element={<Chat />} />
-                  <Route path="/app/mood" element={<Mood />} />
-                  <Route path="/app/journal" element={<Journal />} />
-                  <Route path="/app/wellness" element={<Wellness />} />
-                  <Route path="/app/insights" element={<Insights />} />
-                  <Route path="/app/resources" element={<Resources />} />
-                  <Route path="/app/progress" element={<Progress />} />
-                  <Route path="/app/games" element={<Games />} />
-                  <Route path="/app/community" element={<PopulationInsights />} />
-                  <Route path="/app/sleep" element={<Sleep />} />
-                  <Route path="/app/diet" element={<Diet />} />
-                  <Route path="/app/meditation" element={<Meditation />} />
-                  <Route path="/app/gratitude" element={<GratitudeWall />} />
-                  <Route path="/app/soundscapes" element={<Soundscapes />} />
-                  <Route path="/app/affirmations" element={<Affirmations />} />
-                  <Route path="/app/challenges" element={<DailyChallenges />} />
-                  <Route path="/app/settings" element={<SettingsPage />} />
-                </Route>
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </Suspense>
+            <AppRoutes />
           </BrowserRouter>
         )}
       </TooltipProvider>
     </QueryClientProvider>
-    </AppleEmojiProvider>
   );
 };
 

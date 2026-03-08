@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const EMOJI_REGEX = /(\p{Emoji_Presentation}|\p{Extended_Pictographic})/gu;
 
@@ -55,51 +56,45 @@ function processNode(node: Node) {
     replaceEmojisInNode(node as Text);
     return;
   }
-  const el = node as Element;
+  const el = node as HTMLElement;
   if (!el.tagName || el.tagName === 'SCRIPT' || el.tagName === 'STYLE' || el.tagName === 'IMG') return;
-  if ((el as HTMLElement).dataset?.ae === '1') return;
+  if (el.dataset?.ae === '1') return;
   const children = Array.from(node.childNodes);
   for (let i = 0; i < children.length; i++) {
     processNode(children[i]);
   }
 }
 
-export default function AppleEmojiProvider({ children }: { children: React.ReactNode }) {
+function processRoot() {
+  const root = document.getElementById('root');
+  if (root) processNode(root);
+}
+
+export function useAppleEmoji() {
+  const location = useLocation();
+
+  const run = useCallback(() => {
+    // Run after React finishes rendering
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => processRoot());
+    });
+  }, []);
+
+  // Process on route change
+  useEffect(() => { run(); }, [location.pathname, run]);
+
+  // Light observer: only watches direct children additions (not deep subtree churn)
   useEffect(() => {
     const root = document.getElementById('root');
     if (!root) return;
 
-    // Initial pass
-    requestIdleCallback(() => processNode(root));
-
-    let pending = false;
-    const queue: Node[] = [];
-
-    function flush() {
-      pending = false;
-      const nodes = queue.splice(0, queue.length);
-      for (const n of nodes) processNode(n);
-    }
-
-    const observer = new MutationObserver((mutations) => {
-      for (const m of mutations) {
-        for (let i = 0; i < m.addedNodes.length; i++) {
-          const n = m.addedNodes[i];
-          // Skip our own img insertions
-          if ((n as Element).classList?.contains('apple-emoji')) continue;
-          queue.push(n);
-        }
-      }
-      if (queue.length > 0 && !pending) {
-        pending = true;
-        requestAnimationFrame(flush);
-      }
+    let timer: ReturnType<typeof setTimeout>;
+    const observer = new MutationObserver(() => {
+      clearTimeout(timer);
+      timer = setTimeout(() => processRoot(), 300);
     });
 
     observer.observe(root, { childList: true, subtree: true });
-
-    return () => observer.disconnect();
+    return () => { observer.disconnect(); clearTimeout(timer); };
   }, []);
-
-  return <>{children}</>;
 }
