@@ -73,7 +73,7 @@ function ChatBubbleCard() {
     <motion.div className="bg-white rounded-2xl p-5 w-64 shadow-lg border border-border" animate={{ y: [0, -10, 0] }} transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}>
       <div className="space-y-3">
         <div className="flex justify-end">
-          <div className="text-white text-xs rounded-2xl rounded-tr-sm px-3 py-2 max-w-[80%] font-body" style={{ background: 'linear-gradient(135deg, hsl(330,100%,85%), hsl(197,88%,66%))' }}>
+          <div className="text-white text-xs rounded-2xl rounded-tr-sm px-3 py-2 max-w-[80%] font-body" style={{ background: 'linear-gradient(135deg, hsl(207,90%,72%), hsl(260,60%,78%))' }}>
             I'm feeling anxious today
           </div>
         </div>
@@ -298,9 +298,9 @@ export default function Login() {
             <motion.div {...stagger(5)}>
               <button type="button" onClick={handleSubmit} disabled={!isValid() || loading}
                 className={`w-full py-3.5 rounded-2xl text-sm font-body font-semibold transition-all flex items-center justify-center gap-2 ${
-                  isValid() && !loading ? 'text-white cursor-pointer shadow-[0_4px_20px_hsl(330_80%_85%/0.4)] hover:shadow-[0_6px_28px_hsl(330_80%_82%/0.5)] hover:scale-[1.02]' : 'bg-muted text-muted-foreground cursor-not-allowed'
+                  isValid() && !loading ? 'text-white cursor-pointer shadow-[0_4px_20px_hsl(207_80%_75%/0.4)] hover:shadow-[0_6px_28px_hsl(207_80%_72%/0.5)] hover:scale-[1.02]' : 'bg-muted text-muted-foreground cursor-not-allowed'
                 }`}
-                style={isValid() && !loading ? { background: 'linear-gradient(135deg, hsl(330,100%,85%), hsl(197,88%,66%))' } : undefined}
+                style={isValid() && !loading ? { background: 'linear-gradient(135deg, hsl(207,90%,72%), hsl(260,60%,78%))' } : undefined}
               >
                 {loading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <>Enter MindEase ✨</>}
               </button>

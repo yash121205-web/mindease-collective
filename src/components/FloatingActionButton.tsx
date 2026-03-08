@@ -32,7 +32,7 @@ export default function FloatingActionButton() {
       </AnimatePresence>
       <button onClick={() => setOpen(!open)}
         className="w-14 h-14 rounded-full flex items-center justify-center text-white shadow-lg transition-all hover:scale-[1.02]"
-        style={{ background: 'linear-gradient(135deg, hsl(330,100%,85%), hsl(197,88%,66%))' }}>
+        style={{ background: 'linear-gradient(135deg, hsl(207,90%,72%), hsl(260,60%,78%))' }}>
         {open ? <X className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
       </button>
     </div>

@@ -50,7 +50,7 @@ export default function AppSidebar({ open, onClose }: { open: boolean; onClose: 
       <motion.aside className={`fixed lg:sticky top-0 left-0 h-screen z-50 w-64 flex flex-col border-r border-border bg-sidebar transition-transform lg:translate-x-0 ${open ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="p-5 border-b border-border">
           <Link to="/dashboard" className="flex items-center gap-2" onClick={onClose}>
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, hsl(330,100%,85%), hsl(197,88%,66%))' }}>
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, hsl(207,90%,72%), hsl(260,60%,78%))' }}>
               <Leaf className="w-5 h-5 text-white" />
             </div>
             <div>
@@ -76,7 +76,7 @@ export default function AppSidebar({ open, onClose }: { open: boolean; onClose: 
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium font-body transition-all ${
                   active ? 'text-white shadow-md' : 'text-muted-foreground hover:bg-sidebar-accent hover:text-foreground'
                 }`}
-                style={active ? { background: 'linear-gradient(135deg, hsl(330,100%,85%), hsl(197,88%,66%))' } : {}}
+                style={active ? { background: 'linear-gradient(135deg, hsl(207,90%,72%), hsl(260,60%,78%))' } : {}}
               >
                 <item.icon className="w-4 h-4" />
                 <span>{item.label}</span>

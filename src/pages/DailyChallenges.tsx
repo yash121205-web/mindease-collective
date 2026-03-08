@@ -205,7 +205,7 @@ export default function DailyChallenges() {
               <p className="text-sm text-muted-foreground font-body mt-2">{showBadgeUnlock.description}</p>
               <button onClick={() => setShowBadgeUnlock(null)}
                 className="mt-6 px-6 py-2.5 rounded-2xl text-sm font-body font-medium text-primary-foreground"
-                style={{ background: 'linear-gradient(135deg, hsl(330,100%,85%), hsl(197,88%,66%))' }}>
+                style={{ background: 'linear-gradient(135deg, hsl(207,90%,72%), hsl(260,60%,78%))' }}>
                 Awesome!
               </button>
             </motion.div>
@@ -249,7 +249,7 @@ export default function DailyChallenges() {
           )}
         </div>
         <div className="h-2 rounded-full bg-muted overflow-hidden">
-          <motion.div className="h-full rounded-full" style={{ background: 'linear-gradient(90deg, hsl(330,100%,85%), hsl(197,88%,66%))' }}
+          <motion.div className="h-full rounded-full" style={{ background: 'linear-gradient(90deg, hsl(207,90%,72%), hsl(260,60%,78%))' }}
             initial={{ width: 0 }} animate={{ width: `${Math.min(streakProgress, 100)}%` }}
             transition={{ duration: 1, ease: 'easeOut' }} />
         </div>
@@ -270,7 +270,7 @@ export default function DailyChallenges() {
                 <div className="flex items-start gap-3">
                   <button onClick={() => completeChallenge(c.id)} disabled={done}
                     className={`mt-0.5 w-7 h-7 rounded-full flex items-center justify-center shrink-0 transition-all ${done ? '' : 'border-2 border-muted-foreground/30 hover:border-primary hover:bg-primary/5'}`}
-                    style={done ? { background: 'linear-gradient(135deg, hsl(330,100%,85%), hsl(197,88%,66%))' } : {}}>
+                    style={done ? { background: 'linear-gradient(135deg, hsl(207,90%,72%), hsl(260,60%,78%))' } : {}}>
                     {done && (
                       <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 400, damping: 10 }}>
                         <CheckCircle2 className="w-4 h-4 text-white" />

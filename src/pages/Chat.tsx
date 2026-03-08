@@ -295,7 +295,7 @@ export default function Chat() {
                   ? 'text-primary-foreground rounded-br-md'
                   : 'glass-static rounded-bl-md border-l-2 border-primary/30'
               }`}
-                style={msg.role === 'user' ? { background: 'linear-gradient(135deg, hsl(330,100%,85%), hsl(197,88%,66%))' } : {}}>
+                style={msg.role === 'user' ? { background: 'linear-gradient(135deg, hsl(207,90%,72%), hsl(260,60%,78%))' } : {}}>
                 {msg.content}
               </div>
               <div className="flex items-center gap-2 mt-1 px-1">
@@ -381,7 +381,7 @@ export default function Chat() {
               className="flex-1 resize-none bg-muted rounded-2xl px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all font-body" />
             <button onClick={() => sendMessage(input)} disabled={!input.trim() || loading}
               className="w-11 h-11 rounded-2xl flex items-center justify-center disabled:opacity-40 transition-all shrink-0 text-white hover:scale-[1.02]"
-              style={{ background: 'linear-gradient(135deg, hsl(330,100%,85%), hsl(197,88%,66%))' }}>
+              style={{ background: 'linear-gradient(135deg, hsl(207,90%,72%), hsl(260,60%,78%))' }}>
               <Send className="w-4 h-4" />
             </button>
           </div>

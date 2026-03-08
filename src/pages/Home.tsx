@@ -131,7 +131,7 @@ const features = [
   {
     icon: Smile, title: 'Smart Mood Tracker',
     desc: 'Log emotions with quick emoji check-ins. Track patterns over time and discover what lifts your spirits or triggers stress.',
-    gradient: 'from-mint/12 to-secondary/4', iconBg: 'bg-mint/20', iconColor: 'text-secondary',
+    gradient: 'from-mint/12 to-secondary/4', iconBg: 'bg-mint/20', iconColor: 'text-foreground',
   },
   {
     icon: BookOpen, title: 'AI Journaling Assistant',
@@ -141,15 +141,15 @@ const features = [
   {
     icon: Wind, title: 'Guided Wellness Exercises',
     desc: 'Box breathing, body scans, desk yoga — hand-picked exercises to reduce stress in under 10 minutes.',
-    gradient: 'from-rose-soft/10 to-mint/5', iconBg: 'bg-rose-soft/20', iconColor: 'text-foreground',
+    gradient: 'from-sky-soft/15 to-mint/5', iconBg: 'bg-sky-soft/25', iconColor: 'text-foreground',
   },
 ];
 
 const quickActions = [
   { icon: MessageCircle, label: 'Talk to SERA', path: '/app/chat', color: 'from-primary to-primary/80' },
-  { icon: Smile, label: 'Log Mood', path: '/app/mood', color: 'from-mint to-mint/80' },
-  { icon: PenLine, label: 'Write Journal', path: '/app/journal', color: 'from-secondary to-secondary/80' },
-  { icon: Wind, label: 'Start Breathing', path: '/app/wellness', color: 'from-rose-soft to-rose-soft/80' },
+  { icon: Smile, label: 'Log Mood', path: '/app/mood', color: 'from-secondary to-secondary/80' },
+  { icon: PenLine, label: 'Write Journal', path: '/app/journal', color: 'from-mint to-mint/80' },
+  { icon: Wind, label: 'Start Breathing', path: '/app/wellness', color: 'from-sky-soft to-primary/60' },
 ];
 
 const benefits = [
@@ -167,9 +167,9 @@ const chatMessages = [
 ];
 
 const insightCards = [
-  { title: 'Journaling Impact', text: 'Your mood improves by 23% on days you journal. Consider a quick reflection before bed tonight.', color: 'from-primary/10 to-mint/8' },
-  { title: 'Stress Pattern', text: 'Your stress peaks on Tuesdays and Wednesdays — try a 5-minute breathing session before your first class.', color: 'from-mint/10 to-secondary/8' },
-  { title: 'Sleep Connection', text: 'On nights you use the breathing tool, your next-day mood averages 15% higher. Great habit to keep!', color: 'from-secondary/10 to-primary/8' },
+  { title: 'Journaling Impact', text: 'Your mood improves by 23% on days you journal. Consider a quick reflection before bed tonight.', color: 'from-primary/10 to-secondary/8' },
+  { title: 'Stress Pattern', text: 'Your stress peaks on Tuesdays and Wednesdays — try a 5-minute breathing session before your first class.', color: 'from-mint/10 to-primary/8' },
+  { title: 'Sleep Connection', text: 'On nights you use the breathing tool, your next-day mood averages 15% higher. Great habit to keep!', color: 'from-secondary/10 to-mint/8' },
 ];
 
 const progressStats = [
@@ -240,7 +240,7 @@ export default function Home() {
           <button type="button" onClick={() => handleNavClick('home')} className="flex items-center gap-3 text-left">
             <motion.div
               whileHover={{ rotate: 10 }}
-              className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-mint flex items-center justify-center shadow-md"
+              className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-md"
             >
               <Leaf className="w-5 h-5 text-primary-foreground" />
             </motion.div>
@@ -310,7 +310,7 @@ export default function Home() {
             </motion.div>
             <motion.h1 {...fadeUp(0.1)} className="font-display text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-foreground leading-[1.1] mb-6">
               Your AI Companion for{' '}
-              <span className="bg-gradient-to-r from-primary via-indigo to-mint bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-primary via-secondary to-mint bg-clip-text text-transparent">
                 Mental Wellness
               </span>
             </motion.h1>
@@ -338,7 +338,8 @@ export default function Home() {
             <div className="relative w-full max-w-lg mx-auto">
               {/* Glow orbs */}
               <div className="absolute -top-16 -right-16 w-64 h-64 bg-primary/10 rounded-full blur-3xl" />
-              <div className="absolute -bottom-12 -left-12 w-52 h-52 bg-mint/10 rounded-full blur-3xl" />
+              <div className="absolute -bottom-12 -left-12 w-52 h-52 bg-secondary/10 rounded-full blur-3xl" />
+              <div className="absolute top-1/3 left-1/4 w-40 h-40 bg-mint/8 rounded-full blur-3xl" />
 
               {/* Main hero card */}
               <motion.div
@@ -347,14 +348,36 @@ export default function Home() {
                 className="neu p-8 md:p-10 relative overflow-hidden"
               >
                 <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl from-primary/12 to-transparent rounded-bl-full" />
-                <div className="absolute bottom-0 left-0 w-36 h-36 bg-gradient-to-tr from-mint/12 to-transparent rounded-tr-full" />
+                <div className="absolute bottom-0 left-0 w-36 h-36 bg-gradient-to-tr from-secondary/12 to-transparent rounded-tr-full" />
                 <div className="flex flex-col items-center text-center relative z-10">
+                  {/* Meditation Illustration */}
                   <motion.div
                     animate={{ y: [0, -10, 0] }}
                     transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
-                    className="w-32 h-32 rounded-3xl bg-gradient-to-br from-primary/20 to-mint/20 flex items-center justify-center mb-6 shadow-lg border border-primary/10"
+                    className="w-36 h-36 mb-6 relative"
                   >
-                    <Brain className="w-16 h-16 text-primary" />
+                    <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+                      {/* Outer glow rings */}
+                      <circle cx="100" cy="100" r="90" fill="hsl(207 90% 72% / 0.06)" />
+                      <circle cx="100" cy="100" r="70" fill="hsl(260 60% 78% / 0.08)" />
+                      <circle cx="100" cy="100" r="50" fill="hsl(156 60% 76% / 0.1)" />
+                      {/* Person meditating */}
+                      <circle cx="100" cy="65" r="16" fill="hsl(207 90% 72% / 0.3)" stroke="hsl(207 90% 72%)" strokeWidth="2" />
+                      {/* Body */}
+                      <path d="M75 105 Q80 85 100 82 Q120 85 125 105" stroke="hsl(207 90% 72%)" strokeWidth="2.5" fill="hsl(207 90% 72% / 0.15)" strokeLinecap="round" />
+                      {/* Crossed legs */}
+                      <path d="M72 108 Q85 118 100 115 Q115 118 128 108" stroke="hsl(260 60% 78%)" strokeWidth="2.5" fill="hsl(260 60% 78% / 0.12)" strokeLinecap="round" />
+                      {/* Arms raised */}
+                      <path d="M78 95 Q65 80 58 75" stroke="hsl(207 90% 72%)" strokeWidth="2" fill="none" strokeLinecap="round" />
+                      <path d="M122 95 Q135 80 142 75" stroke="hsl(207 90% 72%)" strokeWidth="2" fill="none" strokeLinecap="round" />
+                      {/* Energy dots */}
+                      <circle cx="55" cy="72" r="3" fill="hsl(156 60% 76%)" opacity="0.7" />
+                      <circle cx="145" cy="72" r="3" fill="hsl(156 60% 76%)" opacity="0.7" />
+                      <circle cx="100" cy="42" r="3.5" fill="hsl(260 60% 78%)" opacity="0.6" />
+                      {/* Lotus base */}
+                      <path d="M70 120 Q85 130 100 128 Q115 130 130 120" stroke="hsl(156 60% 76%)" strokeWidth="1.5" fill="hsl(156 60% 76% / 0.1)" strokeLinecap="round" />
+                      <path d="M78 125 Q90 135 100 133 Q110 135 122 125" stroke="hsl(156 60% 76%)" strokeWidth="1.5" fill="hsl(156 60% 76% / 0.08)" strokeLinecap="round" />
+                    </svg>
                   </motion.div>
                   <p className="font-display text-2xl md:text-3xl font-bold text-foreground mb-2">Calm & Clarity</p>
                   <p className="text-sm text-muted-foreground mb-4">Your wellness journey starts here</p>
@@ -493,7 +516,7 @@ export default function Home() {
           <motion.div {...stagger(3)} className="neu p-7 bg-gradient-to-br from-primary/6 to-mint/6">
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest mb-4">SERA's Insight</p>
             <div className="flex items-start gap-3">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-mint flex items-center justify-center flex-shrink-0">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center flex-shrink-0">
                 <Leaf className="w-4 h-4 text-primary-foreground" />
               </div>
               <div>
@@ -689,7 +712,7 @@ export default function Home() {
           {/* Chat mockup */}
           <motion.div {...fadeUp(0.2)} className="neu p-6 max-w-md mx-auto w-full">
             <div className="flex items-center gap-3 mb-5 pb-4 border-b border-border">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-mint flex items-center justify-center shadow-md">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-md">
                 <Leaf className="w-5 h-5 text-primary-foreground" />
               </div>
               <div>
@@ -771,7 +794,7 @@ export default function Home() {
               <div className="absolute top-3 right-3">
                 <Sparkles className="w-4 h-4 text-primary/30" />
               </div>
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-mint flex items-center justify-center mb-4 shadow-sm">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center mb-4 shadow-sm">
                 <Brain className="w-5 h-5 text-primary-foreground" />
               </div>
               <h3 className="font-display text-lg font-semibold text-foreground mb-2">{card.title}</h3>
@@ -931,12 +954,12 @@ export default function Home() {
       <Section id="about">
         <motion.div
           {...fadeUp()}
-          className="neu p-12 md:p-20 text-center bg-gradient-to-br from-primary/8 to-mint/8 relative overflow-hidden"
+          className="neu p-12 md:p-20 text-center bg-gradient-to-br from-primary/8 to-secondary/8 relative overflow-hidden"
         >
           <div className="absolute top-0 right-0 w-72 h-72 bg-gradient-to-bl from-primary/12 to-transparent rounded-bl-full" />
-          <div className="absolute bottom-0 left-0 w-56 h-56 bg-gradient-to-tr from-mint/12 to-transparent rounded-tr-full" />
+          <div className="absolute bottom-0 left-0 w-56 h-56 bg-gradient-to-tr from-secondary/12 to-transparent rounded-tr-full" />
           <div className="relative z-10">
-            <motion.div {...fadeUp(0.1)} className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-mint flex items-center justify-center mx-auto mb-8 shadow-lg">
+            <motion.div {...fadeUp(0.1)} className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center mx-auto mb-8 shadow-lg">
               <Heart className="w-8 h-8 text-primary-foreground" />
             </motion.div>
             <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-5">
@@ -968,7 +991,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-mint flex items-center justify-center shadow-sm">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-sm">
                 <Leaf className="w-4 h-4 text-primary-foreground" />
               </div>
               <div>
