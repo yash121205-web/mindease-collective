@@ -33,33 +33,18 @@ const container = {
 };
 
 const fadeSlide = {
-  initial: { opacity: 0, y: 28, filter: 'blur(8px)' },
-  animate: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } },
+  initial: { opacity: 0, y: 28 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } },
 };
 
 const scaleIn = {
-  initial: { opacity: 0, scale: 0.92, filter: 'blur(6px)' },
-  animate: { opacity: 1, scale: 1, filter: 'blur(0px)', transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } },
+  initial: { opacity: 0, scale: 0.92 },
+  animate: { opacity: 1, scale: 1, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } },
 };
 
-// Parallax floating orb component
-function FloatingOrb({ className, delay = 0 }: { className: string; delay?: number }) {
-  return (
-    <motion.div
-      className={className}
-      animate={{
-        y: [0, -12, 0, 8, 0],
-        x: [0, 6, 0, -6, 0],
-        scale: [1, 1.05, 1, 0.97, 1],
-      }}
-      transition={{
-        duration: 8 + delay * 2,
-        repeat: Infinity,
-        ease: 'easeInOut',
-        delay,
-      }}
-    />
-  );
+// Static decorative orb (no animation for performance)
+function FloatingOrb({ className }: { className: string; delay?: number }) {
+  return <div className={className} />;
 }
 
 // Animated counter for EHS
@@ -168,9 +153,9 @@ export default function Landing() {
             className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-foreground/20 backdrop-blur-md"
           >
             <motion.div
-              initial={{ scale: 0.85, opacity: 0, y: 30, filter: 'blur(10px)' }}
-              animate={{ scale: 1, opacity: 1, y: 0, filter: 'blur(0px)' }}
-              exit={{ scale: 0.85, opacity: 0, y: 20, filter: 'blur(10px)' }}
+              initial={{ scale: 0.85, opacity: 0, y: 30 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.85, opacity: 0, y: 20 }}
               transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
               className="glass-strong rounded-3xl p-8 max-w-md w-full text-center"
             >
@@ -404,9 +389,9 @@ export default function Landing() {
             <AnimatePresence mode="wait">
               <motion.p
                 key={affirmation}
-                initial={{ opacity: 0, y: 12, filter: 'blur(4px)' }}
-                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                exit={{ opacity: 0, y: -8, filter: 'blur(4px)' }}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.4 }}
                 className="font-display text-xl lg:text-2xl text-foreground italic leading-relaxed font-semibold tracking-wide relative z-10 pl-2"
               >
@@ -520,8 +505,8 @@ export default function Landing() {
 
         {/* ─── Explore Features ─── */}
         <motion.div
-          initial={{ opacity: 0, y: 30, filter: 'blur(6px)' }}
-          animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="mt-10"
         >
@@ -572,8 +557,8 @@ export default function Landing() {
         {/* ─── Weekly Mood Chart ─── */}
         {allMoods.length > 2 && (
           <motion.div
-            initial={{ opacity: 0, y: 30, filter: 'blur(6px)' }}
-            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.1, duration: 0.6 }}
             className="mt-10 rounded-3xl p-6 relative overflow-hidden border border-border/30"
             style={{ background: 'linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--primary) / 0.03) 100%)' }}
