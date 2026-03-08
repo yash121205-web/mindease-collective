@@ -419,7 +419,7 @@ export default function Chat() {
                     <div className="overflow-y-auto flex-1">
                       {filteredLangs.map(lang => (
                         <button key={lang.code}
-                          onClick={() => { setSelectedLang(lang.code); setShowLangPicker(false); setLangSearch(''); }}
+                          onClick={() => { setSelectedLang(lang.code); localStorage.setItem('mindease_lang', lang.code); setShowLangPicker(false); setLangSearch(''); }}
                           className={`w-full px-3 py-1.5 rounded-lg text-xs font-body text-left flex items-center gap-2 ${
                             selectedLang === lang.code ? 'bg-primary/10 text-primary font-medium' : 'text-foreground hover:bg-muted'
                           }`}>
