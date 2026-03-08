@@ -241,13 +241,14 @@ export default function Home() {
               </span>
             </motion.div>
             <motion.h1 {...fadeUp(0.08)} className="font-display text-4xl sm:text-5xl lg:text-6xl xl:text-[4.25rem] font-bold text-foreground leading-[1.08] mb-6">
-              Your AI Companion for{' '}
+              Your{' '}
               <span className="bg-gradient-to-r from-primary via-secondary to-mint bg-clip-text text-transparent">
-                Mental Wellness
-              </span>
+                AI-Powered
+              </span>{' '}
+              Mental Wellness Companion
             </motion.h1>
             <motion.p {...fadeUp(0.14)} className="text-muted-foreground text-lg md:text-xl leading-relaxed mb-10 max-w-xl">
-              Track emotions, reflect through journaling, and receive AI-powered emotional support — anytime, anywhere.
+              Meet SERA — an empathetic AI that tracks your emotions, guides you through exercises, and supports your mental health journey 24/7. Private. Free. Built for students.
             </motion.p>
             <motion.div {...fadeUp(0.2)} className="flex flex-wrap gap-4">
               <button onClick={() => navigate('/login')} className="btn-primary flex items-center gap-2.5 text-base px-8 py-3.5">
