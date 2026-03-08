@@ -8,7 +8,7 @@ import DecorativeBlobs from '../DecorativeBlobs';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const pageVariants = {
-  initial: { opacity: 0, y: 12 },
+  initial: { opacity: 0, y: 14 },
   animate: { opacity: 1, y: 0 },
   exit: { opacity: 0, y: -8 },
 };
@@ -28,7 +28,7 @@ export default function AppLayout({ children }: { children?: React.ReactNode }) 
         <StreakBanner />
 
         {/* Mobile header */}
-        <header className="lg:hidden sticky top-0 z-30 h-14 flex items-center px-4 border-b border-border/40 bg-background/80 backdrop-blur-xl gap-2">
+        <header className="lg:hidden sticky top-0 z-30 h-14 flex items-center px-4 border-b border-border/30 bg-background/80 backdrop-blur-xl gap-2">
           <button onClick={() => setSidebarOpen(true)} className="p-2 rounded-xl hover:bg-muted/50 transition-colors">
             <Menu className="w-5 h-5 text-foreground" />
           </button>
@@ -44,19 +44,21 @@ export default function AppLayout({ children }: { children?: React.ReactNode }) 
           </button>
 
           <div className="ml-1 flex items-center gap-1.5">
-            <Leaf className="w-4 h-4 text-primary" />
-            <span className="font-display text-foreground text-base font-semibold">MindEase AI</span>
+            <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+              <Leaf className="w-3.5 h-3.5 text-white" />
+            </div>
+            <span className="font-display text-foreground text-base font-semibold">MindEase</span>
           </div>
         </header>
 
         {/* Desktop back button */}
         {!isDashboard && (
           <div className="hidden lg:flex items-center gap-2 px-8 pt-4">
-            <button onClick={() => navigate(-1)} className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors font-body">
+            <button onClick={() => navigate(-1)} className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
               <ArrowLeft className="w-3.5 h-3.5" /> Back
             </button>
             <span className="text-xs text-border">·</span>
-            <button onClick={() => navigate('/dashboard')} className="text-xs text-muted-foreground hover:text-foreground transition-colors font-body">
+            <button onClick={() => navigate('/dashboard')} className="text-xs text-muted-foreground hover:text-foreground transition-colors">
               Home
             </button>
           </div>
@@ -71,7 +73,7 @@ export default function AppLayout({ children }: { children?: React.ReactNode }) 
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                 className="h-full"
               >
                 <Outlet />
