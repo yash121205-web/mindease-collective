@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { getMoods, getJournalEntries, getSessions, getHabits, getTodayHabits, calculateEHS, MOOD_MAP, getChatHistory } from '@/lib/storage';
 import { callAI } from '@/lib/ai';
 import { Activity, Sparkles, BarChart3, TrendingUp, Brain, Zap } from 'lucide-react';
+import PageHeader from '@/components/PageHeader';
 import {
   LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip,
   PieChart, Pie, Cell, BarChart, Bar,
