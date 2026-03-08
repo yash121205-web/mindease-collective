@@ -3,9 +3,9 @@ import {
   MessageCircle, Smile, BookOpen, Leaf, BarChart3, Library, Trophy, Settings, Flame, Shield, Gamepad2, Users, BedDouble, Apple, Timer, Heart, Headphones, Sparkles, Target, LogOut, Moon, Sun
 } from 'lucide-react';
 import { calculateStreak, getTodayMood, MOOD_MAP, logoutUser } from '@/lib/storage';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import logo from '@/assets/logo.png';
+import { useTheme } from '@/hooks/useTheme';
 
 const navSections = [
   {
