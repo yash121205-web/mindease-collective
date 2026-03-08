@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { getTodayMood, getSessions, saveSessions } from '@/lib/storage';
 import { callAI } from '@/lib/ai';
 import { Wind, Play, Pause, RotateCcw, Timer, Sparkles, ChevronDown, ChevronUp } from 'lucide-react';
+import PageHeader from '@/components/PageHeader';
 
 const exercises = [
   { title: 'Box Breathing', category: 'Breathwork', duration: '4 min', difficulty: 'Beginner',
