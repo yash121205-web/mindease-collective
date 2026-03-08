@@ -242,14 +242,14 @@ export default function Landing() {
         {showSummary && (
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-foreground/20 backdrop-blur-md overflow-y-auto"
+            className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-foreground/20 backdrop-blur-sm overflow-y-auto"
             onClick={() => setShowSummary(false)}
           >
             <motion.div
-              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              initial={{ scale: 0.92, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+              exit={{ scale: 0.92, opacity: 0, y: 16 }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
               className="w-full max-w-lg my-8" onClick={e => e.stopPropagation()}
             >
               <WellnessSummary onClose={() => setShowSummary(false)} />
