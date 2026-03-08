@@ -7,8 +7,8 @@ export default function StreakBanner() {
 
   return (
     <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
-      className="text-center py-1.5 text-xs font-medium"
-      style={{ background: 'linear-gradient(90deg, hsl(239 84% 74% / 0.08), hsl(160 84% 67% / 0.08), hsl(239 84% 74% / 0.08))' }}>
+      className="text-center py-1.5 text-xs font-body font-medium"
+      style={{ background: 'linear-gradient(90deg, hsl(207 90% 92% / 0.3), hsl(263 55% 92% / 0.3), hsl(156 55% 92% / 0.3))' }}>
       <span className="text-foreground">🔥 You're on a {streak}-day streak! Keep going.</span>
     </motion.div>
   );

@@ -7,7 +7,6 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AnimatePresence } from 'framer-motion';
 import AppLayout from "@/components/layout/AppLayout";
 import SplashScreen from "@/components/SplashScreen";
-import { ThemeProvider } from "@/hooks/useTheme";
 
 // Lazy-loaded pages for faster initial load
 const Home = lazy(() => import("./pages/Home"));
@@ -52,7 +51,6 @@ const App = () => {
   const [showSplash, setShowSplash] = useState(() => !sessionStorage.getItem('mindease_splash_shown'));
 
   return (
-    <ThemeProvider>
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
@@ -98,7 +96,6 @@ const App = () => {
         )}
       </TooltipProvider>
     </QueryClientProvider>
-    </ThemeProvider>
   );
 };
 

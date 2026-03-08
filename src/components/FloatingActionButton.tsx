@@ -23,23 +23,18 @@ export default function FloatingActionButton() {
             {actions.map((a, i) => (
               <motion.button key={a.path} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} transition={{ delay: i * 0.05 }}
                 onClick={() => { navigate(a.path); setOpen(false); }}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-xl glass-static text-sm font-medium text-foreground whitespace-nowrap">
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl glass-static text-sm font-body font-medium text-foreground whitespace-nowrap">
                 <a.icon className="w-4 h-4 text-primary" />{a.label}
               </motion.button>
             ))}
           </motion.div>
         )}
       </AnimatePresence>
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={() => setOpen(!open)}
-        className="w-14 h-14 rounded-full flex items-center justify-center text-white shadow-lg glow-primary transition-all"
-        style={{ background: 'linear-gradient(135deg, hsl(239 84% 74%), hsl(160 84% 67%))' }}>
-        <motion.div animate={{ rotate: open ? 45 : 0 }} transition={{ duration: 0.2 }}>
-          {open ? <X className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
-        </motion.div>
-      </motion.button>
+      <button onClick={() => setOpen(!open)}
+        className="w-14 h-14 rounded-full flex items-center justify-center text-white shadow-lg transition-all hover:scale-[1.02]"
+        style={{ background: 'linear-gradient(135deg, hsl(207,90%,72%), hsl(260,60%,78%))' }}>
+        {open ? <X className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
+      </button>
     </div>
   );
 }
