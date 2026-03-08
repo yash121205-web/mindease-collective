@@ -128,9 +128,9 @@ const benefits = [
 
 const chatMessages = [
   { role: 'user' as const, text: "I'm feeling really stressed about my finals 😰" },
-  { role: 'ai' as const, text: "Exam season can feel like a mountain — but you've climbed them before. What subject is weighing on you the most?" },
-  { role: 'user' as const, text: "Organic chemistry. I feel so behind." },
-  { role: 'ai' as const, text: "Falling behind doesn't mean failing. Let's make a small plan — even 25 focused minutes today counts." },
+  { role: 'ai' as const, text: "Exam season turns the brain into a pressure cooker — let's try a 60-second box breathing reset. Want to start?" },
+  { role: 'user' as const, text: "Yes please, I need that right now" },
+  { role: 'ai' as const, text: "Breathe in for 4 counts… hold 4… out 4… hold 4. Two more rounds and notice how your shoulders drop. 🧘" },
 ];
 
 const challengeCards = [
