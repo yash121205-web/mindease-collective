@@ -13,7 +13,7 @@ const AlertDialogOverlay = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <AlertDialogPrimitive.Overlay
     className={cn(
-      "fixed inset-0 z-50 bg-foreground/25 backdrop-blur-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 duration-300",
+      "fixed inset-0 z-50 bg-foreground/20 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 duration-300",
       className,
     )}
     {...props}
@@ -25,14 +25,14 @@ AlertDialogOverlay.displayName = AlertDialogPrimitive.Overlay.displayName;
 const AlertDialogContent = React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Content>
->(({ className, children, ...props }, ref) => (
+>(({ className, ...props }, ref) => (
   <AlertDialogPortal>
     <AlertDialogOverlay />
     <AlertDialogPrimitive.Content
       ref={ref}
       className={cn(
-        "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] shadow-2xl shadow-primary/8 duration-300",
-        "bg-card/98 backdrop-blur-2xl border border-border/30 rounded-[2rem] overflow-hidden",
+        "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 p-7 shadow-2xl shadow-foreground/5 duration-300",
+        "bg-card/98 backdrop-blur-2xl border border-border/30 rounded-[1.75rem]",
         "data-[state=open]:animate-in data-[state=closed]:animate-out",
         "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
         "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
@@ -41,21 +41,7 @@ const AlertDialogContent = React.forwardRef<
         className,
       )}
       {...props}
-    >
-      {/* Animated top gradient bar */}
-      <div className="relative h-1 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-primary via-accent to-secondary" />
-        <div className="absolute inset-0 w-1/3 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
-      </div>
-
-      {/* Decorative corner glows */}
-      <div className="absolute -top-20 -right-20 w-40 h-40 rounded-full bg-primary/6 blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-16 -left-16 w-36 h-36 rounded-full bg-accent/6 blur-3xl pointer-events-none" />
-
-      <div className="relative z-10 p-7 gap-4 grid">
-        {children}
-      </div>
-    </AlertDialogPrimitive.Content>
+    />
   </AlertDialogPortal>
 ));
 AlertDialogContent.displayName = AlertDialogPrimitive.Content.displayName;
@@ -74,7 +60,7 @@ const AlertDialogTitle = React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Title>,
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Title>
 >(({ className, ...props }, ref) => (
-  <AlertDialogPrimitive.Title ref={ref} className={cn("font-display text-xl leading-none tracking-tight text-foreground", className)} {...props} />
+  <AlertDialogPrimitive.Title ref={ref} className={cn("font-display text-lg leading-none tracking-tight text-foreground", className)} {...props} />
 ));
 AlertDialogTitle.displayName = AlertDialogPrimitive.Title.displayName;
 
