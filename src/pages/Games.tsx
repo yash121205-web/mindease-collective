@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Wind, Target, Sparkles, RotateCcw, Play } from 'lucide-react';
+import PageHeader from '@/components/PageHeader';
 
 const tabs = ['Breathing Rhythm', 'Focus Bubbles', 'Color Calm'];
 
