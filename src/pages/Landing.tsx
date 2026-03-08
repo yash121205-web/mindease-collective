@@ -256,7 +256,7 @@ export default function Landing() {
         {/* Affirmation Card */}
         <motion.div {...fadeUp(0.3)} className={`glass-static rounded-3xl p-6 flex flex-col justify-between bg-gradient-to-br ${gradientClass}`}>
           <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3 font-body">Today's Affirmation</p>
-          <p className="font-display text-xl text-foreground italic leading-relaxed font-semibold">"{affirmation}"</p>
+          <p className="font-display text-xl text-foreground italic leading-relaxed font-semibold tracking-wide">"{affirmation}"</p>
           <div className="flex items-center gap-2 mt-4">
             <button onClick={() => { navigator.clipboard.writeText(affirmation); toast.success('Copied!'); }} className="p-1.5 rounded-lg hover:bg-muted/50 text-muted-foreground">
               <Copy className="w-3.5 h-3.5" />
