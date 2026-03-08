@@ -52,6 +52,7 @@ const App = () => {
   const [showSplash, setShowSplash] = useState(() => !sessionStorage.getItem('mindease_splash_shown'));
 
   return (
+    <AppleEmojiProvider>
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
