@@ -10,17 +10,16 @@ import {
 } from 'lucide-react';
 import meditationHero from '@/assets/meditation-hero.png';
 
-/* ─── Lightweight animation helpers ─── */
+/* ─── Lightweight animation helpers (no scroll observers) ─── */
 const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 20 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: '-60px' },
-  transition: { duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
+  initial: { opacity: 0, y: 16 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.45, delay, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
 });
 
-function Section({ children, className = '', id }: { children: React.ReactNode; className?: string; id?: string }) {
+function Section({ children, className = '', id, optimize = true }: { children: React.ReactNode; className?: string; id?: string; optimize?: boolean }) {
   return (
-    <section id={id} className={`py-16 md:py-24 px-5 md:px-10 ${className}`}>
+    <section id={id} className={`py-16 md:py-24 px-5 md:px-10 ${optimize ? 'content-auto' : ''} ${className}`}>
       <div className="max-w-6xl mx-auto">{children}</div>
     </section>
   );
