@@ -258,7 +258,7 @@ export default function Home() {
       </nav>
 
       {/* ━━━ HERO ━━━ */}
-      <Section id="home" className="pt-32 md:pt-40 pb-8">
+      <Section id="home" optimize={false} className="pt-32 md:pt-40 pb-8">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <div>
             <motion.div {...fadeUp()} className="mb-5">
