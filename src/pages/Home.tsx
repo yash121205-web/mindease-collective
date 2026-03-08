@@ -794,7 +794,7 @@ export default function Home() {
               <div className="absolute top-3 right-3">
                 <Sparkles className="w-4 h-4 text-primary/30" />
               </div>
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-mint flex items-center justify-center mb-4 shadow-sm">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center mb-4 shadow-sm">
                 <Brain className="w-5 h-5 text-primary-foreground" />
               </div>
               <h3 className="font-display text-lg font-semibold text-foreground mb-2">{card.title}</h3>
