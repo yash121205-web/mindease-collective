@@ -74,6 +74,12 @@ export default function Mood() {
       timestamp: Date.now(),
     });
     setSubmitted(true);
+
+    // Auto-update habits when sleep quality is good
+    if (MOOD_MAP[selected].score >= 75) {
+      const h = getTodayHabits();
+      if (selectedFactors.includes('Sleep')) { h.sleep = true; saveTodayHabits(h); }
+    }
     setLoading(true);
     try {
       const msg = await callAI(`User logged their mood as "${selected}" with factors: ${selectedFactors.join(', ') || 'none'}. Note: "${note || 'none'}". Give a warm, personalized 2-sentence response. Don't start with "I understand" or "I'm sorry".`);
