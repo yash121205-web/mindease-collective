@@ -179,29 +179,6 @@ export default function Home() {
     scrollToSection(sectionId);
   };
 
-  useEffect(() => {
-    let rafId = 0;
-    let ticking = false;
-
-    const handleScroll = () => {
-      if (ticking) return;
-      ticking = true;
-
-      rafId = window.requestAnimationFrame(() => {
-        const nextScrolled = window.scrollY > 20;
-        setScrolled(prev => (prev === nextScrolled ? prev : nextScrolled));
-        ticking = false;
-      });
-    };
-
-    handleScroll();
-    window.addEventListener('scroll', handleScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.cancelAnimationFrame(rafId);
-    };
-  }, []);
 
   useEffect(() => {
     if (!location.hash) return;
