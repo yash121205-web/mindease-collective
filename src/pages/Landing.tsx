@@ -269,7 +269,7 @@ export default function Landing() {
 
         {/* Today's Mood / Check-in Widget */}
         <motion.div {...fadeUp(0.4)} className="glass-static rounded-3xl p-6">
-          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3 font-body">How are you feeling?</p>
+          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3 font-display">How are you feeling?</p>
           {todayMood || selectedMood ? (
             <div>
               <div className="flex items-center gap-3">
