@@ -13,7 +13,7 @@ export default {
     extend: {
       fontFamily: {
         display: ['"Lora"', 'serif'],
-        body: ['"Lora"', 'serif'],
+        body: ['"Outfit"', 'sans-serif'],
         accent: ['"Caveat"', 'cursive'],
         mono: ['"JetBrains Mono"', 'monospace'],
       },
@@ -47,6 +47,9 @@ export default {
         "warm-lavender": "hsl(var(--warm-lavender))",
         "pink-glow": "hsl(var(--pink-glow))",
         "sky-soft": "hsl(var(--sky-soft))",
+        sand: "hsl(var(--sand))",
+        sage: "hsl(var(--sage))",
+        terracotta: "hsl(var(--terracotta))",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -72,7 +75,7 @@ export default {
         "float": { "0%, 100%": { transform: "translateY(0)" }, "50%": { transform: "translateY(-6px)" } },
         "pulse-soft": { "0%, 100%": { opacity: "1" }, "50%": { opacity: "0.7" } },
         "blink": { "0%, 90%, 100%": { transform: "scaleY(1)" }, "95%": { transform: "scaleY(0.1)" } },
-        "glow-pulse": { "0%, 100%": { filter: "drop-shadow(0 0 8px hsl(330 100% 85% / 0.4))" }, "50%": { filter: "drop-shadow(0 0 20px hsl(197 88% 66% / 0.5))" } },
+        "glow-pulse": { "0%, 100%": { filter: "drop-shadow(0 0 8px hsl(158 42% 58% / 0.3))" }, "50%": { filter: "drop-shadow(0 0 20px hsl(158 42% 58% / 0.5))" } },
         "shimmer": { "0%": { backgroundPosition: "-200% 0" }, "100%": { backgroundPosition: "200% 0" } },
       },
       animation: {
