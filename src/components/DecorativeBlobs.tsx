@@ -1,13 +1,13 @@
 import { motion } from 'framer-motion';
 
-function Blob({ className, delay = 0, duration = 8 }: { className: string; delay?: number; duration?: number }) {
+function Blob({ className, delay = 0, duration = 10 }: { className: string; delay?: number; duration?: number }) {
   return (
     <motion.div
       className={className}
       animate={{
-        x: [0, 15, -10, 8, 0],
-        y: [0, -12, 8, -6, 0],
-        scale: [1, 1.05, 0.97, 1.03, 1],
+        x: [0, 20, -15, 10, 0],
+        y: [0, -18, 12, -8, 0],
+        scale: [1, 1.08, 0.95, 1.05, 1],
       }}
       transition={{
         duration,
@@ -22,60 +22,31 @@ function Blob({ className, delay = 0, duration = 8 }: { className: string; delay
 export default function DecorativeBlobs() {
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden z-0" aria-hidden>
-      {/* Sage green — top left */}
-      <Blob
-        className="absolute -top-32 -left-32 w-96 h-96 rounded-full opacity-[0.08]"
-        delay={0}
-        duration={10}
-      />
-      <div
-        className="absolute -top-32 -left-32 w-96 h-96 rounded-full opacity-[0.08]"
-        style={{ background: 'radial-gradient(circle, hsl(158 42% 68%), transparent 70%)' }}
-      />
+      {/* Primary indigo — top left */}
+      <Blob className="absolute -top-32 -left-32 w-[500px] h-[500px] rounded-full opacity-[0.06]" delay={0} duration={12}>
+      </Blob>
+      <div className="absolute -top-32 -left-32 w-[500px] h-[500px] rounded-full opacity-[0.06]"
+        style={{ background: 'radial-gradient(circle, hsl(239 84% 74%), transparent 70%)' }} />
 
-      {/* Warm lavender — top right */}
-      <Blob
-        className="absolute -top-20 -right-24 w-80 h-80 rounded-full opacity-[0.06]"
-        delay={2}
-        duration={12}
-      />
-      <div
-        className="absolute -top-20 -right-24 w-80 h-80 rounded-full opacity-[0.06]"
-        style={{ background: 'radial-gradient(circle, hsl(280 40% 78%), transparent 70%)' }}
-      />
+      {/* Accent mint — top right */}
+      <Blob className="absolute -top-20 -right-24 w-96 h-96 rounded-full opacity-[0.05]" delay={3} duration={14} />
+      <div className="absolute -top-20 -right-24 w-96 h-96 rounded-full opacity-[0.05]"
+        style={{ background: 'radial-gradient(circle, hsl(160 84% 67%), transparent 70%)' }} />
 
-      {/* Warm peach — bottom left */}
-      <Blob
-        className="absolute -bottom-24 -left-20 w-72 h-72 rounded-full opacity-[0.07]"
-        delay={4}
-        duration={9}
-      />
-      <div
-        className="absolute -bottom-24 -left-20 w-72 h-72 rounded-full opacity-[0.07]"
-        style={{ background: 'radial-gradient(circle, hsl(20 80% 82%), transparent 70%)' }}
-      />
+      {/* Secondary — bottom left */}
+      <Blob className="absolute -bottom-24 -left-20 w-80 h-80 rounded-full opacity-[0.05]" delay={5} duration={11} />
+      <div className="absolute -bottom-24 -left-20 w-80 h-80 rounded-full opacity-[0.05]"
+        style={{ background: 'radial-gradient(circle, hsl(229 84% 82%), transparent 70%)' }} />
 
-      {/* Sand accent — center right */}
-      <Blob
-        className="absolute top-1/3 -right-16 w-64 h-64 rounded-full opacity-[0.05]"
-        delay={1}
-        duration={11}
-      />
-      <div
-        className="absolute top-1/3 -right-16 w-64 h-64 rounded-full opacity-[0.05]"
-        style={{ background: 'radial-gradient(circle, hsl(35 40% 80%), transparent 70%)' }}
-      />
+      {/* Indigo — bottom right */}
+      <Blob className="absolute -bottom-16 -right-28 w-96 h-96 rounded-full opacity-[0.04]" delay={2} duration={13} />
+      <div className="absolute -bottom-16 -right-28 w-96 h-96 rounded-full opacity-[0.04]"
+        style={{ background: 'radial-gradient(circle, hsl(239 84% 74%), transparent 70%)' }} />
 
-      {/* Subtle sage — bottom right */}
-      <Blob
-        className="absolute -bottom-16 -right-28 w-80 h-80 rounded-full opacity-[0.04]"
-        delay={3}
-        duration={13}
-      />
-      <div
-        className="absolute -bottom-16 -right-28 w-80 h-80 rounded-full opacity-[0.04]"
-        style={{ background: 'radial-gradient(circle, hsl(158 30% 75%), transparent 70%)' }}
-      />
+      {/* Center accent glow */}
+      <Blob className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-[0.02]" delay={1} duration={15} />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-[0.02]"
+        style={{ background: 'radial-gradient(circle, hsl(160 84% 67%), transparent 60%)' }} />
     </div>
   );
 }
