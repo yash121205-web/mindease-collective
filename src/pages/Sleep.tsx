@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Moon as MoonIcon, Sun, Clock, TrendingUp, Sparkles, Plus } from 'lucide-react';
+import PageHeader from '@/components/PageHeader';
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip, BarChart, Bar, Cell } from 'recharts';
 import { callAI } from '@/lib/ai';
 import { genId } from '@/lib/storage';
