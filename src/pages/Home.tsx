@@ -28,7 +28,7 @@ function Section({ children, className = '', id }: { children: React.ReactNode; 
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-body font-medium bg-primary/8 text-primary border border-primary/12 mb-5 tracking-wide">
+    <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-accent font-semibold bg-primary/8 text-primary border border-primary/12 mb-5 tracking-wide">
       <Sparkles className="w-3.5 h-3.5" />
       {children}
     </span>
