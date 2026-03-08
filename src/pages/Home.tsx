@@ -240,7 +240,7 @@ export default function Home() {
           <button type="button" onClick={() => handleNavClick('home')} className="flex items-center gap-3 text-left">
             <motion.div
               whileHover={{ rotate: 10 }}
-              className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-mint flex items-center justify-center shadow-md"
+              className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-md"
             >
               <Leaf className="w-5 h-5 text-primary-foreground" />
             </motion.div>
