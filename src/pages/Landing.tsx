@@ -179,7 +179,7 @@ export default function Landing() {
               ) : (
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
                   <span className="text-5xl mb-4 block">{moods.find(m => m.key === selectedMood)?.emoji}</span>
-                  <p className="text-foreground font-medium text-lg font-body">{message}</p>
+                  <p className="font-display text-foreground font-semibold text-lg italic">{message}</p>
                 </motion.div>
               )}
             </motion.div>
@@ -256,7 +256,7 @@ export default function Landing() {
         {/* Affirmation Card */}
         <motion.div {...fadeUp(0.3)} className={`glass-static rounded-3xl p-6 flex flex-col justify-between bg-gradient-to-br ${gradientClass}`}>
           <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3 font-body">Today's Affirmation</p>
-          <p className="font-display text-xl text-foreground italic leading-relaxed font-semibold">"{affirmation}"</p>
+          <p className="font-display text-xl text-foreground italic leading-relaxed font-semibold tracking-wide">"{affirmation}"</p>
           <div className="flex items-center gap-2 mt-4">
             <button onClick={() => { navigator.clipboard.writeText(affirmation); toast.success('Copied!'); }} className="p-1.5 rounded-lg hover:bg-muted/50 text-muted-foreground">
               <Copy className="w-3.5 h-3.5" />

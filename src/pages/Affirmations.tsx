@@ -155,7 +155,7 @@ export default function Affirmations() {
             ) : (
               <>
                 <span className="text-4xl block mb-6">✨</span>
-                <p className="font-display text-xl lg:text-2xl text-foreground leading-relaxed font-semibold italic relative z-10">
+                <p className="font-display text-xl lg:text-2xl text-foreground leading-relaxed font-semibold italic tracking-wide relative z-10">
                   "{affirmation}"
                 </p>
                 <div className="flex items-center justify-center gap-3 mt-8 relative z-10">
