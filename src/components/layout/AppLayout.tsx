@@ -19,7 +19,7 @@ export default function AppLayout({ children }: { children?: React.ReactNode }) 
   const isDashboard = location.pathname === '/dashboard';
 
   return (
-    <div className="flex min-h-screen w-full grain gradient-mesh">
+    <div className="flex min-h-screen w-full gradient-mesh">
       <AppSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       
       <div className="flex-1 flex flex-col min-h-screen">
