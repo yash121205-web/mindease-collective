@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Apple, Plus, TrendingUp, Sparkles, Droplets, Flame as FireIcon, Leaf } from 'lucide-react';
+import PageHeader from '@/components/PageHeader';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { callAI } from '@/lib/ai';
 import { genId } from '@/lib/storage';
