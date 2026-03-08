@@ -80,7 +80,6 @@ export default function GratitudeWall() {
   return (
     <div className="p-4 lg:p-8 max-w-5xl mx-auto">
       <PageHeader title="Gratitude Wall" subtitle="Plant seeds of thankfulness. Watch them bloom." emoji="🌸" gradient="from-secondary/10 to-rose-soft/8" />
-      </motion.div>
 
       {/* Stats bar */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="glass-static rounded-2xl px-5 py-3 mb-6 flex items-center justify-between">

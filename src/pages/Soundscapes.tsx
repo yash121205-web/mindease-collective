@@ -65,7 +65,6 @@ export default function Soundscapes() {
   return (
     <div className="p-4 lg:p-8 max-w-5xl mx-auto">
       <PageHeader title="Mood Soundscapes" subtitle="Curated ambient sounds to match your mood." emoji="🎧" gradient="from-sky-soft/12 to-primary/8" />
-      </motion.div>
 
       {/* Mood filters */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex gap-2 flex-wrap mb-6">

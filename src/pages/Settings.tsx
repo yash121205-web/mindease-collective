@@ -210,7 +210,7 @@ export default function SettingsPage() {
             Sign Out
           </button>
         </div>
-      </motion.div>
+      
     </div>
   );
 }

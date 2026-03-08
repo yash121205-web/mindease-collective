@@ -110,7 +110,6 @@ export default function Meditation() {
   return (
     <div className="p-4 lg:p-8 max-w-5xl mx-auto">
       <PageHeader title="Guided Meditation" subtitle="Find stillness. Follow your breath." emoji="🧘" gradient="from-primary/10 to-mint/8" />
-      </motion.div>
 
       <div className="grid gap-6 lg:grid-cols-[1fr_1.2fr]">
         {/* Controls */}

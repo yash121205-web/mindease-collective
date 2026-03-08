@@ -116,7 +116,6 @@ export default function Affirmations() {
   return (
     <div className="p-4 lg:p-8 max-w-4xl mx-auto">
       <PageHeader title="Daily Affirmations" subtitle="Beautiful words to nurture your inner world." emoji="✨" gradient="from-warm-lavender/12 to-secondary/8" />
-      </motion.div>
 
       {/* Category Pills */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex gap-2 flex-wrap mb-8">
