@@ -131,7 +131,7 @@ const features = [
   {
     icon: Smile, title: 'Smart Mood Tracker',
     desc: 'Log emotions with quick emoji check-ins. Track patterns over time and discover what lifts your spirits or triggers stress.',
-    gradient: 'from-mint/12 to-secondary/4', iconBg: 'bg-mint/20', iconColor: 'text-secondary',
+    gradient: 'from-mint/12 to-secondary/4', iconBg: 'bg-mint/20', iconColor: 'text-foreground',
   },
   {
     icon: BookOpen, title: 'AI Journaling Assistant',
@@ -141,7 +141,7 @@ const features = [
   {
     icon: Wind, title: 'Guided Wellness Exercises',
     desc: 'Box breathing, body scans, desk yoga — hand-picked exercises to reduce stress in under 10 minutes.',
-    gradient: 'from-rose-soft/10 to-mint/5', iconBg: 'bg-rose-soft/20', iconColor: 'text-foreground',
+    gradient: 'from-sky-soft/15 to-mint/5', iconBg: 'bg-sky-soft/25', iconColor: 'text-foreground',
   },
 ];
 
